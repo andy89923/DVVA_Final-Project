@@ -6,12 +6,74 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model Example {
+model Movie {
+  id         String    @id @default(cuid())
+  title      String
+  overview   String
+  poster_url String
+  crew       Person[]
+  genres     Genre[]
+  keywords   Keyword[]
+
+  release_date String
+  countries    Country[]
+  companies    Company[]
+  budget       Int
+  revenue      Int
+
+  popularity   Float
+  vote_average Float
+  vote_count   Int
+  ratings      Rating[]
+}
+
+model Person {
+  id     String  @id @default(cuid())
+  name   String
+  movies Movie[]
+}
+
+model Country {
+  id     String  @id @default(cuid())
+  name   String
+  movies Movie[]
+}
+
+model Keyword {
+  id     String  @id @default(cuid())
+  name   String
+  movies Movie[]
+}
+
+model Company {
+  id     String  @id @default(cuid())
+  name   String
+  movies Movie[]
+}
+
+model Genre {
+  id     String  @id @default(cuid())
+  name   String
+  movies Movie[]
+}
+
+model Rating {
   id        String   @id @default(cuid())
+  movieId   String
+  userId    String
+  rating    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  movie Movie @relation(fields: [movieId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id      String   @id @default(cuid())
+  ratings Rating[]
 }
