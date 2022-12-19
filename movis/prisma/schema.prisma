@@ -12,19 +12,21 @@ datasource db {
 }
 
 model Movie {
-  id           Int       @id @default(autoincrement())
-  title        String
-  overview     String
-  runtime      String
-  poster_url   String
-  release_date String
-  budget       Int
-  revenue      Int
-  keywords     Keyword[]
-  crew         Person[]
-  genres       Genre[]
-  countries    Country[]
-  companies    Company[]
+  id                   Int        @id @default(autoincrement())
+  title                String
+  overview             String
+  runtime              String
+  poster_url           String
+  release_date         String
+  budget               Int
+  revenue              Int
+  original_language_id Int
+  spoken_languages     Language[]
+  keywords             Keyword[]
+  crew                 Person[]
+  genres               Genre[]
+  countries            Country[]
+  companies            Company[]
 
   popularity   Float
   vote_average Float
@@ -33,9 +35,11 @@ model Movie {
 }
 
 model Person {
-  id     Int     @id @default(autoincrement())
-  name   String
-  movies Movie[]
+  id         Int     @id @default(autoincrement())
+  name       String
+  gender     Int //0: not specified, 1: female, 2: male
+  popularity Float
+  movies     Movie[]
 }
 
 model Country {
@@ -57,6 +61,12 @@ model Company {
 }
 
 model Genre {
+  id     Int     @id @default(autoincrement())
+  name   String
+  movies Movie[]
+}
+
+model Language {
   id     Int     @id @default(autoincrement())
   name   String
   movies Movie[]
