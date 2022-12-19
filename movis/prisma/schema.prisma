@@ -43,9 +43,10 @@ model Person {
 }
 
 model Country {
-  id     Int     @id @default(autoincrement())
-  name   String
-  movies Movie[]
+  id         Int     @id @default(autoincrement())
+  iso_3166_1 String
+  name       String
+  movies     Movie[]
 }
 
 model Keyword {
