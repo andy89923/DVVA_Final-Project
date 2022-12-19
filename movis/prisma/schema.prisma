@@ -15,7 +15,7 @@ model Movie {
   id                   Int        @id @default(autoincrement())
   title                String
   overview             String
-  runtime              String
+  runtime              Int
   poster_url           String
   release_date         String
   budget               Int
