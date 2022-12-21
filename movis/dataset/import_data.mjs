@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-// import myPerson from './person.json' assert { type: "json" };
+import myPerson from './person.json' assert { type: "json" };
 import myCountry from './country.json' assert { type: "json" };
 import myKeyword from './keyword.json' assert { type: "json" };
 import myCompany from './company.json' assert { type: "json" };
@@ -10,15 +10,15 @@ import myRating from './rating.json' assert { type: "json" };
 import myMovie from './movie.json' assert { type: "json" };
 
 
-//node import_data.ts
-// const myPerson_data = myPerson.map((val) => {
-//   return {
-//     id: val.id,
-//     name: val.name,
-//     gender: val.gender,
-//     popularity: val.popularity
-//   }
-// })
+// node import_data.ts
+const myPerson_data = myPerson.map((val) => {
+  return {
+    id: val.id,
+    name: val.name,
+    gender: val.gender,
+    popularity: val.popularity
+  }
+})
 
 const myCountry_data = myCountry.map((val) => {
   return {
@@ -72,7 +72,7 @@ const myRating_data = myRating.map((val) => {
     createdAt: val.createdAt,
     updatedAt: val.updatedAt
   }
-}).slice(0, 5000);
+})
 
 const myMovie_data = myMovie.map((val) => {
   return {
@@ -96,24 +96,39 @@ const myMovie_data = myMovie.map((val) => {
     vote_count: val.vote_count,
     // ratings: val.ratings
   }
-}).slice(0, 5000);
+})
 
 const prisma = new PrismaClient()
+
+
+const createBySlice = async (data, model) => {
+  const sliceSize = 5000
+  const sliceCount = Math.ceil(data.length / sliceSize)
+  console.log("slicing "+model+", into "+sliceCount+" transactions...")
+  for (let i = 0; i < sliceCount; i++) {
+    const slice = data.slice(i * sliceSize, (i + 1) * sliceSize)
+    await prisma[model].createMany({data: slice, skipDuplicates: true})
+  }
+}
 
 async function main() {
   // ... you will write your Prisma Client queries here
 
   const toCreate = []
-  // toCreate.push(prisma.person.createMany({data: myPerson_data, skipDuplicates: true}))
-  // toCreate.push(prisma.country.createMany({data: myCountry_data, skipDuplicates: true}))
-  // toCreate.push(prisma.keyword.createMany({data: myKeyword_data, skipDuplicates: true}))
-  // toCreate.push(prisma.company.createMany({data: myCompany_data, skipDuplicates: true}))
-  // toCreate.push(prisma.genre.createMany({data: myGenre_data, skipDuplicates: true}))
+  toCreate.push(prisma.country.createMany({data: myCountry_data, skipDuplicates: true}))
+  toCreate.push(prisma.keyword.createMany({data: myKeyword_data, skipDuplicates: true}))
+  toCreate.push(prisma.company.createMany({data: myCompany_data, skipDuplicates: true}))
+  toCreate.push(prisma.genre.createMany({data: myGenre_data, skipDuplicates: true}))
   toCreate.push(prisma.language.createMany({data: myLanguage_data, skipDuplicates: true}))
-  // toCreate.push(prisma.user.createMany({data: myUser_data, skipDuplicates: true}))
+  toCreate.push(prisma.user.createMany({data: myUser_data, skipDuplicates: true}))
+  // toCreate.push(prisma.person.createMany({data: myPerson_data, skipDuplicates: true}))
   // toCreate.push(prisma.rating.createMany({data: myRating_data, skipDuplicates: true}))
   // toCreate.push(prisma.movie.createMany({data: myMovie_data, skipDuplicates: true}))
   await prisma.$transaction(toCreate)
+
+  createBySlice(myPerson_data, 'person')
+  createBySlice(myRating_data, 'rating')
+  createBySlice(myMovie_data, 'movie')
 }
 
 console.log("start")
