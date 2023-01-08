@@ -1,7 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import React, { useState } from "react";
-import Modal from "./Modal";
-import { ImEnlarge, ImShrink } from "react-icons/im";
+import React from "react";
 
 type Subset = {
   name: string;
