@@ -76,27 +76,98 @@ const myRating_data = myRating.map((val) => {
 
 const myMovie_data = myMovie.map((val) => {
   return {
-    id: val.id,
-    title: val.title,
-    overview: val.overview,
-    runtime: val.runtime,
-    poster_url: val.poster_url,
-    release_date: val.release_date,
-    budget: val.budget,
-    revenue: val.revenue,
-    original_language_id: val.original_language_id,
-    // spoken_languages: val.spoken_languages,
-    // keywords: val.keywords,
-    // crew: val.crew,
-    // genres: val.genres,
-    // countries: val.countries,
-    // companies: val.companies,
-    popularity: val.popularity,
-    vote_average: val.vote_average,
-    vote_count: val.vote_count,
-    // ratings: val.ratings
+    // data: {
+      id: val.id,
+      title: val.title,
+      overview: val.overview,
+      runtime: val.runtime,
+      poster_url: val.poster_url,
+      release_date: val.release_date,
+      budget: val.budget,
+      revenue: val.revenue,
+      original_language_id: val.original_language_id,
+      // spoken_languages: val.spoken_languages,
+      // spoken_languages: {
+      //   connect: val.spoken_languages.map((id) => {return {"id": id}})
+      // },
+      // keywords: val.keywords,
+      // keywords: {
+      //   connect: val.keywords.map((id) => {return {"id": id}})
+      // },
+      
+      // crew: val.crew,
+      // crew: {
+      //   connect: val.crew.map((id) => {return {"id": id}})
+      // },
+
+      // genres: val.genres,
+      // genres: {
+      //   connect: val.genres.map((id) => {return {"id": id}})
+      // },
+
+      // countries: val.countries,
+      // countries: {
+      //   connect: val.countries.map((id) => {return {"id": id}})
+      // },
+      
+      popularity: val.popularity,
+      vote_average: val.vote_average,
+      vote_count: val.vote_count,
+
+      // ratings: val.ratings
+      // ratings: {
+      //   connect: val.ratings.map((id) => {return {"id": id }})
+      // },
+
+      //companies: val.companies
+      // companies: {
+      //   connect: val.companies.map((id) => {return {"id": id}})
+      // }
+
+    // },
+    // include: {
+    //   spoken_languages: true,
+    //   // keywords: true,
+    //   // crew: true,
+    //   // countries: true,
+    //   // companies: true,
+    //   // ratings: true,
+    //   // genres: true
+    // }
   }
 })
+
+const myMovie_relation_data = myMovie.map((val) => {
+  return {
+    where: {
+      id: val.id
+    },
+    data: {
+      spoken_languages: {
+        connect: val.spoken_languages.map((id) => {return {"id": id}})
+      },
+      keywords: {
+        connect: val.keywords.map((id) => {return {"id": id}})
+      },
+      crew: {
+        connect: val.crew.map((id) => {return {"id": id}})
+      },
+      genres: {
+        connect: val.genres.map((id) => {return {"id": id}})
+      },
+      countries: {
+        connect: val.countries.map((id) => {return {"id": id}})
+      },
+      ratings: {
+        connect: val.ratings.map((id) => {return {"id": id }})
+      },
+      companies: {
+        connect: val.companies.map((id) => {return {"id": id}})
+      }
+    }
+  }
+})
+
 
 const prisma = new PrismaClient()
 
@@ -115,20 +186,36 @@ async function main() {
   // ... you will write your Prisma Client queries here
 
   const toCreate = []
-  toCreate.push(prisma.country.createMany({data: myCountry_data, skipDuplicates: true}))
-  toCreate.push(prisma.keyword.createMany({data: myKeyword_data, skipDuplicates: true}))
-  toCreate.push(prisma.company.createMany({data: myCompany_data, skipDuplicates: true}))
-  toCreate.push(prisma.genre.createMany({data: myGenre_data, skipDuplicates: true}))
-  toCreate.push(prisma.language.createMany({data: myLanguage_data, skipDuplicates: true}))
-  toCreate.push(prisma.user.createMany({data: myUser_data, skipDuplicates: true}))
+  // console.log(myMovie_data[0])
+  // toCreate.push(prisma.movie.create(myMovie_data[0]))
+
+  // toCreate.push(prisma.country.createMany({data: myCountry_data, skipDuplicates: true}))
+  // toCreate.push(prisma.keyword.createMany({data: myKeyword_data, skipDuplicates: true}))
+  // toCreate.push(prisma.company.createMany({data: myCompany_data, skipDuplicates: true}))
+  // toCreate.push(prisma.genre.createMany({data: myGenre_data, skipDuplicates: true}))
+  // console.log(myLanguage_data[0])
+  // toCreate.push(prisma.language.createMany({data: myLanguage_data, skipDuplicates: true}))
+  // toCreate.push(prisma.user.createMany({data: myUser_data, skipDuplicates: true}))
+
   // toCreate.push(prisma.person.createMany({data: myPerson_data, skipDuplicates: true}))
   // toCreate.push(prisma.rating.createMany({data: myRating_data, skipDuplicates: true}))
   // toCreate.push(prisma.movie.createMany({data: myMovie_data, skipDuplicates: true}))
+
+  // console.log(myMovie_relation_data[0])
+  myMovie_relation_data.slice(0, 50).forEach((val) =>
+    toCreate.push(prisma.movie.update(myMovie_relation_data[0]))
+  )
+  // console.log(myMovie_relation_data[0].data.spoken_languages.connect)
+  // toCreate.push(prisma.movie.update(myMovie_relation_data[0]))
   await prisma.$transaction(toCreate)
 
-  createBySlice(myPerson_data, 'person')
-  createBySlice(myRating_data, 'rating')
-  createBySlice(myMovie_data, 'movie')
+  // createBySlice(myPerson_data, 'person')
+  // createBySlice(myRating_data, 'rating')
+  // createBySlice(myMovie_data, 'movie')
+
+  //create first movie to test
+  // console.log(myMovie_data[1]) //overview too long???
+
 }
 
 console.log("start")
