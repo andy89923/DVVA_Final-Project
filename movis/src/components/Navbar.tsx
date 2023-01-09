@@ -35,7 +35,8 @@ export default function Navbar() {
         <Navigation title="Crew Analysis" url="/crew" />
         <Navigation title="Relation Analysis" url="/relation" />
         <Navigation title="Playground" url="/playground" />
-        <Navigation title="CTFangLand" url="/ctfangLand" />
+        <Navigation title="CTFangLand" url="/ctfangland" />
+        <Navigation title="F315" url="/f315" />
       </div>
       <div className="user-settings flex flex-row gap-4">
         <Navigation title="Login" url="/login" />

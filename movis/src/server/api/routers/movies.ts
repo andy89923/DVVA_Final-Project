@@ -9,8 +9,8 @@ export const movieRouter = createTRPCRouter({
       return ctx.prisma.movie.findMany({
         where: {
           release_date: {
-            gte: input.start.toString(),
-            lte: input.end.toString(),
+            gte: new Date(input.start, 0, 1).toISOString(),
+            lte: new Date(input.end, 11, 31).toISOString(),
           },
         },
         include: {
