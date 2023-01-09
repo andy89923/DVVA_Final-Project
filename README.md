@@ -54,7 +54,11 @@ Prisma reads schema and generate the correct data source client code (for code a
 pnpm prisma generate
 ```
 
-Create connection with PlanetScale's database: 
+
+
+
+
+Create connection with PlanetScale's database on localhost:3309 :  [Instructions for downloading pscale](https://github.com/planetscale/cli#installation) 
 
 ```bash
 # Switch organization
