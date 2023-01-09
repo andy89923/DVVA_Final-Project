@@ -37,3 +37,35 @@
    ```bash
    pnpm dev
    ```
+
+
+
+### To generate connection with the database:
+
+Modify ${DATABASE_URL} inside *.env* :
+
+```bash
+DATABASE_URL='mysql://root@127.0.0.1:3309/movis-app'
+```
+
+Prisma reads schema and generate the correct data source client code (for code autocomplete):
+
+```bash
+pnpm prisma generate
+```
+
+Create connection with PlanetScale's database: 
+
+```bash
+# Switch organization
+pscale org switch <ORGANIZATION_NAME>  # pscale org switch movis
+
+# Connect to database locally
+pscale connect <DATABASE_NAME> main --port 3309 # pscale connect movis-app main --port 3309
+
+# (Optional) Check database with CLI
+pnpm prisma studio
+```
+
+
+
