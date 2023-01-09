@@ -130,7 +130,8 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                   </div>
                 ) : (
                   virtualizer.getVirtualItems().map((virtualRow) => {
-                    const data = filteredData[virtualRow.index];
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const data = filteredData[virtualRow.index]!;
                     return (
                       <Combobox.Option
                         key={virtualRow.key}

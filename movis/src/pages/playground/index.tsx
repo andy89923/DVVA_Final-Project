@@ -8,36 +8,81 @@ import ZoomCard from "../../components/ZoomCard";
 
 import { api } from "../../utils/api";
 import type { MovieData, Subset } from "../../utils/myClasses";
+import { AllGenres } from "../../utils/myClasses";
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+  // autocolors
+);
+
+type KeyMap = {
+  [key: string]: number;
+};
+
+const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
+  // get genre counts
+  const genreCountDict = props.data.reduce(
+    (acc: KeyMap, movie) => {
+      movie.genres.forEach((genre) => {
+        const genreType = genre.name;
+        if (acc[genreType] == null) {
+          acc[genreType] = 1;
+        } else {
+          acc[genreType] += 1;
+        }
+      });
+      return acc;
+    },
+    AllGenres.reduce((acc: KeyMap, name) => ((acc[name] = 0), acc), {})
+  );
+  const sorted = Object.entries(genreCountDict).sort((a, b) => b[1] - a[1]);
+  const sortedLabels = sorted.map((entry) => entry[0]);
+  const sortedData = sorted.map((entry) => entry[1]);
+
+  const data = {
+    labels: sortedLabels,
+    datasets: [
+      {
+        label: "2001 Movies",
+        data: sortedData,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  return <Bar data={data} />;
+};
 
 const Playground: NextPage = () => {
+  // const { data: movies } = api.movie.getAll.useQuery();
   const { data: movies } = api.movie.betweenYearRange.useQuery({
     minYear: 2001,
     maxYear: 2001,
   });
-  // const { data: movies } = api.movie.getAll.useQuery();
 
-  const testSubsets: Subset[] =
-    movies != null
-      ? [
-          {
-            name: "Test Subset 1",
-            data: movies,
-            selected: false,
-          },
-          {
-            name: "Test Subset 2",
-            data: movies,
-            selected: false,
-          },
-          {
-            name: "Test Subset 3",
-            data: movies,
-            selected: false,
-          },
-        ]
-      : [];
+  // const { data: genres } = api.getAll.genre.useQuery();
+  // console.log(genres?.map((d) => d.name));
 
-  const [subsets, setSubsets] = useState<Subset[]>(testSubsets);
+  const [subsets, setSubsets] = useState<Subset[]>([]);
   const [selected, setSelected] = useState<MovieData[]>([]); // test for combobox
 
   return (
@@ -107,6 +152,10 @@ const Playground: NextPage = () => {
             </div>
             <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
               <SubsetPicker subsets={subsets} setSubsets={setSubsets} />
+            </div>
+
+            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/80 p-4 text-lg text-white hover:bg-white/90">
+              <MyBarPlot data={movies} />
             </div>
           </div>
         )}

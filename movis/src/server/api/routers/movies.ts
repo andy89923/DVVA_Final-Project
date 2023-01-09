@@ -5,8 +5,8 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 export const movieRouter = createTRPCRouter({
   betweenYearRange: publicProcedure
     .input(z.object({ minYear: z.number(), maxYear: z.number() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.movie.findMany({
+    .query( async ({ ctx, input }) => {
+      const movieWithRatings = await ctx.prisma.movie.findMany({
         where: {
           release_date: {
             gte: new Date(input.minYear, 0, 1).toISOString(),
@@ -14,16 +14,56 @@ export const movieRouter = createTRPCRouter({
           },
         },
         include: {
+          spoken_languages: true,
+          keywords: true,
+          crew: true,
           genres: true,
+          countries: true,
+          companies: true,
+          ratings: {
+            select: {
+              rating: true,
+            },
+          }
         },
       });
+  
+      //drop ratings
+      const ratedMovies = movieWithRatings.map((movie) => {
+        const ratings = movie.ratings.map((rating) => rating.rating);
+        const averageRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+        const { ratings: _, ...movieWithoutRatings } = movie;
+        return { ...movieWithoutRatings, averageRating };
+      });
+  
+      return ratedMovies;
     }),
 
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.movie.findMany({
+  getAll: publicProcedure.query( async ({ ctx }) => {
+    const movieWithRatings = await ctx.prisma.movie.findMany({
       include: {
+        spoken_languages: true,
+        keywords: true,
+        crew: true,
         genres: true,
+        countries: true,
+        companies: true,
+        ratings: {
+          select: {
+            rating: true,
+          },
+        }
       },
     });
+
+    //drop ratings
+    const ratedMovies = movieWithRatings.map((movie) => {
+      const ratings = movie.ratings.map((rating) => rating.rating);
+      const averageRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+      const { ratings: _, ...movieWithoutRatings } = movie;
+      return { ...movieWithoutRatings, averageRating };
+    });
+
+    return ratedMovies;
   }),
 });
