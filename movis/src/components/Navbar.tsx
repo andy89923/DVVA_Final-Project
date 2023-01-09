@@ -15,8 +15,11 @@ export default function Navbar() {
         <Link href="/" className="px-4 py-2 text-2xl font-bold text-white">
           MoVis
         </Link>
-        <Link href="/v2" className="px-4 py-2 text-xl font-bold text-white">
-          v2
+        <Link
+          href="/playground"
+          className="px-4 py-2 text-xl font-bold text-white"
+        >
+          Playground
         </Link>
         <Link href="/qqq" className="px-4 py-2 text-xl font-bold text-white">
           qqq

@@ -10,16 +10,27 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.7",
     "@prisma/client": "^4.8.0",
+    "@sgratzl/chartjs-chart-boxplot": "^4.1.0",
     "@tanstack/react-query": "^4.20.0",
+    "@tanstack/react-virtual": "3.0.0-beta.34",
     "@trpc/client": "^10.7.0",
     "@trpc/next": "^10.7.0",
     "@trpc/react-query": "^10.7.0",
     "@trpc/server": "^10.7.0",
+    "chart.js": "^4.1.2",
+    "chartjs-chart-geo": "^4.1.1",
+    "chartjs-chart-wordcloud": "^4.1.0",
+    "fuzzysort": "^2.0.4",
     "next": "13.1.1",
     "react": "18.2.0",
+    "react-chartjs-2": "^5.1.0",
     "react-dom": "18.2.0",
+    "react-force-graph": "^1.41.18",
+    "react-icons": "^4.7.1",
     "superjson": "1.9.1",
+    "three": "^0.148.0",
     "zod": "^3.20.2"
   },
   "devDependencies": {
