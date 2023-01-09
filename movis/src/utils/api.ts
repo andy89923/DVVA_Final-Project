@@ -31,6 +31,21 @@ export const api = createTRPCNext<AppRouter>({
       transformer: superjson,
 
       /**
+       * TanStack Query is configured with aggressive but sane defaults
+       * @see https://tanstack.com/query/v4/docs/react/guides/important-defaults
+       * Change the settings here
+       * */
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+            refetchOnReconnect: false,
+          },
+        },
+      },
+
+      /**
        * Links used to determine request flow from client to server
        * @see https://trpc.io/docs/links
        * */

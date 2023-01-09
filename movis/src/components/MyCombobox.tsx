@@ -6,14 +6,14 @@ import { HiOutlineSearch } from "react-icons/hi";
 
 import fuzzysort from "fuzzysort";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Movie } from "../utils/myClasses";
+import type { MovieData } from "../utils/myClasses";
 
 // Change string[] to data[]
 interface IProps {
-  data: Movie[];
-  selected: string[];
+  data: MovieData[];
+  selected: MovieData[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setSelected: Dispatch<SetStateAction<string[] | any[]>>;
+  setSelected: Dispatch<SetStateAction<MovieData[] | any[]>>;
 }
 
 const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
@@ -27,6 +27,8 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
       genres: d.genres.join(", "),
     };
   });
+  type ModMovieType = typeof moddedData[number];
+
   //Fuzzy sort filtering data with key selected by listbox
   const filteredData = fuzzysort
     .go(query, moddedData, {
@@ -48,7 +50,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   });
 
   //Data information shown in combobox's list
-  const DataInfo: React.FC<{ data: Movie }> = (props) => {
+  const DataInfo: React.FC<{ data: ModMovieType }> = (props) => {
     return (
       <span
         className={`block truncate ${selected ? "font-bold" : "font-semibold"}`}
@@ -128,7 +130,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                   </div>
                 ) : (
                   virtualizer.getVirtualItems().map((virtualRow) => {
-                    const data = filteredData[virtualRow.index] as Movie;
+                    const data = filteredData[virtualRow.index];
                     return (
                       <Combobox.Option
                         key={virtualRow.key}

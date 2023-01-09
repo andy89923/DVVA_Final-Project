@@ -1,13 +1,17 @@
+import type { inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "../server/api/root";
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type MovieData = RouterOutput["movie"]["getAll"][number]
+// type aaMovieData = RouterOutput["movie"]["betweenYearRange"][number]
+
 type Subset = {
     name: string;
-    data: Movie[];
+    data: MovieData[];
     selected: boolean;
   };
 
-type Movie = {
-    id: number;
-    title: string;
-    genres: string[];    
-}
 
-export type { Subset, Movie }
+
+
+export type { Subset, MovieData }
