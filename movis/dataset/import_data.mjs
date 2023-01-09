@@ -75,14 +75,17 @@ const myRating_data = myRating.map((val) => {
 })
 
 const myMovie_data = myMovie.map((val) => {
+  if (val.release_date == "") {
+    val.release_date = "1900-01-01"
+  }
   return {
     // data: {
       id: val.id,
       title: val.title,
-      overview: val.overview,
+      // overview: val.overview,
       runtime: val.runtime,
       poster_url: val.poster_url,
-      release_date: val.release_date,
+      release_date: new Date(val.release_date),
       budget: val.budget,
       revenue: val.revenue,
       original_language_id: val.original_language_id,
@@ -169,10 +172,10 @@ const myMovie_relation_data = myMovie.map((val) => {
 })
 
 
-const prisma = new PrismaClient()
+var prisma = new PrismaClient()
 
 
-const createBySlice = async (data, model) => {
+const createManyBySlice = async (data, model) => {
   const sliceSize = 5000
   const sliceCount = Math.ceil(data.length / sliceSize)
   console.log("slicing "+model+", into "+sliceCount+" transactions...")
@@ -182,40 +185,55 @@ const createBySlice = async (data, model) => {
   }
 }
 
+async function sleep(ms = 0) {
+  return new Promise(r => setTimeout(r, ms));
+  }
+
+const prismaTransaction = async (data, model) => {
+  data_slice.forEach((val) =>
+      toUpdate.push(prisma[model].update(val))
+    )
+    await prisma.$transaction(toUpdate)
+
+    await prisma.$disconnect()
+}
+
+const updateBySlice = async (data, model, from) => {
+  const sliceSize = 20
+  const sliceCount = Math.ceil(data.length / sliceSize)
+  console.log("slicing "+model+", into "+sliceCount+" transactions...")
+
+  for (let i = 0; i < sliceCount; i++) {
+    if (i*sliceSize < from) {
+      continue
+    }
+
+    const toUpdate = []
+    console.log(`slice (${i * sliceSize}, ${(i + 1) * sliceSize})`)
+    const data_slice = data.slice(i * sliceSize, (i + 1) * sliceSize)
+    data_slice.forEach((val) =>
+      toUpdate.push(prisma[model].update(val))
+    )
+    await prisma.$transaction(toUpdate)
+  }
+}
+
 async function main() {
   // ... you will write your Prisma Client queries here
 
-  const toCreate = []
-  // console.log(myMovie_data[0])
-  // toCreate.push(prisma.movie.create(myMovie_data[0]))
-
+  // const toCreate = []
   // toCreate.push(prisma.country.createMany({data: myCountry_data, skipDuplicates: true}))
   // toCreate.push(prisma.keyword.createMany({data: myKeyword_data, skipDuplicates: true}))
   // toCreate.push(prisma.company.createMany({data: myCompany_data, skipDuplicates: true}))
   // toCreate.push(prisma.genre.createMany({data: myGenre_data, skipDuplicates: true}))
-  // console.log(myLanguage_data[0])
   // toCreate.push(prisma.language.createMany({data: myLanguage_data, skipDuplicates: true}))
   // toCreate.push(prisma.user.createMany({data: myUser_data, skipDuplicates: true}))
+  // await prisma.$transaction(toCreate)
+  // await createManyBySlice(myPerson_data, 'person')
+  // await createManyBySlice(myRating_data, 'rating')
+  // await createManyBySlice(myMovie_data, 'movie')
 
-  // toCreate.push(prisma.person.createMany({data: myPerson_data, skipDuplicates: true}))
-  // toCreate.push(prisma.rating.createMany({data: myRating_data, skipDuplicates: true}))
-  // toCreate.push(prisma.movie.createMany({data: myMovie_data, skipDuplicates: true}))
-
-  // console.log(myMovie_relation_data[0])
-  myMovie_relation_data.slice(0, 50).forEach((val) =>
-    toCreate.push(prisma.movie.update(myMovie_relation_data[0]))
-  )
-  // console.log(myMovie_relation_data[0].data.spoken_languages.connect)
-  // toCreate.push(prisma.movie.update(myMovie_relation_data[0]))
-  await prisma.$transaction(toCreate)
-
-  // createBySlice(myPerson_data, 'person')
-  // createBySlice(myRating_data, 'rating')
-  // createBySlice(myMovie_data, 'movie')
-
-  //create first movie to test
-  // console.log(myMovie_data[1]) //overview too long???
-
+  await updateBySlice(myMovie_relation_data, 'movie', 0)
 }
 
 console.log("start")

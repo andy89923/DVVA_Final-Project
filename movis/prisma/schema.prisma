@@ -17,7 +17,7 @@ model Movie {
   // overview             String
   runtime              Int
   poster_url           String
-  release_date         String
+  release_date         DateTime?  @db.Date
   budget               Int
   revenue              Int
   original_language_id Int
