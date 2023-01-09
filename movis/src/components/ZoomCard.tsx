@@ -12,7 +12,7 @@ const ZoomCard: React.FC<IProps> = (props) => {
 
   const Header = () => {
     return (
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between text-white">
         <h3 className="font-bold">{props.title}</h3>
         <button onClick={() => setIsZoom((prev) => !prev)}>
           {isZoom ? <ImShrink /> : <ImEnlarge />}
@@ -23,14 +23,13 @@ const ZoomCard: React.FC<IProps> = (props) => {
 
   return (
     <>
-      <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
+      <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg">
         <Header />
         {props.children}
       </div>
       <Modal isOpen={isZoom} setIsOpen={setIsZoom}>
-        <div className="flex flex-col gap-4 rounded-xl bg-gray-500 p-4 text-2xl text-white hover:bg-gray-400">
+        <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-2xl">
           <Header />
-          Larger Children Data Here
           {props.children}
         </div>
       </Modal>

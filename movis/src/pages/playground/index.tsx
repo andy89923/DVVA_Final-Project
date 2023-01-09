@@ -154,9 +154,11 @@ const Playground: NextPage = () => {
               <SubsetPicker subsets={subsets} setSubsets={setSubsets} />
             </div>
 
-            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/80 p-4 text-lg text-white hover:bg-white/90">
-              <MyBarPlot data={movies} />
-            </div>
+            <ZoomCard title="Genre Count">
+              <div className="flex flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+                <MyBarPlot data={movies} />
+              </div>
+            </ZoomCard>
           </div>
         )}
       </main>
