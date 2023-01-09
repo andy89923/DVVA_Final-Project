@@ -1,33 +1,46 @@
 import { type NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
+import MyCombobox from "../../components/MyCombobox";
 import Navbar from "../../components/Navbar";
 import SubsetPicker from "../../components/SubsetPicker";
 import ZoomCard from "../../components/ZoomCard";
 
 import { api } from "../../utils/api";
+import type { Subset, Movie } from "../../utils/myClasses";
 
-type Subset = {
-  name: string;
-  data: string[];
-  selected: boolean;
-};
+const testMovies: Movie[] = [
+  {
+    id: 1,
+    title: "Test Movie 1",
+    genres: ["Happy", "Action"],
+  },
+  {
+    id: 2,
+    title: "Test Movie 2",
+    genres: ["Sad", "Action"],
+  },
+  {
+    id: 3,
+    title: "Test Movie 3",
+    genres: ["Happy", "Sad"],
+  },
+];
 
 const testSubsets: Subset[] = [
   {
     name: "Test Subset 1",
-    data: ["a", "b", "c"],
+    data: testMovies,
     selected: false,
   },
   {
     name: "Test Subset 2",
-    data: ["d", "e", "f"],
+    data: testMovies,
     selected: false,
   },
   {
     name: "Test Subset 3",
-    data: ["g", "h", "i"],
+    data: testMovies,
     selected: false,
   },
 ];
@@ -35,6 +48,7 @@ const testSubsets: Subset[] = [
 const Playground: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const [subsets, setSubsets] = useState<Subset[]>(testSubsets);
+  const [selected, setSelected] = useState<string[]>([]); // test for combobox
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
@@ -81,7 +95,11 @@ const Playground: NextPage = () => {
           <h3 className="text-2xl font-bold">Some</h3>
         </div>
         <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
-          <h3 className="text-2xl font-bold">Arbitary</h3>
+          <MyCombobox
+            data={testMovies}
+            selected={selected}
+            setSelected={setSelected}
+          />
         </div>
         <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
           <SubsetPicker subsets={subsets} setSubsets={setSubsets} />

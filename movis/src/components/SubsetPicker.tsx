@@ -1,11 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import React from "react";
+import type { Subset } from "../utils/myClasses";
 
-type Subset = {
-  name: string;
-  data: string[];
-  selected: boolean;
-};
 
 interface IProps {
   subsets: Subset[];
