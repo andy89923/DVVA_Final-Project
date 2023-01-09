@@ -40,7 +40,7 @@
 
 
 
-### To generate connection with the database:
+### How to generate connection with the database:
 
 Modify ${DATABASE_URL} inside *.env* :
 
