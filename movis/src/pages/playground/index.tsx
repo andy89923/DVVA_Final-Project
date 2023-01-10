@@ -143,7 +143,7 @@ const Playground: NextPage = () => {
               </div>
             </ZoomCard>
 
-            <ZoomCard title="Genre Count">
+            <ZoomCard title="Element Count">
               <div className="flex flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                 <MyBarPlot data={movies} />
               </div>
