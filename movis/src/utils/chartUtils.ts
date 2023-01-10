@@ -1,9 +1,9 @@
-const ChartOptions = (title: string, showLegend: boolean) => {
+const ChartOptions = (title: string | null, showLegend: boolean) => {
   return {
     // maintianAspectRatio: false,
     plugins: {
       title: {
-        display: true,
+        display: title !== null,
         text: title,
         font: {
           size: 20,
