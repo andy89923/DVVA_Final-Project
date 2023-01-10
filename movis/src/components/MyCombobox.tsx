@@ -32,7 +32,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   //Fuzzy sort filtering data with key selected by listbox
   const filteredData = fuzzysort
     .go(query, moddedData, {
-      threshold: -10,
+      threshold: -50,
       // limit: 10,
       all: true,
       key: filterkey,

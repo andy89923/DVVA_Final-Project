@@ -21,6 +21,7 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
+import ChartOptions from "../../utils/chartConfig";
 
 ChartJS.register(
   CategoryScale,
@@ -69,7 +70,7 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
     ],
   };
 
-  return <Bar data={data} />;
+  return <Bar data={data} options={ChartOptions("Genre Count", true)} />;
 };
 
 const Playground: NextPage = () => {
