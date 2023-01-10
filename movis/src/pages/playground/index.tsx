@@ -54,14 +54,7 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
     ],
   };
 
-  return (
-    <div className="h-full w-full">
-      <div
-        <h1>My Bar Plot</h1>
-      </>
-      <Bar data={data} options={ChartOptions(null, true)} />
-    </div>
-  );
+  return <Bar data={data} options={ChartOptions("Genre Count", true)} />;
 };
 
 const Playground: NextPage = () => {
