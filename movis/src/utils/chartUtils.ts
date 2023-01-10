@@ -58,7 +58,7 @@ type KeyMap = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ElementCount = (dataArr: any[], toEntry: string[], toKey: string[], sorted: boolean=true) => { 
+const ElementCount = (dataArr: any[], toEntry: string[], toKey: string[], sorted=true) => { 
   const countDict = dataArr.reduce((acc: KeyMap, data) => {
     const entry = toEntry.reduce((value, entry) => value[entry], data)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
