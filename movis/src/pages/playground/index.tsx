@@ -8,7 +8,6 @@ import ZoomCard from "../../components/ZoomCard";
 
 import { api } from "../../utils/api";
 import type { KeyMap, MovieData, Subset } from "../../utils/myClasses";
-import { AllGenres } from "../../utils/myClasses";
 
 import {
   Chart as ChartJS,

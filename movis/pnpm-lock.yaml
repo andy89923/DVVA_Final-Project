@@ -32,6 +32,7 @@ specifiers:
   react-chartjs-2: ^5.1.0
   react-dom: 18.2.0
   react-force-graph: ^1.41.18
+  react-force-graph-2d: ^1.23.15
   react-icons: ^4.7.1
   superjson: 1.9.1
   tailwindcss: ^3.2.0
@@ -58,6 +59,7 @@ dependencies:
   react-chartjs-2: 5.1.0_mfjxiilvrceiwtanada6fxhije
   react-dom: 18.2.0_react@18.2.0
   react-force-graph: 1.41.18_react@18.2.0+three@0.148.0
+  react-force-graph-2d: 1.23.15_react@18.2.0
   react-icons: 4.7.1_react@18.2.0
   superjson: 1.9.1
   three: 0.148.0
@@ -2931,6 +2933,17 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-force-graph-2d/1.23.15_react@18.2.0:
+    resolution: {integrity: sha512-NiZcbbKKTZEmDPjUaLD7tXUsNSpghBR4xoz0IigSmpfVmCgpUPeP6z+FLcplGEiO9xQ2TXZZuOv0FLG/3WaqnQ==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      force-graph: 1.42.18
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-kapsule: 2.2.6_react@18.2.0
     dev: false
 
   /react-force-graph/1.41.18_react@18.2.0+three@0.148.0:
