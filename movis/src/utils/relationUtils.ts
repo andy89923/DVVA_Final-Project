@@ -16,7 +16,7 @@ type Graph = {nodes: Node[]; links: Link[]}
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getCountDict = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined = undefined, end:number|undefined = undefined)  => { 
+const getCountDict = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined)  => { 
   const countDict = dataArr.reduce((acc, data) => {
     const entry = toEntry.reduce((value, entry) => value[entry], data)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,8 +38,8 @@ const getCountDict = (dataArr: any[], toEntry: string[], toObject: string[], key
   return Object.fromEntries(sortedEntries);
 }
 
-const getKeywordGraph = (movies: MovieData[]) => {
-  const keywordsDict = getCountDict(movies, ["keywords"], [], "id", 0, 500) as KeyMap<{data: Keyword, count: number}>;
+const getKeywordGraph = (movies: MovieData[], start: number|undefined, end: number|undefined) => {
+  const keywordsDict = getCountDict(movies, ["keywords"], [], "id", start, end) as KeyMap<{data: Keyword, count: number}>;
   const movieNodes = movies.map((movie) => ({
       id: movie.id,
       name: movie.title,

@@ -16,11 +16,11 @@ const Overview: NextPage = () => {
   //   maxRating: 10,
   // });
   const { data: movies } = api.movie.betweenYearRange.useQuery({
-    minYear: 2001,
-    maxYear: 2001,
+    minYear: 2018,
+    maxYear: 2020,
   });
 
-  const graph = movies != null ? getKeywordGraph(movies) : null;
+  const graph = movies != null ? getKeywordGraph(movies, 0, 50) : null;
 
   console.log(graph);
 
