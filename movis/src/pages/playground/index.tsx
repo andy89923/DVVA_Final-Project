@@ -7,7 +7,7 @@ import SubsetPicker from "../../components/SubsetPicker";
 import ZoomCard from "../../components/ZoomCard";
 
 import { api } from "../../utils/api";
-import type { MovieData, Subset } from "../../utils/myClasses";
+import type { KeyMap, MovieData, Subset } from "../../utils/myClasses";
 import { AllGenres } from "../../utils/myClasses";
 
 import {
@@ -22,6 +22,7 @@ import {
 
 import { Bar } from "react-chartjs-2";
 import { ChartOptions, ElementCount } from "../../utils/chartUtils";
+import MyListbox from "../../components/MyListbox";
 
 ChartJS.register(
   CategoryScale,
@@ -33,12 +34,26 @@ ChartJS.register(
   // autocolors
 );
 
+const keyMap = {
+  companies: "The amount of movies a company haved produced",
+  crew: "The amount of movies a crew member participated in",
+  genres: "The amount of movies with the specific genre",
+  keywords: "The amount of movies with the specific keyword",
+  spoken_languages: "The amount of movies spoken a specific language",
+  countries: "The amount of movies produced in a specific country",
+} as KeyMap;
+
 const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
+  const [filterkey, setFilterkey] = useState("genres");
+
   // get genre counts
+  const showCount = 20;
   const { labels, data: countArr } = ElementCount(
     props.data,
-    ["genres"],
-    ["name"]
+    [filterkey], //["genres"]
+    ["name"],
+    true,
+    showCount
   );
 
   const data = {
@@ -54,7 +69,19 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
     ],
   };
 
-  return <Bar data={data} options={ChartOptions("Genre Count", true)} />;
+  return (
+    <div className="h-full w-full">
+      <h1>
+        {keyMap[filterkey]} (Top {showCount}):
+      </h1>
+      <MyListbox
+        keyMap={keyMap}
+        selected={filterkey}
+        setSelected={setFilterkey}
+      />
+      <Bar data={data} options={ChartOptions(null, true)} />
+    </div>
+  );
 };
 
 const Playground: NextPage = () => {

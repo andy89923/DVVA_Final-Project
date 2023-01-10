@@ -1,12 +1,13 @@
 import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState, useRef } from "react";
-import { Combobox, Listbox, Transition } from "@headlessui/react";
-import { HiCheck, HiChevronUpDown } from "react-icons/hi2";
+import { Combobox, Transition } from "@headlessui/react";
+import { HiCheck } from "react-icons/hi2";
 import { HiOutlineSearch } from "react-icons/hi";
 
 import fuzzysort from "fuzzysort";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import type { MovieData } from "../utils/myClasses";
+import type { KeyMap, MovieData } from "../utils/myClasses";
+import MyListbox from "./MyListbox";
 
 // Change string[] to data[]
 interface IProps {
@@ -15,6 +16,12 @@ interface IProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setSelected: Dispatch<SetStateAction<MovieData[] | any[]>>;
 }
+
+const keyMap = {
+  title: "Title",
+  genres: "Genre",
+  test: "Test",
+} as KeyMap;
 
 const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   const [query, setQuery] = useState("");
@@ -27,7 +34,6 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
       genres: d.genres.join(", "),
     };
   });
-  type ModMovieType = typeof moddedData[number];
 
   //Fuzzy sort filtering data with key selected by listbox
   const filteredData = fuzzysort
@@ -50,7 +56,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   });
 
   //Data information shown in combobox's list
-  const DataInfo: React.FC<{ data: ModMovieType }> = (props) => {
+  const DataInfo: React.FC<{ data: typeof moddedData[number] }> = (props) => {
     return (
       <span
         className={`block truncate ${selected ? "font-bold" : "font-semibold"}`}
@@ -179,78 +185,13 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
       </Combobox>
       <div className="flex items-center justify-center space-x-1 px-2 align-middle">
         <p>By: </p>
-        <MyListbox selected={filterkey} setSelected={setFilterkey} />
+        <MyListbox
+          keyMap={keyMap}
+          selected={filterkey}
+          setSelected={setFilterkey}
+        />
       </div>
     </div>
-  );
-};
-
-interface IProps2 {
-  selected: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setSelected: Dispatch<SetStateAction<string>>;
-}
-
-type KeyMap = {
-  [key: string]: string;
-};
-
-const MyListbox: React.FC<IProps2> = ({ selected, setSelected }) => {
-  const keys = ["title", "genres", "test"];
-  const key_map = {
-    title: "Title",
-    genres: "Genre",
-    test: "Test",
-  } as KeyMap;
-
-  return (
-    <Listbox value={selected} onChange={setSelected}>
-      <div className="w-25 relative mt-1">
-        <Listbox.Button className="relative w-full cursor-default rounded-lg  bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-          <span className="block truncate text-gray-900">
-            {key_map[selected]}
-          </span>
-          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <HiChevronUpDown
-              className="h-5 w-5 text-gray-400"
-              aria-hidden="true"
-            />
-          </span>
-        </Listbox.Button>
-        <Transition
-          as={Fragment}
-          leave="transition ease-in duration-100"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {keys.map((key, i) => (
-              <Listbox.Option
-                key={i}
-                className={({ active }) =>
-                  `relative cursor-default select-none py-2 pl-4 pr-4 ${
-                    active ? "bg-amber-100 text-amber-900" : "text-gray-900"
-                  }`
-                }
-                value={key}
-              >
-                {({ selected }) => (
-                  <>
-                    <span
-                      className={`block truncate ${
-                        selected ? "font-medium" : "font-normal"
-                      }`}
-                    >
-                      {key_map[key]}
-                    </span>
-                  </>
-                )}
-              </Listbox.Option>
-            ))}
-          </Listbox.Options>
-        </Transition>
-      </div>
-    </Listbox>
   );
 };
 

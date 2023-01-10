@@ -58,7 +58,7 @@ type KeyMap = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ElementCount = (dataArr: any[], toEntry: string[], toKey: string[], sorted=true) => { 
+const ElementCount = (dataArr: any[], toEntry: string[], toKey: string[], sorted=true, limit=10) => { 
   const countDict = dataArr.reduce((acc: KeyMap, data) => {
     const entry = toEntry.reduce((value, entry) => value[entry], data)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,7 +74,8 @@ const ElementCount = (dataArr: any[], toEntry: string[], toKey: string[], sorted
   }, {})
 
   let entries = Object.entries(countDict)
-  if (sorted) entries = entries.sort((a, b) => b[1] - a[1]);
+  if (sorted) entries = entries.sort((a, b) => b[1] - a[1]).splice(0, limit);
+
   const labels = entries.map((entry) => entry[0]);
   const data = entries.map((entry) => entry[1]);
   

@@ -3,6 +3,9 @@ import type { AppRouter } from "../server/api/root";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
+type KeyMap = {
+  [key: string]: string;
+};
 type MovieData = RouterOutput["getAll"]["movie"][number]
 type Subset = {
     name: string;
@@ -34,5 +37,5 @@ const AllGenres = [
 
 
 export { AllGenres };
-export type { Subset, MovieData };
+export type { KeyMap, Subset, MovieData };
 
