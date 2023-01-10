@@ -10,7 +10,7 @@ export const movieRouter = createTRPCRouter({
         where: {
           release_date: {
             gte: new Date(input.minYear, 0, 1).toISOString(),
-            lte: new Date(input.maxYear, 11, 31).toISOString(),
+            lte: new Date(input.maxYear, 12, 31).toISOString(),
           },
         },
         include: {
