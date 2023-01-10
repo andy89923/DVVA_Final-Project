@@ -21,7 +21,7 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
-import ChartOptions from "../../utils/chartConfig";
+import { ChartOptions } from "../../utils/chartUtils";
 
 ChartJS.register(
   CategoryScale,

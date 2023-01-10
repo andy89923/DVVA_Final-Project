@@ -53,4 +53,4 @@ const ChartOptions = (title: string, showLegend: boolean) => {
   } as any
 };
 
-export default ChartOptions;
+export {ChartOptions};
