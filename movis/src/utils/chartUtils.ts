@@ -53,4 +53,33 @@ const ChartOptions = (title: string, showLegend: boolean) => {
   } as any
 };
 
-export {ChartOptions};
+type KeyMap = {
+  [key: string]: number;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ElementCount = (dataArr: any[], toEntry: string[], toKey: string[], sorted: boolean=true) => { 
+  const countDict = dataArr.reduce((acc: KeyMap, data) => {
+    const entry = toEntry.reduce((value, entry) => value[entry], data)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    entry.forEach((d: any) => {
+      const key = toKey.reduce((value, key) => value[key], d); 
+      if (acc[key] == null) {
+        acc[key] = 1;
+      } else {
+        acc[key] += 1;
+      }
+    });
+    return acc;
+  }, {})
+
+  let entries = Object.entries(countDict)
+  if (sorted) entries = entries.sort((a, b) => b[1] - a[1]);
+  const labels = entries.map((entry) => entry[0]);
+  const data = entries.map((entry) => entry[1]);
+  
+  return ({labels, data});
+}
+
+
+export {ChartOptions, ElementCount};

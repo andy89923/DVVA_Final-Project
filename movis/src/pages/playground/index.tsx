@@ -21,7 +21,7 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
-import { ChartOptions } from "../../utils/chartUtils";
+import { ChartOptions, ElementCount } from "../../utils/chartUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -33,36 +33,20 @@ ChartJS.register(
   // autocolors
 );
 
-type KeyMap = {
-  [key: string]: number;
-};
-
 const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
   // get genre counts
-  const genreCountDict = props.data.reduce(
-    (acc: KeyMap, movie) => {
-      movie.genres.forEach((genre) => {
-        const genreType = genre.name;
-        if (acc[genreType] == null) {
-          acc[genreType] = 1;
-        } else {
-          acc[genreType] += 1;
-        }
-      });
-      return acc;
-    },
-    AllGenres.reduce((acc: KeyMap, name) => ((acc[name] = 0), acc), {})
+  const { labels, data: countArr } = ElementCount(
+    props.data,
+    ["genres"],
+    ["name"]
   );
-  const sorted = Object.entries(genreCountDict).sort((a, b) => b[1] - a[1]);
-  const sortedLabels = sorted.map((entry) => entry[0]);
-  const sortedData = sorted.map((entry) => entry[1]);
 
   const data = {
-    labels: sortedLabels,
+    labels: labels,
     datasets: [
       {
         label: "2001 Movies",
-        data: sortedData,
+        data: countArr,
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
