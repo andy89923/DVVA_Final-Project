@@ -7,13 +7,20 @@ import ZoomCard from "../../components/ZoomCard";
 // import SpriteText from "three-spritetext";
 
 import { api } from "../../utils/api";
+import { getKeywordGraph } from "../../utils/relationUtils";
 
 const Overview: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-  const { data: graph } = api.graph.linkRatingBetween.useQuery({
-    minRating: 10,
-    maxRating: 10,
+  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  // const { data: graph } = api.graph.linkRatingBetween.useQuery({
+  //   minRating: 10,
+  //   maxRating: 10,
+  // });
+  const { data: movies } = api.movie.betweenYearRange.useQuery({
+    minYear: 2001,
+    maxYear: 2001,
   });
+
+  const graph = movies != null ? getKeywordGraph(movies) : null;
 
   console.log(graph);
 
@@ -30,7 +37,7 @@ const Overview: NextPage = () => {
       <Navbar />
       <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col py-6">
-          {graph != null && <ForceGraph2D graphData={graph} />}
+          {graph != null && <ForceGraph3D graphData={graph} />}
           {/* <ForceGraph2D graphData={graph} /> */}
         </div>
       </main>

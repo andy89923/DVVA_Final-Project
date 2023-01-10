@@ -1,3 +1,5 @@
+import { getCountDict } from "./relationUtils";
+
 const ChartOptions = (title: string | null, showLegend: boolean) => {
   return {
     // maintianAspectRatio: false,
@@ -53,34 +55,15 @@ const ChartOptions = (title: string | null, showLegend: boolean) => {
   } as any
 };
 
-type KeyMap = {
-  [key: string]: number;
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ElementCount = (dataArr: any[], toEntry: string[], toKey: string[], sorted=true, limit=10) => { 
-  const countDict = dataArr.reduce((acc: KeyMap, data) => {
-    const entry = toEntry.reduce((value, entry) => value[entry], data)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    entry.forEach((d: any) => {
-      const key = toKey.reduce((value, key) => value[key], d); 
-      if (acc[key] == null) {
-        acc[key] = 1;
-      } else {
-        acc[key] += 1;
-      }
-    });
-    return acc;
-  }, {})
+const getTopElementCount = (dataArr: any[], toEntry: string[], toObject: string[], key:string, top=10) => { 
+  const topCountDict = getCountDict(dataArr, toEntry, toObject, key, 0, top)
 
-  let entries = Object.entries(countDict)
-  if (sorted) entries = entries.sort((a, b) => b[1] - a[1]).splice(0, limit);
-
+  const entries = Object.entries(topCountDict)
   const labels = entries.map((entry) => entry[0]);
-  const data = entries.map((entry) => entry[1]);
-  
+  const data = entries.map((entry) => entry[1].count);
   return ({labels, data});
 }
 
 
-export {ChartOptions, ElementCount};
+export {ChartOptions, getTopElementCount};

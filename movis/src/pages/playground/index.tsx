@@ -20,7 +20,7 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
-import { ChartOptions, ElementCount } from "../../utils/chartUtils";
+import { ChartOptions, getTopElementCount } from "../../utils/chartUtils";
 import MyListbox from "../../components/MyListbox";
 
 ChartJS.register(
@@ -40,18 +40,18 @@ const keyMap = {
   keywords: "The amount of movies with the specific keyword",
   spoken_languages: "The amount of movies spoken a specific language",
   countries: "The amount of movies produced in a specific country",
-} as KeyMap;
+} as KeyMap<string>;
 
 const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
   const [filterkey, setFilterkey] = useState("genres");
 
   // get genre counts
   const showCount = 20;
-  const { labels, data: countArr } = ElementCount(
+  const { labels, data: countArr } = getTopElementCount(
     props.data,
     [filterkey], //["genres"]
-    ["name"],
-    true,
+    [],
+    "name",
     showCount
   );
 
