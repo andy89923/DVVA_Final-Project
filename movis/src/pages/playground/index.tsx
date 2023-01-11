@@ -38,7 +38,7 @@ ChartJS.register(
   // autocolors
 );
 
-const keyMap = {
+const myKeyMap = {
   companies: "The amount of movies a company haved produced",
   crew: "The amount of movies a crew member participated in",
   genres: "The amount of movies with the specific genre",
@@ -78,10 +78,10 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
   return (
     <div className="h-full w-full">
       <h1>
-        {keyMap[filterkey]} (Top {TOP_COUNT}):
+        {myKeyMap[filterkey]} (Top {TOP_COUNT}):
       </h1>
       <MyListbox
-        keyMap={keyMap}
+        keyMap={myKeyMap}
         selected={filterkey}
         setSelected={setFilterkey}
       />
