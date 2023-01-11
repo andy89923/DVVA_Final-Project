@@ -73,7 +73,10 @@ export default function Map() {
             axis: "x",
             projection: "equalEarth",
           },
-          //   Hide color scale
+          //   Hide color scale: Looks like bug of React and Chartjs, cannot hide
+          // color: {
+          //  display: false
+          // }
         },
       }}
     />
