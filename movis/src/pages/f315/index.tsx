@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import { api } from "../../utils/api";
 import Map from "./geo-map";
 import ZoomCard from "../../components/ZoomCard";
+import WordCloud from "./word-cloud";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -36,6 +37,11 @@ const Home: NextPage = () => {
         <ZoomCard title="Production count by Country">
           <div className="flex flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
             <Map />
+          </div>
+        </ZoomCard>
+        <ZoomCard title="Most frequent keyword in movie">
+          <div className="flex flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+            <WordCloud></WordCloud>
           </div>
         </ZoomCard>
       </main>

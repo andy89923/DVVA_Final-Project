@@ -5,6 +5,7 @@ import { ImEnlarge, ImShrink } from "react-icons/im";
 interface IProps {
   title?: string;
   children?: React.ReactNode;
+  className?: string;
 }
 
 const ZoomCard: React.FC<IProps> = (props) => {
@@ -23,7 +24,9 @@ const ZoomCard: React.FC<IProps> = (props) => {
 
   return (
     <>
-      <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg">
+      <div
+        className={`flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg ${props.className}`}
+      >
         <Header />
         {props.children}
       </div>

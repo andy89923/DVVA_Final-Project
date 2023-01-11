@@ -6,20 +6,21 @@ import { HiOutlineSearch } from "react-icons/hi";
 
 import fuzzysort from "fuzzysort";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import type { KeyMap, CompanyData } from "../utils/myClasses";
+import type { KeyMap } from "../utils/myClasses";
 import MyListbox from "./MyListbox";
+import { Company } from "@prisma/client";
 
 // Change string[] to data[]
 interface IProps {
-  data: CompanyData[];
-  selected: CompanyData[];
+  data: Company[];
+  selected: Company[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setSelected: Dispatch<SetStateAction<CompanyData[] | any[]>>;
+  setSelected: Dispatch<SetStateAction<Company[] | any[]>>;
 }
 
-const keyMap = {
+const myKeyMap = {
   name: "Name",
-} as KeyMap;
+} as KeyMap<string>;
 
 const ComCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   const [query, setQuery] = useState("");
@@ -183,7 +184,7 @@ const ComCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
       <div className="flex items-center justify-center space-x-1 px-2 align-middle">
         <p>By: </p>
         <MyListbox
-          keyMap={keyMap}
+          keyMap={myKeyMap}
           selected={filterkey}
           setSelected={setFilterkey}
         />

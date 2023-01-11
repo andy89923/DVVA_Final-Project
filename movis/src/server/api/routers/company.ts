@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { number, z, array, map } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
@@ -6,16 +6,16 @@ export const companyRouter = createTRPCRouter({
   betweenYearRange: publicProcedure
     .input(
       z.object({
-        companyId: z.number(),
+        companyIds: z.number().array(),
         minYear: z.number(),
         maxYear: z.number(),
       })
     )
     .query(async ({ ctx, input }) => {
-      const companyWithRatings = await ctx.prisma.company.findFirstOrThrow({
+      const companyWithRatings = await ctx.prisma.company.findMany({
         where: {
           id: {
-            equals: input.companyId,
+            in: input.companyIds,
           },
         },
         include: {
@@ -39,13 +39,15 @@ export const companyRouter = createTRPCRouter({
         },
       });
 
-      const ratedCompanies = companyWithRatings.movies.map((movie) => {
-        const ratings = movie.ratings.map((rating) => rating.rating);
-        const averageRating =
-          ratings.reduce((a, b) => a + b, 0) / ratings.length;
-        const { ratings: _, ...movieWithoutRatings } = movie;
+      const ratedCompanies = companyWithRatings.map((rating) => {
+        return rating.movies.map((movie) => {
+          const ratings = movie.ratings.map((rating) => rating.rating);
+          const averageRating =
+            ratings.reduce((a, b) => a + b, 0) / ratings.length;
+          const { ratings: _, ...movieWithoutRatings } = movie;
 
-        return { ...movieWithoutRatings, averageRating };
+          return { ...movieWithoutRatings, averageRating };
+        });
       });
 
       return ratedCompanies;
