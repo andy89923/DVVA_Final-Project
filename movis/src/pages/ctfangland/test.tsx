@@ -41,33 +41,42 @@ ChartJS.register(
 const CarouselElement = (data) => {
   return (
     <div className="flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white">
-      <img src={ data['url'] }></img>
+      <img src={ data['url'] } title={ data['title']}></img>
     </div>
   );
 }
 
-const test_poster_url = [
-  "https://m.media-amazon.com/images/I/71aBLaC4TzL._AC_SL1330_.jpg",
-  "https://m.media-amazon.com/images/I/61QPrqydVoL._AC_SY679_.jpg",
-  "https://m.media-amazon.com/images/I/714hR8KCqaL.jpg"
-];
-
 // https://flowbite-react.com/carousel/
-const MyCarousel = () => {
+const MyCarousel: React.FC<{ data: MovieData[] }> = (props) => {
+  const test_poster_url = [
+    "https://m.media-amazon.com/images/I/71aBLaC4TzL._AC_SL1330_.jpg",
+    "https://m.media-amazon.com/images/I/61QPrqydVoL._AC_SY679_.jpg",
+    "https://m.media-amazon.com/images/I/714hR8KCqaL.jpg"
+  ];
 
-  let element  = test_poster_url;
+  let poster_element  = [];
+
+  props.data.sort((a, b) => {
+    return b['popularity'] - a['popularity'];
+  })
+
+  props.data.forEach((d) => {
+    if (poster_element.length < props.size) {
+      poster_element.push({'url' : d['poster_url'], 'title' : d['title']})
+    }
+  })
 
   return (
     <Carousel slideInterval={3000}>
-    { element.map((val) => (
-      <CarouselElement url={val} />
+    { poster_element.map((val) => (
+      <CarouselElement url={val['url']} title={val['title']}/>
     ))}
     </Carousel>
   );
 }
 
 // https://react-chartjs-2.js.org/examples/line-chart/
-const MyLinePlot = () => {
+const MyLinePlot: React.FC<{ data: MovieData[] }> = (props) => {
   const options = {
     responsive: true,
     plugins: {
@@ -75,7 +84,7 @@ const MyLinePlot = () => {
         position: 'top' as const,
       },
       title: {
-        display: true,
+        display: false,
         text: 'Line Chart',
       },
     },
@@ -89,14 +98,14 @@ const MyLinePlot = () => {
       datasets: [
         {
           id: 1,
-          label: '',
+          label: 'a',
           data: [5, 6, 7],
           borderColor: 'rgb(255, 99, 132)',
           backgroundColor: 'rgba(255, 99, 132, 0.5)'
         },
         {
           id: 2,
-          label: '',
+          label: 'b',
           data: [3, 2, 1],
           borderColor: 'rgb(53, 162, 235)',
           backgroundColor: 'rgba(53, 162, 235, 0.5)',
@@ -135,8 +144,8 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
 
 const CTFHome: NextPage = () => {
   const { data: movies } = api.movie.betweenYearRange.useQuery({
-    minYear: 2001,
-    maxYear: 2001,
+    minYear: 2018,
+    maxYear: 2018,
   });
 
   return (
@@ -160,13 +169,13 @@ const CTFHome: NextPage = () => {
 
             <ZoomCard title="Line">
               <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                <MyLinePlot />
+                <MyLinePlot data={movies} />
               </div>
             </ZoomCard>
 
             <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
               <h3 className="text-2xl font-bold">Top Rating Movies</h3>
-              <MyCarousel />
+              <MyCarousel data={movies} size={10}/>
             </div>
               
           </div>
