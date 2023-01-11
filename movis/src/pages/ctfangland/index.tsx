@@ -7,7 +7,7 @@ import SubsetPicker from "../../components/SubsetPicker";
 import ZoomCard from "../../components/ZoomCard";
 
 import { api } from "../../utils/api";
-import type { MovieData, Subset } from "../../utils/myClasses";
+import type { KeyMap, MovieData, Subset } from "../../utils/myClasses";
 import { AllGenres } from "../../utils/myClasses";
 
 import {
@@ -23,9 +23,15 @@ import {
 } from "chart.js";
 
 import { Bar, Line } from "react-chartjs-2";
-import { ChartOptions, getTopElementCount } from "../../utils/chartUtils";
+import {
+  ChartOptions,
+  convertDicttoChartData,
+  getTopElementCount,
+} from "../../utils/chartUtils";
 
 import { Carousel } from "flowbite-react";
+import { getCountDict } from "../../utils/relationUtils";
+import MyListbox from "../../components/MyListbox";
 
 ChartJS.register(
   CategoryScale,
@@ -64,8 +70,8 @@ const MyCarousel: React.FC<{ data: MovieData[]; size: number }> = (props) => {
 
   return (
     <Carousel slideInterval={3000}>
-      {posterElement.map((val) => (
-        <CarouselElement url={val["url"]} title={val["title"]} />
+      {posterElement.map((val, idx) => (
+        <CarouselElement key={idx} url={val["url"]} title={val["title"]} />
       ))}
     </Carousel>
   );
@@ -86,38 +92,54 @@ const MyLinePlot: React.FC<{ data: MovieData[] }> = (props) => {
     },
   };
   return (
-    <Line
-      options={options}
-      data={{
-        labels: ["Jun", "Jul", "Aug"],
-        datasets: [
-          {
-            label: "a",
-            data: [5, 6, 7],
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-          },
-          {
-            label: "b",
-            data: [3, 2, 1],
-            borderColor: "rgb(53, 162, 235)",
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-          },
-        ],
-      }}
-    />
+    <div className="h-full w-full">
+      <Line
+        options={options}
+        data={{
+          labels: ["Jun", "Jul", "Aug"],
+          datasets: [
+            {
+              label: "a",
+              data: [5, 6, 7],
+              borderColor: "rgb(255, 99, 132)",
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+            {
+              label: "b",
+              data: [3, 2, 1],
+              borderColor: "rgb(53, 162, 235)",
+              backgroundColor: "rgba(53, 162, 235, 0.5)",
+            },
+          ],
+        }}
+      />
+    </div>
   );
 };
 
+const keyMap = {
+  companies: "The amount of movies a company haved produced",
+  crew: "The amount of movies a crew member participated in",
+  genres: "The amount of movies with the specific genre",
+  keywords: "The amount of movies with the specific keyword",
+  spoken_languages: "The amount of movies spoken a specific language",
+  countries: "The amount of movies produced in a specific country",
+} as KeyMap<string>;
+
 const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
+  const [filterkey, setFilterkey] = useState("genres");
+
   // get genre counts
-  const { labels, data: countArr } = getTopElementCount(
+  const TOP_COUNT = 10;
+  const countDict = getCountDict(
     props.data,
-    ["genres"],
+    [filterkey], //["genres"]
     [],
     "name",
-    10
+    0,
+    TOP_COUNT
   );
+  const { labels, data: countArr } = convertDicttoChartData(countDict);
 
   const data = {
     labels: labels,
@@ -125,22 +147,37 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
       {
         label: "2001 Movies",
         data: countArr,
-        backgroundColor: "rgba(255, 99, 132, 0.6)",
-        borderColor: "rgba(255, 99, 132, 0.8)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },
     ],
   };
 
-  return <Bar data={data} options={ChartOptions("Genre Count", true)} />;
+  return (
+    <div className="h-full w-full">
+      <h1>
+        {keyMap[filterkey]} (Top {TOP_COUNT}):
+      </h1>
+      <MyListbox
+        keyMap={keyMap}
+        selected={filterkey}
+        setSelected={setFilterkey}
+      />
+      <Bar data={data} options={ChartOptions(null, true)} />
+    </div>
+  );
 };
 
 const CTFHome: NextPage = () => {
-  const { data: movies } = api.movie.betweenYearRange.useQuery({
-    minYear: 2007,
-    maxYear: 2008,
+  const { data: movies } = api.company.betweenYearRange.useQuery({
+    companyId: 1,
+    minYear: 1900,
+    maxYear: 2100,
   });
+  // company["movies"];
 
+  console.log(movies);
   return (
     <>
       <Navbar />

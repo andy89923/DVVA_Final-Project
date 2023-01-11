@@ -15,3 +15,9 @@ export default createNextApiHandler({
         }
       : undefined,
 });
+
+export const config = {
+  api: {
+    responseLimit: false,
+  },
+};
