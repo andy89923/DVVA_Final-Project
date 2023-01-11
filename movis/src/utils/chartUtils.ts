@@ -1,3 +1,4 @@
+import { KeyMap } from "./myClasses";
 import { getCountDict } from "./relationUtils";
 
 const ChartOptions = (title: string | null, showLegend: boolean) => {
@@ -65,5 +66,13 @@ const getTopElementCount = (dataArr: any[], toEntry: string[], toObject: string[
   return ({labels, data});
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const convertDicttoChartData = (dict: KeyMap<{data: any, count: number}>) => {
+  const entries = Object.entries(dict)
+  const labels = entries.map((entry) => entry[0]);
+  const data = entries.map((entry) => entry[1].count);
+  return ({labels, data});
+}
 
-export {ChartOptions, getTopElementCount};
+
+export {ChartOptions, convertDicttoChartData, getTopElementCount};

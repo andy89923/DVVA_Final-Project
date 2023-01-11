@@ -20,8 +20,13 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
-import { ChartOptions, getTopElementCount } from "../../utils/chartUtils";
+import {
+  ChartOptions,
+  convertDicttoChartData,
+  getTopElementCount,
+} from "../../utils/chartUtils";
 import MyListbox from "../../components/MyListbox";
+import { getCountDict } from "../../utils/relationUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -46,14 +51,16 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
   const [filterkey, setFilterkey] = useState("genres");
 
   // get genre counts
-  const showCount = 20;
-  const { labels, data: countArr } = getTopElementCount(
+  const TOP_COUNT = 20;
+  const countDict = getCountDict(
     props.data,
     [filterkey], //["genres"]
     [],
     "name",
-    showCount
+    0,
+    TOP_COUNT
   );
+  const { labels, data: countArr } = convertDicttoChartData(countDict);
 
   const data = {
     labels: labels,
@@ -71,7 +78,7 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
   return (
     <div className="h-full w-full">
       <h1>
-        {keyMap[filterkey]} (Top {showCount}):
+        {keyMap[filterkey]} (Top {TOP_COUNT}):
       </h1>
       <MyListbox
         keyMap={keyMap}
