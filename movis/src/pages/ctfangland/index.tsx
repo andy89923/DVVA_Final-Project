@@ -47,24 +47,18 @@ const CarouselElement = (data) => {
 }
 
 // https://flowbite-react.com/carousel/
-const MyCarousel: React.FC<{ data: MovieData[] }> = (props) => {
+const MyCarousel: React.FC<{ data: MovieData[]; size: number }> = (props) => {
   const test_poster_url = [
     "https://m.media-amazon.com/images/I/71aBLaC4TzL._AC_SL1330_.jpg",
     "https://m.media-amazon.com/images/I/61QPrqydVoL._AC_SY679_.jpg",
     "https://m.media-amazon.com/images/I/714hR8KCqaL.jpg"
   ];
 
-  let poster_element  = [];
-
   props.data.sort((a, b) => {
     return b['popularity'] - a['popularity'];
   })
 
-  props.data.forEach((d) => {
-    if (poster_element.length < props.size) {
-      poster_element.push({'url' : d['poster_url'], 'title' : d['title']})
-    }
-  })
+  const poster_element = props.data.map( (d) => ({'url' : d['poster_url'], 'title' : d['title']})).slice(0, props.size)
 
   return (
     <Carousel slideInterval={3000}>
@@ -144,8 +138,8 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
 
 const CTFHome: NextPage = () => {
   const { data: movies } = api.movie.betweenYearRange.useQuery({
-    minYear: 2018,
-    maxYear: 2018,
+    minYear: 2007,
+    maxYear: 2008,
   });
 
   return (
@@ -159,15 +153,28 @@ const CTFHome: NextPage = () => {
         </div>
 
         {movies != null ? (
+          <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
 
-            <ZoomCard title="Movies Genres Compare">
+            <ZoomCard title="Movies Genres">
               <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                 <MyBarPlot data={movies} />
               </div>
             </ZoomCard>
 
-            <ZoomCard title="Line">
+            <ZoomCard title="Number of Movies">
+              <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                <MyBarPlot data={movies} />
+              </div>
+            </ZoomCard>
+
+            <ZoomCard title="Movie Ratings">
+              <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                <MyLinePlot data={movies} />
+              </div>
+            </ZoomCard>
+
+            <ZoomCard title="Movie Budget">
               <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                 <MyLinePlot data={movies} />
               </div>
@@ -177,9 +184,9 @@ const CTFHome: NextPage = () => {
               <h3 className="text-2xl font-bold">Top Rating Movies</h3>
               <MyCarousel data={movies} size={10}/>
             </div>
-              
+
           </div>
-          
+          </>
         ) : (
           <h1 className="text-2xl font-bold text-white">Querying Data...</h1>
         )}
