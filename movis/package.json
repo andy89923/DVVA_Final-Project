@@ -22,6 +22,7 @@
     "chart.js": "^4.1.2",
     "chartjs-chart-geo": "^4.1.1",
     "chartjs-chart-wordcloud": "^4.1.0",
+    "flowbite-react": "^0.3.7",
     "fuzzysort": "^2.0.4",
     "next": "13.1.1",
     "react": "18.2.0",
