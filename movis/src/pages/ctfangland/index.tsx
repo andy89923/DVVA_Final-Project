@@ -19,7 +19,7 @@ import {
   Tooltip,
   Legend,
   PointElement,
-  LineElement
+  LineElement,
 } from "chart.js";
 
 import { Bar, Line } from "react-chartjs-2";
@@ -33,41 +33,43 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend,  
+  Legend,
   PointElement,
   LineElement
 );
 
-const CarouselElement = (data) => {
+const CarouselElement: React.FC<{ url: string; title: string }> = (props) => {
   return (
     <div className="flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white">
-      <img src={ data['url'] } title={ data['title']}></img>
+      <img src={props["url"]} title={props["title"]}></img>
     </div>
   );
-}
+};
 
 // https://flowbite-react.com/carousel/
 const MyCarousel: React.FC<{ data: MovieData[]; size: number }> = (props) => {
   const test_poster_url = [
     "https://m.media-amazon.com/images/I/71aBLaC4TzL._AC_SL1330_.jpg",
     "https://m.media-amazon.com/images/I/61QPrqydVoL._AC_SY679_.jpg",
-    "https://m.media-amazon.com/images/I/714hR8KCqaL.jpg"
+    "https://m.media-amazon.com/images/I/714hR8KCqaL.jpg",
   ];
 
   props.data.sort((a, b) => {
-    return b['popularity'] - a['popularity'];
-  })
+    return b["popularity"] - a["popularity"];
+  });
 
-  const poster_element = props.data.map( (d) => ({'url' : d['poster_url'], 'title' : d['title']})).slice(0, props.size)
+  const posterElement = props.data
+    .map((d) => ({ url: d["poster_url"], title: d["title"] }))
+    .slice(0, props.size);
 
   return (
     <Carousel slideInterval={3000}>
-    { poster_element.map((val) => (
-      <CarouselElement url={val['url']} title={val['title']}/>
-    ))}
+      {posterElement.map((val) => (
+        <CarouselElement url={val["url"]} title={val["title"]} />
+      ))}
     </Carousel>
   );
-}
+};
 
 // https://react-chartjs-2.js.org/examples/line-chart/
 const MyLinePlot: React.FC<{ data: MovieData[] }> = (props) => {
@@ -75,37 +77,35 @@ const MyLinePlot: React.FC<{ data: MovieData[] }> = (props) => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top' as const,
+        position: "top" as const,
       },
       title: {
         display: false,
-        text: 'Line Chart',
+        text: "Line Chart",
       },
     },
   };
   return (
-
-  <Line 
-    options={options}
-    data={{
-      labels: ['Jun', 'Jul', 'Aug'],
-      datasets: [
-        {
-          id: 1,
-          label: 'a',
-          data: [5, 6, 7],
-          borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 99, 132, 0.5)'
-        },
-        {
-          id: 2,
-          label: 'b',
-          data: [3, 2, 1],
-          borderColor: 'rgb(53, 162, 235)',
-          backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        }
-      ],
-    }}/>
+    <Line
+      options={options}
+      data={{
+        labels: ["Jun", "Jul", "Aug"],
+        datasets: [
+          {
+            label: "a",
+            data: [5, 6, 7],
+            borderColor: "rgb(255, 99, 132)",
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
+          },
+          {
+            label: "b",
+            data: [3, 2, 1],
+            borderColor: "rgb(53, 162, 235)",
+            backgroundColor: "rgba(53, 162, 235, 0.5)",
+          },
+        ],
+      }}
+    />
   );
 };
 
@@ -118,7 +118,6 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
     "name",
     10
   );
-
 
   const data = {
     labels: labels,
@@ -146,46 +145,60 @@ const CTFHome: NextPage = () => {
     <>
       <Navbar />
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <div className="text-left font-extrabold tracking-tight text-white">
-            <span className="text-[hsl(295,32%,69%)]">CTFang Playground</span>
-          </div>
-        </div>
-
         {movies != null ? (
           <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
+              <ZoomCard title="Movies Genres">
+                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyBarPlot data={movies} />
+                </div>
+              </ZoomCard>
 
-            <ZoomCard title="Movies Genres">
-              <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                <MyBarPlot data={movies} />
+              <ZoomCard title="Number of Movies">
+                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyBarPlot data={movies} />
+                </div>
+              </ZoomCard>
+
+              <ZoomCard title="Movie Ratings">
+                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyLinePlot data={movies} />
+                </div>
+              </ZoomCard>
+
+              <div className="flex flex-col gap-4">
+                <ZoomCard title="Movie Budget">
+                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                    <MyLinePlot data={movies} />
+                  </div>
+                </ZoomCard>
+
+                <ZoomCard title="Movie Budget">
+                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                    <MyLinePlot data={movies} />
+                  </div>
+                </ZoomCard>
               </div>
-            </ZoomCard>
 
-            <ZoomCard title="Number of Movies">
-              <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                <MyBarPlot data={movies} />
+              <div className="flex flex-col gap-4">
+                <ZoomCard title="Movie Budget">
+                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                    <MyLinePlot data={movies} />
+                  </div>
+                </ZoomCard>
+
+                <ZoomCard title="Movie Budget">
+                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                    <MyLinePlot data={movies} />
+                  </div>
+                </ZoomCard>
               </div>
-            </ZoomCard>
 
-            <ZoomCard title="Movie Ratings">
-              <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                <MyLinePlot data={movies} />
+              <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
+                <h3 className="text-2xl font-bold">Top Rating Movies</h3>
+                <MyCarousel data={movies} size={10} />
               </div>
-            </ZoomCard>
-
-            <ZoomCard title="Movie Budget">
-              <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                <MyLinePlot data={movies} />
-              </div>
-            </ZoomCard>
-
-            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
-              <h3 className="text-2xl font-bold">Top Rating Movies</h3>
-              <MyCarousel data={movies} size={10}/>
             </div>
-
-          </div>
           </>
         ) : (
           <h1 className="text-2xl font-bold text-white">Querying Data...</h1>
