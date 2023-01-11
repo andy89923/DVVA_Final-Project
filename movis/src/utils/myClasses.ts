@@ -3,9 +3,10 @@ import type { AppRouter } from "../server/api/root";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
-type KeyMap = {
-  [key: string]: string;
+type KeyMap<T> = {
+  [key: string]: T;
 };
+
 type MovieData = RouterOutput["getAll"]["movie"][number]
 type Subset = {
     name: string;
