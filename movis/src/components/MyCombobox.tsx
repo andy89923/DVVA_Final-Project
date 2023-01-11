@@ -17,11 +17,11 @@ interface IProps {
   setSelected: Dispatch<SetStateAction<MovieData[] | any[]>>;
 }
 
-const keyMap = {
+const myKeyMap = {
   title: "Title",
   genres: "Genre",
   test: "Test",
-} as KeyMap;
+} as KeyMap<string>;
 
 const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   const [query, setQuery] = useState("");
@@ -186,7 +186,7 @@ const MyCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
       <div className="flex items-center justify-center space-x-1 px-2 align-middle">
         <p>By: </p>
         <MyListbox
-          keyMap={keyMap}
+          keyMap={myKeyMap}
           selected={filterkey}
           setSelected={setFilterkey}
         />
