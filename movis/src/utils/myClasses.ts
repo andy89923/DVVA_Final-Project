@@ -7,36 +7,36 @@ type KeyMap<T> = {
   [key: string]: T;
 };
 
-type MovieData = RouterOutput["getAll"]["movie"][number]
+type MovieData = RouterOutput["getAll"]["movie"][number];
+type CompanyData = RouterOutput["getAll"]["company"][number];
+
 type Subset = {
-    name: string;
-    data: MovieData[];
-    selected: boolean;
-  };
+  name: string;
+  data: MovieData[];
+  selected: boolean;
+};
 
 const AllGenres = [
-    "Animation",
-    "Adventure",
-    "Family",
-    "Comedy",
-    "Fantasy",
-    "Romance",
-    "Drama",
-    "Action",
-    "Crime",
-    "Thriller",
-    "Horror",
-    "History",
-    "Science Fiction",
-    "Mystery",
-    "War",
-    "Music",
-    "Documentary",
-    "Western",
-    "TV Movie"
-  ]
-
+  "Animation",
+  "Adventure",
+  "Family",
+  "Comedy",
+  "Fantasy",
+  "Romance",
+  "Drama",
+  "Action",
+  "Crime",
+  "Thriller",
+  "Horror",
+  "History",
+  "Science Fiction",
+  "Mystery",
+  "War",
+  "Music",
+  "Documentary",
+  "Western",
+  "TV Movie",
+];
 
 export { AllGenres };
-export type { KeyMap, Subset, MovieData };
-
+export type { KeyMap, Subset, MovieData, CompanyData };

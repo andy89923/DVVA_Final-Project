@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 import { useState } from "react";
-import MyCombobox from "../../components/MyCombobox";
+import ComCombobox from "../../components/ComCombobox";
 import Navbar from "../../components/Navbar";
 import SubsetPicker from "../../components/SubsetPicker";
 import ZoomCard from "../../components/ZoomCard";
@@ -32,6 +32,7 @@ import {
 import { Carousel } from "flowbite-react";
 import { getCountDict } from "../../utils/relationUtils";
 import MyListbox from "../../components/MyListbox";
+import { Company } from "@prisma/client";
 
 ChartJS.register(
   CategoryScale,
@@ -129,11 +130,10 @@ const keyMap = {
 const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
   const [filterkey, setFilterkey] = useState("genres");
 
-  // get genre counts
   const TOP_COUNT = 10;
   const countDict = getCountDict(
     props.data,
-    [filterkey], //["genres"]
+    [filterkey],
     [],
     "name",
     0,
@@ -170,28 +170,34 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
 };
 
 const CTFHome: NextPage = () => {
+  const { data: companies } = api.getAll.company.useQuery();
+
   const { data: movies } = api.company.betweenYearRange.useQuery({
-    companyId: 1,
+    companyId: 2486,
     minYear: 1900,
     maxYear: 2100,
   });
-  // company["movies"];
 
-  console.log(movies);
+  const [selected, setSelected] = useState<Company[]>([
+    { id: 1, name: "Pixar" },
+  ]);
+
   return (
     <>
       <Navbar />
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        {movies != null ? (
+        {movies != null && companies != null ? (
           <>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
-              <ZoomCard title="Movies Genres">
-                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                  <MyBarPlot data={movies} />
-                </div>
+              <ZoomCard title="Fuzzy Search Company">
+                <ComCombobox
+                  data={companies}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
               </ZoomCard>
 
-              <ZoomCard title="Number of Movies">
+              <ZoomCard title="Movies Genres">
                 <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyBarPlot data={movies} />
                 </div>
