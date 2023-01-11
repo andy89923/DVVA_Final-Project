@@ -52,6 +52,7 @@ const test_poster_url = [
   "https://m.media-amazon.com/images/I/714hR8KCqaL.jpg"
 ];
 
+// https://flowbite-react.com/carousel/
 const MyCarousel = () => {
 
   let element  = test_poster_url;
@@ -65,11 +66,24 @@ const MyCarousel = () => {
   );
 }
 
+// https://react-chartjs-2.js.org/examples/line-chart/
 const MyLinePlot = () => {
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Line Chart',
+      },
+    },
+  };
   return (
 
   <Line 
-    datasetIdKey='id'
+    options={options}
     data={{
       labels: ['Jun', 'Jul', 'Aug'],
       datasets: [
@@ -78,7 +92,7 @@ const MyLinePlot = () => {
           label: '',
           data: [5, 6, 7],
           borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          backgroundColor: 'rgba(255, 99, 132, 0.5)'
         },
         {
           id: 2,
@@ -131,17 +145,12 @@ const CTFHome: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <div className="text-left font-extrabold tracking-tight text-white">
-            <span className="text-[hsl(295,32%,69%)]">CTFang</span>
+            <span className="text-[hsl(295,32%,69%)]">CTFang Playground</span>
           </div>
         </div>
 
         {movies != null ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
-            
-            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
-              <h3 className="text-2xl font-bold">Top Rating Movies</h3>
-              <MyCarousel />
-            </div>
 
             <ZoomCard title="Movies Genres Compare">
               <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
@@ -155,7 +164,13 @@ const CTFHome: NextPage = () => {
               </div>
             </ZoomCard>
 
+            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
+              <h3 className="text-2xl font-bold">Top Rating Movies</h3>
+              <MyCarousel />
+            </div>
+              
           </div>
+          
         ) : (
           <h1 className="text-2xl font-bold text-white">Querying Data...</h1>
         )}
