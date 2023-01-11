@@ -7,6 +7,7 @@ type KeyMap<T> = {
   [key: string]: T;
 };
 
+type CompanyData = RouterOutput["company"]["betweenYearRange"][number];
 type MovieData = RouterOutput["getAll"]["movie"][number];
 
 type Subset = {
@@ -38,4 +39,4 @@ const AllGenres = [
 ];
 
 export { AllGenres };
-export type { KeyMap, Subset, MovieData };
+export type { KeyMap, Subset, MovieData, CompanyData };
