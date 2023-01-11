@@ -1,18 +1,6 @@
 import type { Keyword } from "@prisma/client";
-import type { KeyMap, MovieData } from "./myClasses";
-
-
-type Link = {
-  source: number;
-  target: number;
-}
-
-type Node = {
-  id: number | string;
-  name: string;
-  val?: number;
-}
-type Graph = {nodes: Node[]; links: Link[]}
+import type { GraphData, LinkObject } from "react-force-graph-3d";
+import type { KeyMap } from "./myClasses";
 
 /**
  * @param dataArr   Obtained data array from query
@@ -25,7 +13,7 @@ type Graph = {nodes: Node[]; links: Link[]}
  *
  * @example
  * const dataArr = [
- *  {id: 1, name: "a", keywords: [{id: 1, name: "a"}, {id: 2, name: "b"}]},
+ *  hi: {id: 1, name: "a", keywords: [{id: 1, name: "a"}, {id: 2, name: "b"}]},
  *  {id: 2, name: "b", keywords: [{id: 1, name: "a"}, {id: 3, name: "c"}]},
  * ]
  * const toEntry = ["keywords"];
@@ -64,19 +52,17 @@ const getCountDict = (dataArr: any[], toEntry: string[], toObject: string[], key
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined, val1, val2) => {
+const getGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined, val1:number, val2:number) => {
   const keyDict = getCountDict(dataArr, toEntry, toObject, key, start, end) as KeyMap<{data: Keyword, count: number}>;
-  
+  const keyNodes = Object.values(keyDict).map((d) => ({
+    id: `KEY_${d.data.id}`,
+    name: d.data.name,
+    val: val2,
+  }));
   const dataNodes = dataArr.map((data) => ({
-      id: data[key],
+      id: `DATA_${data.id}`,
       name: data.title,
       val: val1,
-  }));
-
-  const keyNodes = Object.values(keyDict).map((d) => ({
-      id: d.data.id + dataNodes.length,
-      name: d.data.name,
-      val: val2,
   }));
 
   const links = dataArr.reduce((links, data) => {
@@ -86,55 +72,21 @@ const getGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: st
       const value = toObject.reduce((obj, to) => obj[to], d); 
       if (keyDict[value[key]] != null){
         links.push({
-          source: value[key] + dataNodes.length,
-          target: data[key]
+          source: `KEY_${value.id}`,
+          target: `DATA_${data.id}`,
         })
       }
       
     });
     return links;
-  }, [] as Link[]) satisfies Link[];
+  }, [] as LinkObject[]) satisfies LinkObject[];
 
   const graph = {
     nodes: [...dataNodes, ...keyNodes],
     links: links,
-  } satisfies Graph
+  } satisfies GraphData;
 
   return graph
 }
 
-const getKeywordGraph = (movies: MovieData[], start: number|undefined, end: number|undefined) => {
-  const keywordsDict = getCountDict(movies, ["keywords"], [], "id", start, end) as KeyMap<{data: Keyword, count: number}>;
-  const movieNodes = movies.map((movie) => ({
-      id: movie.id,
-      name: movie.title,
-      val: 0.1//10,
-  }));
-  const keywordNodes = Object.values(keywordsDict).map((d) => ({
-      id: d.data.id + movieNodes.length,
-      name: d.data.name,
-      val: 10,
-  }));
-
-  const links = movies.reduce((links, movie) => {
-    movie.keywords.forEach((keyword) => {
-      if (keywordsDict[keyword.id] != null){
-        links.push({
-          source: keyword.id + movieNodes.length,
-          target: movie.id
-        })
-      }
-      
-    });
-    return links;
-  }, [] as Link[]) satisfies Link[];
-
-  const graph = {
-    nodes: [...movieNodes, ...keywordNodes],
-    links: links,
-  } satisfies Graph
-
-  return graph
-}
-
-export { getKeywordGraph, getGraph, getCountDict };
+export { getGraph, getCountDict };

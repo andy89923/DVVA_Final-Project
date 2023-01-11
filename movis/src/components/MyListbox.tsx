@@ -5,7 +5,7 @@ import { HiChevronUpDown } from "react-icons/hi2";
 import { KeyMap } from "../utils/myClasses";
 
 interface IProps {
-  keyMap: KeyMap;
+  keyMap: KeyMap<"string">;
   selected: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setSelected: Dispatch<SetStateAction<string>>;

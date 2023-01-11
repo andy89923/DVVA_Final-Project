@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@headlessui/react': ^1.7.7
   '@prisma/client': ^4.8.0
+  '@react-hook/window-size': ^3.1.1
   '@sgratzl/chartjs-chart-boxplot': ^4.1.0
   '@tanstack/react-query': ^4.20.0
   '@tanstack/react-virtual': 3.0.0-beta.34
@@ -20,12 +21,15 @@ specifiers:
   chart.js: ^4.1.2
   chartjs-chart-geo: ^4.1.1
   chartjs-chart-wordcloud: ^4.1.0
+  d3-force-3d: ^3.0.3
   eslint: ^8.30.0
   eslint-config-next: 13.1.1
   flowbite: ^1.6.1
   flowbite-react: ^0.3.7
   fuzzysort: ^2.0.4
+  i: ^0.3.7
   next: 13.1.1
+  npm: ^9.2.0
   postcss: ^8.4.14
   prettier: ^2.8.1
   prettier-plugin-tailwindcss: ^0.2.1
@@ -34,8 +38,9 @@ specifiers:
   react-chartjs-2: ^5.1.0
   react-dom: 18.2.0
   react-force-graph: ^1.41.18
-  react-force-graph-2d: ^1.23.15
+  react-force-graph-3d: ^1.21.17
   react-icons: ^4.7.1
+  react-range: ^1.8.14
   superjson: 1.9.1
   tailwindcss: ^3.2.0
   three: ^0.148.0
@@ -45,6 +50,7 @@ specifiers:
 dependencies:
   '@headlessui/react': 1.7.7_biqbaboplfbrettd7655fr4n2y
   '@prisma/client': 4.8.1_prisma@4.8.1
+  '@react-hook/window-size': 3.1.1_react@18.2.0
   '@sgratzl/chartjs-chart-boxplot': 4.1.0_chart.js@4.1.2
   '@tanstack/react-query': 4.20.9_biqbaboplfbrettd7655fr4n2y
   '@tanstack/react-virtual': 3.0.0-beta.34_react@18.2.0
@@ -55,16 +61,20 @@ dependencies:
   chart.js: 4.1.2
   chartjs-chart-geo: 4.1.1_chart.js@4.1.2
   chartjs-chart-wordcloud: 4.1.0_chart.js@4.1.2
+  d3-force-3d: 3.0.3
   flowbite: 1.6.1
   flowbite-react: 0.3.7_5yjf5dwiyan4mxbtnplkk6s3qe
   fuzzysort: 2.0.4
+  i: 0.3.7
   next: 13.1.1_biqbaboplfbrettd7655fr4n2y
+  npm: 9.2.0
   react: 18.2.0
   react-chartjs-2: 5.1.0_mfjxiilvrceiwtanada6fxhije
   react-dom: 18.2.0_react@18.2.0
   react-force-graph: 1.41.18_react@18.2.0+three@0.148.0
-  react-force-graph-2d: 1.23.15_react@18.2.0
+  react-force-graph-3d: 1.21.17_react@18.2.0
   react-icons: 4.7.1_react@18.2.0
+  react-range: 1.8.14_biqbaboplfbrettd7655fr4n2y
   superjson: 1.9.1
   three: 0.148.0
   zod: 3.20.2
@@ -518,6 +528,51 @@ packages:
   /@prisma/engines/4.8.1:
     resolution: {integrity: sha512-93tctjNXcIS+i/e552IO6tqw17sX8liivv8WX9lDMCpEEe3ci+nT9F+1oHtAafqruXLepKF80i/D20Mm+ESlOw==}
     requiresBuild: true
+
+  /@react-hook/debounce/3.0.0_react@18.2.0:
+    resolution: {integrity: sha512-ir/kPrSfAzY12Gre0sOHkZ2rkEmM4fS5M5zFxCi4BnCeXh2nvx9Ujd+U4IGpKCuPA+EQD0pg1eK2NGLvfWejag==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      '@react-hook/latest': 1.0.3_react@18.2.0
+      react: 18.2.0
+    dev: false
+
+  /@react-hook/event/1.2.6_react@18.2.0:
+    resolution: {integrity: sha512-JUL5IluaOdn5w5Afpe/puPa1rj8X6udMlQ9dt4hvMuKmTrBS1Ya6sb4sVgvfe2eU4yDuOfAhik8xhbcCekbg9Q==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-hook/latest/1.0.3_react@18.2.0:
+    resolution: {integrity: sha512-dy6duzl+JnAZcDbNTfmaP3xHiKtbXYOaz3G51MGVljh548Y8MWzTr+PHLOfvpypEVW9zwvl+VyKjbWKEVbV1Rg==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-hook/throttle/2.2.0_react@18.2.0:
+    resolution: {integrity: sha512-LJ5eg+yMV8lXtqK3lR+OtOZ2WH/EfWvuiEEu0M3bhR7dZRfTyEJKxH1oK9uyBxiXPtWXiQggWbZirMCXam51tg==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      '@react-hook/latest': 1.0.3_react@18.2.0
+      react: 18.2.0
+    dev: false
+
+  /@react-hook/window-size/3.1.1_react@18.2.0:
+    resolution: {integrity: sha512-yWnVS5LKnOUIrEsI44oz3bIIUYqflamPL27n+k/PC//PsX/YeWBky09oPeAoc9As6jSH16Wgo8plI+ECZaHk3g==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      '@react-hook/debounce': 3.0.0_react@18.2.0
+      '@react-hook/event': 1.2.6_react@18.2.0
+      '@react-hook/throttle': 2.2.0_react@18.2.0
+      react: 18.2.0
+    dev: false
 
   /@rushstack/eslint-patch/1.2.0:
     resolution: {integrity: sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==}
@@ -2575,6 +2630,11 @@ packages:
       parse-passwd: 1.0.0
     dev: false
 
+  /i/0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
+    dev: false
+
   /iconv-lite/0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -3209,6 +3269,81 @@ packages:
     resolution: {integrity: sha512-Z4B1HgvzR+en62ghwZf6BwAR6x4/pjezsiMcbF9KMLh7xoscpoYhaSXfY3lLkqC68AtW+/qLJ1lzvBIj0FGaTA==}
     dev: false
 
+  /npm/9.2.0:
+    resolution: {integrity: sha512-oypVdaWGHDuV79RXLvp+B9gh6gDyAmoHKrQ0/JBYTWWx5D8/+AAxFdZC84fSIiyDdyW4qfrSyYGKhekxDOaMXQ==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+    hasBin: true
+    dev: false
+    bundledDependencies:
+      - '@isaacs/string-locale-compare'
+      - '@npmcli/arborist'
+      - '@npmcli/config'
+      - '@npmcli/map-workspaces'
+      - '@npmcli/package-json'
+      - '@npmcli/run-script'
+      - abbrev
+      - archy
+      - cacache
+      - chalk
+      - ci-info
+      - cli-columns
+      - cli-table3
+      - columnify
+      - fastest-levenshtein
+      - fs-minipass
+      - glob
+      - graceful-fs
+      - hosted-git-info
+      - ini
+      - init-package-json
+      - is-cidr
+      - json-parse-even-better-errors
+      - libnpmaccess
+      - libnpmdiff
+      - libnpmexec
+      - libnpmfund
+      - libnpmhook
+      - libnpmorg
+      - libnpmpack
+      - libnpmpublish
+      - libnpmsearch
+      - libnpmteam
+      - libnpmversion
+      - make-fetch-happen
+      - minimatch
+      - minipass
+      - minipass-pipeline
+      - mkdirp
+      - ms
+      - node-gyp
+      - nopt
+      - npm-audit-report
+      - npm-install-checks
+      - npm-package-arg
+      - npm-pick-manifest
+      - npm-profile
+      - npm-registry-fetch
+      - npm-user-validate
+      - npmlog
+      - p-map
+      - pacote
+      - parse-conflict-json
+      - proc-log
+      - qrcode-terminal
+      - read
+      - read-package-json
+      - read-package-json-fast
+      - rimraf
+      - semver
+      - ssri
+      - tar
+      - text-table
+      - tiny-relative-date
+      - treeverse
+      - validate-npm-package-name
+      - which
+      - write-file-atomic
+
   /object-assign/4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
@@ -3595,12 +3730,12 @@ packages:
       scheduler: 0.23.0
     dev: false
 
-  /react-force-graph-2d/1.23.15_react@18.2.0:
-    resolution: {integrity: sha512-NiZcbbKKTZEmDPjUaLD7tXUsNSpghBR4xoz0IigSmpfVmCgpUPeP6z+FLcplGEiO9xQ2TXZZuOv0FLG/3WaqnQ==}
+  /react-force-graph-3d/1.21.17_react@18.2.0:
+    resolution: {integrity: sha512-pBQCbEuT38WH16w65ZqQCFDzIgrRk6yj1Uy6pDxZ27zCQiNj9SwwmU2tin0w278/800+UTAm7dOP/5Z35KIwMw==}
     peerDependencies:
       react: '*'
     dependencies:
-      force-graph: 1.42.18
+      3d-force-graph: 1.70.19
       prop-types: 15.8.1
       react: 18.2.0
       react-kapsule: 2.2.6_react@18.2.0
@@ -3656,6 +3791,16 @@ packages:
       fromentries: 1.3.2
       jerrypick: 1.0.5
       react: 18.2.0
+    dev: false
+
+  /react-range/1.8.14_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-v2nyD5106rHf9dwHzq+WRlhCes83h1wJRHIMFjbZsYYsO6LF4mG/mR3cH7Cf+dkeHq65DItuqIbLn/3jjYjsHg==}
+    peerDependencies:
+      react: ^16.8.0-0 || ^17.0.0-0 || ^18.0.0-0
+      react-dom: ^16.8.0-0 || ^17.0.0-0 || ^18.0.0-0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react-ssr-prepass/1.5.0_react@18.2.0:
