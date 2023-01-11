@@ -63,13 +63,46 @@ const getCountDict = (dataArr: any[], toEntry: string[], toObject: string[], key
   return Object.fromEntries(sortedEntries);
 }
 
-/**
- * 
- * @param movies 
- * @param start 
- * @param end 
- * @returns 
- */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined, val1, val2) => {
+  const keyDict = getCountDict(dataArr, toEntry, toObject, key, start, end) as KeyMap<{data: Keyword, count: number}>;
+  
+  const dataNodes = dataArr.map((data) => ({
+      id: data[key],
+      name: data.title,
+      val: val1,
+  }));
+
+  const keyNodes = Object.values(keyDict).map((d) => ({
+      id: d.data.id + dataNodes.length,
+      name: d.data.name,
+      val: val2,
+  }));
+
+  const links = dataArr.reduce((links, data) => {
+    const entry = toEntry.reduce((value, entry) => value[entry], data)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    entry.forEach((d: any) => {
+      const value = toObject.reduce((obj, to) => obj[to], d); 
+      if (keyDict[value[key]] != null){
+        links.push({
+          source: value[key] + dataNodes.length,
+          target: data[key]
+        })
+      }
+      
+    });
+    return links;
+  }, [] as Link[]) satisfies Link[];
+
+  const graph = {
+    nodes: [...dataNodes, ...keyNodes],
+    links: links,
+  } satisfies Graph
+
+  return graph
+}
+
 const getKeywordGraph = (movies: MovieData[], start: number|undefined, end: number|undefined) => {
   const keywordsDict = getCountDict(movies, ["keywords"], [], "id", start, end) as KeyMap<{data: Keyword, count: number}>;
   const movieNodes = movies.map((movie) => ({
@@ -104,4 +137,4 @@ const getKeywordGraph = (movies: MovieData[], start: number|undefined, end: numb
   return graph
 }
 
-export { getKeywordGraph, getCountDict };
+export { getKeywordGraph, getGraph, getCountDict };

@@ -54,7 +54,7 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
   const TOP_COUNT = 20;
   const countDict = getCountDict(
     props.data,
-    [filterkey], //["genres"]
+    [filterkey], // ["genres"]
     [],
     "name",
     0,

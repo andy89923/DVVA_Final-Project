@@ -7,7 +7,20 @@ import ZoomCard from "../../components/ZoomCard";
 // import SpriteText from "three-spritetext";
 
 import { api } from "../../utils/api";
-import { getKeywordGraph } from "../../utils/relationUtils";
+import { MovieData } from "../../utils/myClasses";
+import {
+  getKeywordGraph,
+  getGraph,
+  getCountDict,
+} from "../../utils/relationUtils";
+
+const myMovieGraph: React.FC<{ movies: MovieData[] }> = (props) => {
+  const graph =
+    props.movies != null
+      ? getGraph(props.movies, ["companies"], [], "id", 0, 50, 0.01, 10)
+      : null;
+  return <ForceGraph3D graphData={graph} />;
+};
 
 const Overview: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -20,9 +33,23 @@ const Overview: NextPage = () => {
     maxYear: 2020,
   });
 
-  const graph = movies != null ? getKeywordGraph(movies, 0, 50) : null;
+  // const graph =
+  //   movies != null
+  //     ? getGraph(movies, ["keywords"], [], "id", 0, 50, 10, 0.1)
+  //     : null;
 
-  console.log(graph);
+  //   const keyDict = (movies != null) ? getCountDict(movies, ["keywords"], [], "id", 0, 50) : null;
+  //   const dataNodes = dataArr.map((data) => ({
+  //     id: data[key],
+  //     name: data.title,
+  //     val: val1,
+  // }));
+  // const graph = keyDict != null ? getKeywordGraph(keyDict) : null;
+
+  // const graph =
+  //   movies != null
+  //     ? getGraph(movies, ["companies"], [], "id", 0, 50, 0.01, 10)
+  //     : null;
 
   return (
     <>
@@ -37,8 +64,7 @@ const Overview: NextPage = () => {
       <Navbar />
       <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col py-6">
-          {graph != null && <ForceGraph3D graphData={graph} />}
-          {/* <ForceGraph2D graphData={graph} /> */}
+          {movies != null && <myGraph data={movies} />}
         </div>
       </main>
     </>

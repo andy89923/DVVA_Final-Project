@@ -1,4 +1,4 @@
-import { KeyMap } from "./myClasses";
+import type { KeyMap } from "./myClasses";
 import { getCountDict } from "./relationUtils";
 
 const ChartOptions = (title: string | null, showLegend: boolean) => {
