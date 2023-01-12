@@ -19,10 +19,6 @@ const Navigation: React.FC<{ title: string; url: string }> = (props) => {
 };
 
 export default function Navbar() {
-  const { data: hello, isLoading: helloIsLoading } = api.example.hello.useQuery(
-    { text: "from tRPC" }
-  );
-
   return (
     <div className="sticky top-0 flex h-20 flex-row items-center justify-between bg-black px-20 text-white">
       <div className="page-nav flex flex-row items-center gap-6">

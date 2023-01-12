@@ -1,16 +1,35 @@
-import type { Dispatch, SetStateAction } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import React from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import type { DateValueType } from "react-tailwindcss-datepicker/dist/types";
+import { DateContext } from "../utils/DataContext";
 
-interface IProps {
-  value: DateValueType;
-  setValue: Dispatch<SetStateAction<DateValueType>>;
-}
+// interface IProps {
+//   value: DateValueType;
+//   setValue: Dispatch<SetStateAction<DateValueType>>;
+// }
 
-const DataRangeComp: React.FC<IProps> = (props) => {
+const DataRangeComp: React.FC = () => {
+  const { setDateRange } = useContext(DateContext);
+  const [tempRange, setTempRange] = useState<DateValueType>({
+    startDate: new Date("2021-01-01"),
+    endDate: new Date("2022-12-31"),
+  });
+
   const handleValueChange = (newValue: DateValueType) => {
-    props.setValue(newValue);
+    setTempRange(newValue as { startDate: Date; endDate: Date });
+    if (newValue?.startDate != null && newValue?.endDate != null) {
+      setDateRange({
+        startDate: new Date(newValue.startDate),
+        endDate: new Date(newValue.endDate),
+      });
+    }
   };
 
   const addYears = (date: Date, years: number) => {
@@ -19,13 +38,13 @@ const DataRangeComp: React.FC<IProps> = (props) => {
   };
 
   const maxDate =
-    props.value?.startDate != null
-      ? addYears(new Date(props.value.startDate), 2)
+    tempRange?.startDate != null
+      ? addYears(new Date(tempRange.startDate), 2)
       : (new Date("2022-12-31") as Date);
 
   return (
     <Datepicker
-      value={props.value}
+      value={tempRange}
       onChange={handleValueChange}
       showShortcuts={true}
       maxDate={maxDate}

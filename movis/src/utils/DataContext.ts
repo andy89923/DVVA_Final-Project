@@ -2,6 +2,6 @@ import { createContext } from "react";
 import type { DateValueType } from "react-tailwindcss-datepicker/dist/types";
 
 export const DateContext = createContext<{
-    dateRange: DateValueType;
-    setDateRange: React.Dispatch<React.SetStateAction<DateValueType>>;
+    dateRange: {startDate: Date ; endDate: Date };
+    setDateRange: React.Dispatch<React.SetStateAction<{startDate: Date ; endDate: Date }>>;
   }>(null);

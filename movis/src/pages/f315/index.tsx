@@ -24,6 +24,8 @@ import {
 
 import { Bar, Line } from "react-chartjs-2";
 import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
+import { useContext } from "react";
+import { DateContext } from "../../utils/DataContext";
 
 ChartJS.register(
   CategoryScale,
@@ -42,6 +44,15 @@ interface IProps {
   number?: number;
   prefix?: string;
 }
+
+const dateToStr = (date: Date | undefined, day = false) => {
+  if (date == undefined) return "1900-00-00";
+  const yyyymm = `${date.getFullYear()}-${("0" + (1 + date.getMonth())).slice(
+    -2
+  )}`;
+  if (!day) return yyyymm;
+  return `${yyyymm}-${("0" + date.getDate()).slice(-2)}`;
+};
 
 const NumCard: React.FC<IProps> = (props) => {
   return (
@@ -108,6 +119,9 @@ const CountLinePlot: React.FC<{
         type: "linear" as const,
         display: true,
         position: "left" as const,
+        ticks: {
+          color: "rgba(255, 110, 140, 1)",
+        },
       },
       y1: {
         type: "linear" as const,
@@ -118,13 +132,24 @@ const CountLinePlot: React.FC<{
         },
       },
     },
+    plugins: {
+      title: {
+        display: false,
+      },
+      legend: {
+        display: true,
+        position: "bottom",
+        align: "center",
+        labels: {
+          boxWidth: 30,
+          font: {
+            size: 16,
+          },
+        },
+      },
+    },
     responsive: true,
     maintainAspectRatio: false,
-  };
-
-  const dateToStr = (date: Date | undefined) => {
-    if (date == undefined) return "1900-00";
-    return `${date.getFullYear()}-${("0" + (1 + date.getMonth())).slice(-2)}`;
   };
 
   function onlyUnique(value: any, index: any, self: any) {
@@ -142,7 +167,7 @@ const CountLinePlot: React.FC<{
     labels: all_labels,
     datasets: [
       {
-        label: "count",
+        label: "# of Movies",
         data: all_labels.map((dat) => {
           return props.movies.filter((mov) => {
             return Object.is(dateToStr(mov.release_date), dat);
@@ -157,7 +182,7 @@ const CountLinePlot: React.FC<{
       {
         label: "revenue",
         data: all_labels.map((dat) => {
-          var sum = 0;
+          let sum = 0;
           props.movies.map((mov) => {
             if (Object.is(dateToStr(mov.release_date), dat)) sum += mov.revenue;
           });
@@ -172,7 +197,7 @@ const CountLinePlot: React.FC<{
       {
         label: "budget",
         data: all_labels.map((dat) => {
-          var sum = 0;
+          let sum = 0;
           props.movies.map((mov) => {
             if (Object.is(dateToStr(mov.release_date), dat)) sum += mov.budget;
           });
@@ -240,12 +265,10 @@ const TopXHorizontalBarChart: React.FC<{
 };
 
 const Home: NextPage = () => {
-  const minYear = 2010,
-    maxYear = 2011;
-
-  const { data: movies } = api.movie.betweenYearRange.useQuery({
-    minYear: minYear,
-    maxYear: maxYear,
+  const { dateRange } = useContext(DateContext);
+  const { data: movies } = api.movie.dateRange.useQuery({
+    minDate: dateRange.startDate,
+    maxDate: dateRange.endDate,
   });
 
   let movieCount = 0,
@@ -293,7 +316,10 @@ const Home: NextPage = () => {
                     Trends Visualization
                   </div>
                   <div>
-                    Movies in between {minYear} ~ {maxYear}
+                    Movies in between{" "}
+                    {dateToStr(dateRange.startDate, true) +
+                      " ~ " +
+                      dateToStr(dateRange.endDate, true)}
                   </div>
                 </div>
                 <div className="flex gap-6">
@@ -324,10 +350,16 @@ const Home: NextPage = () => {
               >
                 <div className="flex h-full flex-col items-center justify-center gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                   <Map data={movies} />
+                  <div className="text-[0.5rem] text-gray-500">
+                    Number are normalized by Log scale
+                  </div>
                 </div>
               </ZoomCard>
 
-              <ZoomCard title="Genres Count" className="col-span-2 row-span-2">
+              <ZoomCard
+                title="Genres Distribution"
+                className="col-span-2 row-span-2"
+              >
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                   <GenreBarPlot data={movies} />
                 </div>

@@ -45,8 +45,8 @@ export const movieRouter = createTRPCRouter({
       const movieWithRatings = await ctx.prisma.movie.findMany({
         where: {
           release_date: {
-            gte: input.minDate.toISOString(),
-            lte: input.maxDate.toISOString(),
+            gte: new Date(input.minDate).toISOString(),
+            lte: new Date(input.maxDate).toISOString(),
           },
         },
         include: {
