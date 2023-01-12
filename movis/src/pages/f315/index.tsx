@@ -24,6 +24,8 @@ import {
 
 import { Bar, Line } from "react-chartjs-2";
 import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
+import { useContext } from "react";
+import { DateContext } from "../../utils/DataContext";
 
 ChartJS.register(
   CategoryScale,
@@ -42,6 +44,15 @@ interface IProps {
   number?: number;
   prefix?: string;
 }
+
+const dateToStr = (date: Date | undefined, day = false) => {
+  if (date == undefined) return "1900-00-00";
+  const yyyymm = `${date.getFullYear()}-${("0" + (1 + date.getMonth())).slice(
+    -2
+  )}`;
+  if (!day) return yyyymm;
+  return `${yyyymm}-${("0" + date.getDate()).slice(-2)}`;
+};
 
 const NumCard: React.FC<IProps> = (props) => {
   return (
@@ -139,11 +150,6 @@ const CountLinePlot: React.FC<{
     },
     responsive: true,
     maintainAspectRatio: false,
-  };
-
-  const dateToStr = (date: Date | undefined) => {
-    if (date == undefined) return "1900-00";
-    return `${date.getFullYear()}-${("0" + (1 + date.getMonth())).slice(-2)}`;
   };
 
   function onlyUnique(value: any, index: any, self: any) {
@@ -310,7 +316,10 @@ const Home: NextPage = () => {
                     Trends Visualization
                   </div>
                   <div>
-                    Movies in between {minYear} ~ {maxYear}
+                    Movies in between{" "}
+                    {dateToStr(dateRange.startDate, true) +
+                      " ~ " +
+                      dateToStr(dateRange.endDate, true)}
                   </div>
                 </div>
                 <div className="flex gap-6">
