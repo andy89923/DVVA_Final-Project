@@ -169,6 +169,21 @@ const CountLinePlot: React.FC<{
         stepped: false,
         yAxisID: "y1",
       },
+      {
+        label: "budget",
+        data: all_labels.map((dat) => {
+          var sum = 0;
+          props.movies.map((mov) => {
+            if (Object.is(dateToStr(mov.release_date), dat)) sum += mov.budget;
+          });
+          return sum;
+        }),
+        borderColor: "rgba(255, 159, 64, 1)",
+        backgroundColor: "rgba(255, 159, 64, 0.2)",
+        borderWidth: 1,
+        stepped: false,
+        yAxisID: "y1",
+      },
     ],
   };
   console.log(data);
@@ -296,28 +311,19 @@ const Home: NextPage = () => {
             </div>
             <div className="grow-1 grid h-full w-full grid-cols-6 grid-rows-4 gap-4">
               <ZoomCard
+                title="Movie Production Trends"
+                className="col-span-3 row-span-2"
+              >
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+                  <CountLinePlot movies={movies} />
+                </div>
+              </ZoomCard>
+              <ZoomCard
                 title="Production count by Country"
                 className="col-span-3 row-span-2"
               >
                 <div className="flex h-full flex-col items-center justify-center gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                   <Map data={movies} />
-                </div>
-              </ZoomCard>
-              {/* <ZoomCard
-                title="Most frequent keyword in movie"
-                className="col-span-3 row-span-2"
-              >
-                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
-                  <WordCloud keywordsCountDict={keywordsDict} />
-                </div>
-              </ZoomCard> */}
-
-              <ZoomCard
-                title="Most frequent keyword in movie"
-                className="col-span-3 row-span-2"
-              >
-                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
-                  <WordCloudNew keywordsCountDict={keywordsDict} />
                 </div>
               </ZoomCard>
 
@@ -340,11 +346,11 @@ const Home: NextPage = () => {
               </ZoomCard>
 
               <ZoomCard
-                title="Movie Production Trends"
+                title="Most frequent keyword in movie"
                 className="col-span-2 row-span-2"
               >
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
-                  <CountLinePlot movies={movies} />
+                  <WordCloudNew keywordsCountDict={keywordsDict} />
                 </div>
               </ZoomCard>
             </div>
