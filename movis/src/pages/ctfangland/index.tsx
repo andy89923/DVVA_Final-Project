@@ -232,13 +232,25 @@ const MyDoughnut: React.FC<{
     rotation: true,
     spacing: 0,
     hoverOffset: 50,
+
     plugins: {
       legend: {
-        position: "bottom" as const,
+        position: "right" as const,
+        labels: {
+          font: {
+            size: 12,
+          },
+        },
       },
       title: {
         display: true,
         text: "Count#",
+        font: {
+          size: 20,
+        },
+      },
+      layout: {
+        padding: 100,
       },
     },
   };
@@ -300,7 +312,21 @@ const CTFHome: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         {companyData != null && companies != null ? (
           <>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
+            <div className="container flex flex-col py-6">
+              <div className="top-section flex w-full flex-row justify-between gap-3">
+                <div className="text-left font-extrabold text-white">
+                  <div className="text-3xl sm:text-5xl">
+                    Mo
+                    <span className="text-[hsl(280,100%,70%)]">Vis</span>
+                  </div>
+                  <div className="text-3xl text-[hsl(295,32%,69%)] sm:text-[2rem]">
+                    Company Visualization
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="ml-1 mr-1 grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
               <ZoomCard title="Fuzzy Search Company">
                 <ComCombobox
                   data={companies}
@@ -330,7 +356,7 @@ const CTFHome: NextPage = () => {
                 </div>
               </ZoomCard>
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col justify-start gap-4">
                 <ZoomCard title="Movie Budget">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                     <MyLinePlot
@@ -354,7 +380,7 @@ const CTFHome: NextPage = () => {
                 </ZoomCard>
               </div>
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col justify-start gap-4">
                 <ZoomCard title="Movie Popularity">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                     <MyLinePlot
@@ -367,7 +393,7 @@ const CTFHome: NextPage = () => {
                 </ZoomCard>
 
                 <ZoomCard title="Rating 7+ Movies">
-                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <div className="flex flex-row justify-center gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                     <MyDoughnut
                       companies={selected}
                       data={companyData}
@@ -378,7 +404,7 @@ const CTFHome: NextPage = () => {
                 </ZoomCard>
               </div>
 
-              <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
+              <div className="max-w-s flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
                 <h3 className="text-2xl font-bold">Top Rating Movies</h3>
                 <MyCarousel data={companyData} size={10} />
               </div>
