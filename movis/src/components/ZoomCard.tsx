@@ -33,7 +33,7 @@ const ZoomCard: React.FC<IProps> = (props) => {
         {props.children}
       </div>
       <Modal isOpen={isZoom} setIsOpen={setIsZoom}>
-        <div className="flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-2xl">
+        <div className=" flex h-screen flex-col gap-4 rounded-xl bg-white/10 p-4 text-2xl">
           <Header />
           {props.children}
         </div>
