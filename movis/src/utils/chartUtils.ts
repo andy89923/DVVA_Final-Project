@@ -19,7 +19,7 @@ const ChartOptions = (
       },
       legend: {
         display: showLegend,
-        position: "right",
+        position: "bottom",
         align: "start",
         labels: {
           boxWidth: 30,

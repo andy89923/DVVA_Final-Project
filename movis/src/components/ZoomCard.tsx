@@ -25,7 +25,9 @@ const ZoomCard: React.FC<IProps> = (props) => {
   return (
     <>
       <div
-        className={`flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg ${props.className}`}
+        className={`flex flex-col gap-4 rounded-xl bg-white/10 p-4 ${
+          props.className ? props.className : ""
+        }`}
       >
         <Header />
         {props.children}
