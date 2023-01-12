@@ -1,4 +1,6 @@
 import { type NextPage } from "next";
+import React, { useMemo } from "react";
+
 import Head from "next/head";
 import type { LinkObject, NodeObject } from "react-force-graph-3d";
 import ForceGraph3D from "../../components/ForceGraph3DWrapper";
@@ -7,18 +9,12 @@ import { useWindowSize } from "@react-hook/window-size";
 // import SpriteText from "three-spritetext";
 
 import { api } from "../../utils/api";
-import type { KeyMap, MovieData } from "../../utils/myClasses";
-import {
-  getCountDict,
-  getCountDictV2,
-  getGraph,
-  getTTGraph,
-} from "../../utils/relationUtils";
-import MySlider from "../../components/MySlider";
-import { Dispatch, SetStateAction, useState } from "react";
-import MyCombobox from "../../components/MyCombobox";
-import MyListbox from "../../components/MyListbox";
-import { useMemo } from "react";
+import type { MovieData } from "../../utils/myClasses";
+import { getCountDictV2 } from "../../utils/relationUtils";
+import type { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
+import { BiHide, BiShow } from "react-icons/bi";
+import { GrStatusGood, GrStatusGoodSmall } from "react-icons/gr";
 
 const toCompareMap = {
   spoken_languages: "Language",
@@ -35,6 +31,10 @@ const SelectionCard: React.FC<{
   max: number;
   value: number;
   setValue: Dispatch<SetStateAction<number>>;
+  hide: boolean;
+  setHide: () => void;
+  disable: boolean;
+  setDisable: () => void;
 }> = (props) => {
   return (
     <div className="flex items-center space-x-5 rounded-2xl bg-white/50 px-5 py-3">
@@ -44,7 +44,7 @@ const SelectionCard: React.FC<{
         min="0"
         step="1"
         max={props.max.toString()}
-        defaultValue={0}
+        defaultValue="0"
         list="tickmarks"
         value={props.value.toString()}
         className="h-2 w-full bg-blue-100"
@@ -57,6 +57,15 @@ const SelectionCard: React.FC<{
         value={props.value.toString()}
         onChange={(e) => props.setValue(parseInt(e.target.value))}
       />
+      <button className="h-6 w-6 rounded-md " onClick={() => props.setHide()}>
+        {props.hide ? <BiShow /> : <BiHide />}
+      </button>
+      <button
+        className="h-6 w-6 rounded-md "
+        onClick={() => props.setDisable()}
+      >
+        {props.disable ? <GrStatusGoodSmall /> : <GrStatusGood />}
+      </button>
     </div>
   );
 };
@@ -67,112 +76,118 @@ const MyMovieGraph: React.FC<{
   val2: number;
 }> = (props) => {
   const [width, height] = useWindowSize();
-  const [vLang, setVLang] = useState<number>(5);
-  const [vWord, setVWord] = useState<number>(5);
-  const [vCrew, setVCrew] = useState<number>(5);
-  const [vGnre, setVGnre] = useState<number>(5);
-  const [vCtry, setVCtry] = useState<number>(5);
-  const [vComp, setVComp] = useState<number>(5);
+  const [vLang, setVLang] = useState<number>(0);
+  const [vWord, setVWord] = useState<number>(0);
+  const [vCrew, setVCrew] = useState<number>(0);
+  const [vGnre, setVGnre] = useState<number>(0);
+  const [vCtry, setVCtry] = useState<number>(0);
+  const [vComp, setVComp] = useState<number>(0);
+  const [toHide, setToHide] = useState<boolean[]>(Array(7).fill(false));
+  const [toDisable, setToDisable] = useState<boolean[]>(Array(7).fill(false));
 
-  const { countDict: langDict, uniqueCount: langCnt } = getCountDictV2(
-    props.data,
-    ["spoken_languages"],
-    [],
-    "id",
-    0,
-    vLang
+  const { countDict: langDict, uniqueCount: langCnt } = useMemo(
+    () => getCountDictV2(props.data, ["spoken_languages"], [], "id", 0, vLang),
+    [props.data, vLang]
   );
-  const { countDict: wordDict, uniqueCount: wordCnt } = getCountDictV2(
-    props.data,
-    ["keywords"],
-    [],
-    "id",
-    0,
-    vWord
+  const { countDict: wordDict, uniqueCount: wordCnt } = useMemo(
+    () => getCountDictV2(props.data, ["keywords"], [], "id", 0, vWord),
+    [props.data, vWord]
   );
-  const { countDict: crewDict, uniqueCount: crewCnt } = getCountDictV2(
-    props.data,
-    ["crew"],
-    [],
-    "id",
-    0,
-    vCrew
+  const { countDict: crewDict, uniqueCount: crewCnt } = useMemo(
+    () => getCountDictV2(props.data, ["crew"], [], "id", 0, vCrew),
+    [props.data, vCrew]
   );
-  const { countDict: gnreDict, uniqueCount: gnreCnt } = getCountDictV2(
-    props.data,
-    ["genres"],
-    [],
-    "id",
-    0,
-    vGnre
+  const { countDict: gnreDict, uniqueCount: gnreCnt } = useMemo(
+    () => getCountDictV2(props.data, ["genres"], [], "id", 0, vGnre),
+    [props.data, vGnre]
   );
-  const { countDict: ctryDict, uniqueCount: ctryCnt } = getCountDictV2(
-    props.data,
-    ["countries"],
-    [],
-    "id",
-    0,
-    vCtry
+  const { countDict: ctryDict, uniqueCount: ctryCnt } = useMemo(
+    () => getCountDictV2(props.data, ["countries"], [], "id", 0, vCtry),
+    [props.data, vCtry]
   );
-  const { countDict: compDict, uniqueCount: compCnt } = getCountDictV2(
-    props.data,
-    ["companies"],
-    [],
-    "id",
-    0,
-    vComp
+  const { countDict: compDict, uniqueCount: compCnt } = useMemo(
+    () => getCountDictV2(props.data, ["companies"], [], "id", 0, vComp),
+    [props.data, vComp]
   );
 
-  const langNodes = Object.values(langDict).map((d) => {
-    return {
-      id: `Language_${d.data.id}`,
-      name: d.data.name,
-      val: 15,
-    };
-  });
-  const wordNodes = Object.values(wordDict).map((d) => {
-    return {
-      id: `Keyword_${d.data.id}`,
-      name: d.data.name,
-      val: 15,
-    };
-  });
-  const actrNodes = Object.values(crewDict).map((d) => {
-    return {
-      id: `Actor_${d.data.id}`,
-      name: d.data.name,
-      val: 15,
-    };
-  });
-  const gnreNodes = Object.values(gnreDict).map((d) => {
-    return {
-      id: `Genre_${d.data.id}`,
-      name: d.data.name,
-      val: 15,
-    };
-  });
-  const ctryNodes = Object.values(ctryDict).map((d) => {
-    return {
-      id: `Country_${d.data.id}`,
-      name: d.data.name,
-      val: 15,
-    };
-  });
-  const compNodes = Object.values(compDict).map((d) => {
-    return {
-      id: `Company_${d.data.id}`,
-      name: d.data.name,
-      val: 15,
-    };
-  });
+  const langNodes = useMemo(
+    () =>
+      Object.values(langDict).map((d) => {
+        return {
+          id: `Language_${d.data.id}`,
+          name: d.data.name,
+          val: 15,
+        };
+      }),
+    [langDict]
+  );
+  const wordNodes = useMemo(
+    () =>
+      Object.values(wordDict).map((d) => {
+        return {
+          id: `Keyword_${d.data.id}`,
+          name: d.data.name,
+          val: 15,
+        };
+      }),
+    [wordDict]
+  );
+  const actrNodes = useMemo(
+    () =>
+      Object.values(crewDict).map((d) => {
+        return {
+          id: `Actor_${d.data.id}`,
+          name: d.data.name,
+          val: 15,
+        };
+      }),
+    [crewDict]
+  );
+  const gnreNodes = useMemo(
+    () =>
+      Object.values(gnreDict).map((d) => {
+        return {
+          id: `Genre_${d.data.id}`,
+          name: d.data.name,
+          val: 15,
+        };
+      }),
+    [gnreDict]
+  );
+  const ctryNodes = useMemo(
+    () =>
+      Object.values(ctryDict).map((d) => {
+        return {
+          id: `Country_${d.data.id}`,
+          name: d.data.name,
+          val: 15,
+        };
+      }),
+    [ctryDict]
+  );
+  const compNodes = useMemo(
+    () =>
+      Object.values(compDict).map((d) => {
+        return {
+          id: `Company_${d.data.id}`,
+          name: d.data.name,
+          val: 15,
+        };
+      }),
+    [compDict]
+  );
 
-  const movieNodes = props.data.map((data) => {
-    return {
-      id: `Movie_${data.id}`,
-      name: data.title,
-      val: 0.01,
-    };
-  });
+  const movieNodes = useMemo(
+    () =>
+      props.data.map((data) => {
+        return {
+          id: `Movie_${data.id}`,
+          name: data.title,
+          val: 0.01,
+        };
+      }),
+    [props.data]
+  );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const links = props.data.reduce((links, movie) => {
     const entry1 = movie.spoken_languages;
@@ -182,54 +197,66 @@ const MyMovieGraph: React.FC<{
     const entry5 = movie.countries;
     const entry6 = movie.companies;
 
-    entry1.forEach((d) => {
-      if (langDict[d.id] != null) {
-        links.push({
-          source: `Language_${d.id}`,
-          target: `Movie_${movie.id}`,
-        });
-      }
-    });
-    entry2.forEach((d) => {
-      if (wordDict[d.id] != null) {
-        links.push({
-          source: `Keyword_${d.id}`,
-          target: `Movie_${movie.id}`,
-        });
-      }
-    });
-    entry3.forEach((d) => {
-      if (crewDict[d.id] != null) {
-        links.push({
-          source: `Actor_${d.id}`,
-          target: `Movie_${movie.id}`,
-        });
-      }
-    });
-    entry4.forEach((d) => {
-      if (gnreDict[d.id] != null) {
-        links.push({
-          source: `Genre_${d.id}`,
-          target: `Movie_${movie.id}`,
-        });
-      }
-    });
-    entry5.forEach((d) => {
-      if (ctryDict[d.id] != null) {
-        links.push({
-          source: `Country_${d.id}`,
-          target: `Movie_${movie.id}`,
-        });
-      }
-    });
-    entry6.forEach((d) => {
-      if (compDict[d.id] != null) {
-        links.push({
-          source: `Company_${d.id}`,
-          target: `Movie_${movie.id}`,
-        });
-      }
-    });
+    if (!toDisable[1]) {
+      entry1.forEach((d) => {
+        if (langDict[d.id] != null) {
+          links.push({
+            source: `Language_${d.id}`,
+            target: `Movie_${movie.id}`,
+          });
+        }
+      });
+    }
+    if (!toDisable[2]) {
+      entry2.forEach((d) => {
+        if (wordDict[d.id] != null) {
+          links.push({
+            source: `Keyword_${d.id}`,
+            target: `Movie_${movie.id}`,
+          });
+        }
+      });
+    }
+    if (!toDisable[3]) {
+      entry3.forEach((d) => {
+        if (crewDict[d.id] != null) {
+          links.push({
+            source: `Actor_${d.id}`,
+            target: `Movie_${movie.id}`,
+          });
+        }
+      });
+    }
+    if (!toDisable[4]) {
+      entry4.forEach((d) => {
+        if (gnreDict[d.id] != null) {
+          links.push({
+            source: `Genre_${d.id}`,
+            target: `Movie_${movie.id}`,
+          });
+        }
+      });
+    }
+    if (!toDisable[5]) {
+      entry5.forEach((d) => {
+        if (ctryDict[d.id] != null) {
+          links.push({
+            source: `Country_${d.id}`,
+            target: `Movie_${movie.id}`,
+          });
+        }
+      });
+    }
+    if (!toDisable[6]) {
+      entry6.forEach((d) => {
+        if (compDict[d.id] != null) {
+          links.push({
+            source: `Company_${d.id}`,
+            target: `Movie_${movie.id}`,
+          });
+        }
+      });
+    }
 
     return links;
   }, [] as { source: string; target: string }[]);
@@ -250,6 +277,14 @@ const MyMovieGraph: React.FC<{
   const nodeComp = (node: NodeObject, comp: string) =>
     node.id?.toString().split("_")[0] === comp;
 
+  const toggleIdx = (idx: number, setState: Dispatch<SetStateAction>) => {
+    setState((prev: boolean[]) => {
+      const temp = Array.from(prev);
+      temp[idx] = !temp[idx];
+      return temp;
+    });
+  };
+
   return (
     <>
       <ForceGraph3D
@@ -259,7 +294,25 @@ const MyMovieGraph: React.FC<{
         // enableNodeDrag={false}
         graphData={graph}
         nodeLabel="name"
-        nodeVisibility={(node: NodeObject) => true}
+        nodeVisibility={(node: NodeObject) => {
+          if (nodeComp(node, "Movie")) {
+            return !toHide[0];
+          } else if (nodeComp(node, "Language")) {
+            return !toHide[1];
+          } else if (nodeComp(node, "Keyword")) {
+            return !toHide[2];
+          } else if (nodeComp(node, "Actor")) {
+            return !toHide[3];
+          } else if (nodeComp(node, "Genre")) {
+            return !toHide[4];
+          } else if (nodeComp(node, "Country")) {
+            return !toHide[5];
+          } else if (nodeComp(node, "Company")) {
+            return !toHide[6];
+          } else {
+            return true;
+          }
+        }}
         nodeColor={(node: NodeObject) => {
           if (nodeComp(node, "Movie")) {
             return "#4caf50";
@@ -307,36 +360,60 @@ const MyMovieGraph: React.FC<{
             max={langCnt}
             value={vLang}
             setValue={setVLang}
+            hide={toHide[1] ?? false}
+            setHide={() => toggleIdx(1, setToHide)}
+            disable={toDisable[1] ?? false}
+            setDisable={() => toggleIdx(1, setToDisable)}
           />
           <SelectionCard
             title="Keyword"
             max={wordCnt}
             value={vWord}
             setValue={setVWord}
+            hide={toHide[2] ?? false}
+            setHide={() => toggleIdx(2, setToHide)}
+            disable={toDisable[2] ?? false}
+            setDisable={() => toggleIdx(2, setToDisable)}
           />
           <SelectionCard
             title="Actor"
             max={crewCnt}
             value={vCrew}
             setValue={setVCrew}
+            hide={toHide[3] ?? false}
+            setHide={() => toggleIdx(3, setToHide)}
+            disable={toDisable[3] ?? false}
+            setDisable={() => toggleIdx(3, setToDisable)}
           />
           <SelectionCard
             title="Genre"
             max={gnreCnt}
             value={vGnre}
             setValue={setVGnre}
+            hide={toHide[4] ?? false}
+            setHide={() => toggleIdx(4, setToHide)}
+            disable={toDisable[4] ?? false}
+            setDisable={() => toggleIdx(4, setToDisable)}
           />
           <SelectionCard
             title="Country"
             max={ctryCnt}
             value={vCtry}
             setValue={setVCtry}
+            hide={toHide[5] ?? false}
+            setHide={() => toggleIdx(5, setToHide)}
+            disable={toDisable[5] ?? false}
+            setDisable={() => toggleIdx(5, setToDisable)}
           />
           <SelectionCard
             title="Company"
             max={compCnt}
             value={vComp}
             setValue={setVComp}
+            hide={toHide[6] ?? false}
+            setHide={() => toggleIdx(6, setToHide)}
+            disable={toDisable[6] ?? false}
+            setDisable={() => toggleIdx(6, setToDisable)}
           />
         </div>
       </div>
