@@ -5,7 +5,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 export const movieRouter = createTRPCRouter({
   betweenYearRange: publicProcedure
     .input(z.object({ minYear: z.number(), maxYear: z.number() }))
-    .query( async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const movieWithRatings = await ctx.prisma.movie.findMany({
         where: {
           release_date: {
@@ -24,24 +24,25 @@ export const movieRouter = createTRPCRouter({
             select: {
               rating: true,
             },
-          }
+          },
         },
       });
-  
+
       //drop ratings
       const ratedMovies = movieWithRatings.map((movie) => {
         const ratings = movie.ratings.map((rating) => rating.rating);
-        const averageRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+        const averageRating =
+          ratings.reduce((a, b) => a + b, 0) / ratings.length;
         const { ratings: _, ...movieWithoutRatings } = movie;
         return { ...movieWithoutRatings, averageRating };
       });
-  
+
       return ratedMovies;
     }),
 
-    dateRange: publicProcedure
+  dateRange: publicProcedure
     .input(z.object({ minDate: z.date(), maxDate: z.date() }))
-    .query( async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const movieWithRatings = await ctx.prisma.movie.findMany({
         where: {
           release_date: {
@@ -60,22 +61,23 @@ export const movieRouter = createTRPCRouter({
             select: {
               rating: true,
             },
-          }
+          },
         },
       });
-  
+
       //drop ratings
       const ratedMovies = movieWithRatings.map((movie) => {
         const ratings = movie.ratings.map((rating) => rating.rating);
-        const averageRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+        const averageRating =
+          ratings.reduce((a, b) => a + b, 0) / ratings.length;
         const { ratings: _, ...movieWithoutRatings } = movie;
         return { ...movieWithoutRatings, averageRating };
       });
-  
+
       return ratedMovies;
     }),
 
-  getAll: publicProcedure.query( async ({ ctx }) => {
+  getAll: publicProcedure.query(async ({ ctx }) => {
     const movieWithRatings = await ctx.prisma.movie.findMany({
       include: {
         spoken_languages: true,
@@ -88,7 +90,7 @@ export const movieRouter = createTRPCRouter({
           select: {
             rating: true,
           },
-        }
+        },
       },
     });
 

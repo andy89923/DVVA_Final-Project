@@ -28,6 +28,8 @@ import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
 import { Carousel, ListGroup } from "flowbite-react";
 import { getCountDict } from "../../utils/relationUtils";
 import type { Company } from "@prisma/client";
+import { proseWrap } from "../../../prettier.config.cjs";
+import { procedureTypes } from "@trpc/server";
 
 ChartJS.register(
   CategoryScale,
@@ -296,9 +298,14 @@ const Compare: NextPage = () => {
   const { data: companies } = api.getAll.company.useQuery();
   const [selected, setSelected] = useState<Company[]>([
     { id: 1, name: "Pixar" },
-    { id: 1947, name: "DreamWorks Animation" },
     { id: 2486, name: "Studio Ghibli" },
+    { id: 1947, name: "DreamWorks Animation" },
   ]);
+
+  let sort_selected = selected;
+  sort_selected.sort((a, b) => {
+    return a.id - b.id;
+  });
 
   const { data: companyData } = api.company.betweenYearRange.useQuery({
     companyIds: selected.map((data) => {

@@ -38,7 +38,7 @@ const ZoomCard: React.FC<IProps> = (props) => {
       <Modal isOpen={isZoom} setIsOpen={setIsZoom}>
         <div
           className={`flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-2xl ${
-            manualZoomDim ? manualZoomDim : "h-[70vh] w-[70vw]"
+            manualZoomDim ? manualZoomDim : "h-[70vh]"
           }`}
         >
           <Header />
