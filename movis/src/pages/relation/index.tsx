@@ -49,20 +49,22 @@ const SelectionCard: React.FC<{
   setText: () => void;
 }> = (props) => {
   return (
-    <div className="flex w-full items-center space-x-5 rounded-2xl bg-white/50 px-5 py-3">
-      <h1 className="flex items-center">
+    <div
+      className={`flex w-full items-center space-x-5 rounded-2xl px-5 py-3 ${
+        props.disable ? "bg-white/20" : "bg-white/50"
+      }`}
+    >
+      <h1
+        className="flex items-center hover:cursor-pointer"
+        onClick={() => props.setDisable()}
+      >
         <span
           style={{
             color: props.color,
           }}
           className="mr-2 items-center rounded-md text-white"
-          onClick={() => props.setDisable()}
         >
-          {props.disable ? (
-            <HiOutlinePlusCircle className="h-6 w-6" />
-          ) : (
-            <HiXCircle className="h-6 w-6" />
-          )}
+          <GrStatusGoodSmall className="h-6 w-6" />
         </span>
         {props.title}
       </h1>
@@ -88,17 +90,8 @@ const SelectionCard: React.FC<{
         {props.text ? <RxText /> : <RxTextNone />}
       </button>
       <button className="h-6 w-6 rounded-md " onClick={() => props.setHide()}>
-        {props.hide ? <BiShow /> : <BiHide />}
+        {props.hide ? <BiHide /> : <BiShow />}
       </button>
-      {/* <button
-        className="h-6 w-6 rounded-md "
-        style={{
-          color: props.color,
-        }}
-        onClick={() => props.setDisable()}
-      >
-        {props.disable ? <HiOutlinePlusCircle /> : <HiXCircle />}
-      </button> */}
     </div>
   );
 };
