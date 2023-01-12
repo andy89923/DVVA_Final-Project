@@ -90,17 +90,24 @@ const MyLinePlot: React.FC<{
   attr: string;
 }> = (props) => {
   const options = {
-    spanGaps: true,
+    ...ChartOptions(null, false, false),
+
+    scales: {},
     responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom" as const,
-      },
-      title: {
-        display: false,
-        text: "Line Chart",
-      },
-    },
+    maintainAspectRatio: false,
+    spanGaps: true,
+
+    // responsive: true,
+    // maintainAspectRatio: false,
+    // plugins: {
+    //   legend: {
+    //     position: "bottom" as const,
+    //   },
+    //   title: {
+    //     display: false,
+    //     text: "Line Chart",
+    //   },
+    // },
   };
 
   const dateToStr = (date: Date | undefined) => {
@@ -156,7 +163,7 @@ const MyLinePlot: React.FC<{
 
   return (
     <div className="h-full w-full">
-      <h1>{props.title}</h1>
+      {/* <h1>{props.title}</h1> */}
       <Line options={options} data={data} />
     </div>
   );
@@ -205,7 +212,7 @@ const MyBarPlot: React.FC<{ companies: Company[]; data: CompanyData[] }> = (
 
   return (
     <div className="h-full w-full">
-      <h1>Movies Count</h1>
+      {/* <h1>Movies Count</h1> */}
       <Bar data={data} options={ChartOptions(null, true, false)} />
     </div>
   );
@@ -231,7 +238,7 @@ const MyDoughnut: React.FC<{
   const config: any = {
     rotation: true,
     spacing: 0,
-    hoverOffset: 50,
+    hoverOffset: 30,
 
     plugins: {
       legend: {
@@ -240,10 +247,11 @@ const MyDoughnut: React.FC<{
           font: {
             size: 12,
           },
+          padding: 20,
         },
       },
       title: {
-        display: true,
+        display: false,
         text: "Count#",
         font: {
           size: 20,
@@ -268,11 +276,7 @@ const MyDoughnut: React.FC<{
     ],
   };
 
-  return (
-    <>
-      <Doughnut options={config} data={data} />
-    </>
-  );
+  return <Doughnut options={config} data={data} />;
 };
 
 const MyListGroupElement: React.FC<{
@@ -392,7 +396,7 @@ const CTFHome: NextPage = () => {
                   </div>
                 </ZoomCard>
 
-                <ZoomCard title="Rating 7+ Movies">
+                <ZoomCard title="Movies with Rating 7+">
                   <div className="flex flex-row justify-center gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                     <MyDoughnut
                       companies={selected}
