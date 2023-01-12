@@ -56,7 +56,7 @@ export default function Map(data: any) {
     if (feat !== undefined)
       geoMapCount.push({
         feature: feat,
-        value: Math.log(movieCountryCount[key].count),
+        value: Math.log(movieCountryCount[key].count) + 1,
       });
   }
 

@@ -18,9 +18,11 @@ import {
   Title,
   Tooltip,
   Legend,
+  PointElement,
+  LineElement,
 } from "chart.js";
 
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
 
 ChartJS.register(
@@ -29,7 +31,9 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  PointElement,
+  LineElement
   // autocolors
 );
 
@@ -89,6 +93,90 @@ const GenreBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
   return (
     <div className="h-full w-full">
       <Bar data={data} options={chartOptions} />
+    </div>
+  );
+};
+
+const CountLinePlot: React.FC<{
+  movies: MovieData[];
+}> = (props) => {
+  const options = {
+    ...ChartOptions(null, false, false),
+
+    scales: {
+      y: {
+        type: "linear" as const,
+        display: true,
+        position: "left" as const,
+      },
+      y1: {
+        type: "linear" as const,
+        display: true,
+        position: "right" as const,
+        grid: {
+          drawOnChartArea: false,
+        },
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+
+  const dateToStr = (date: Date | undefined) => {
+    if (date == undefined) return "1900-00";
+    return `${date.getFullYear()}-${("0" + (1 + date.getMonth())).slice(-2)}`;
+  };
+
+  function onlyUnique(value: any, index: any, self: any) {
+    return self.indexOf(value) === index;
+  }
+
+  const all_labels = props.movies
+    .map((val) => {
+      return dateToStr(val.release_date);
+    })
+    .filter(onlyUnique)
+    .sort();
+
+  const data = {
+    labels: all_labels,
+    datasets: [
+      {
+        label: "count",
+        data: all_labels.map((dat) => {
+          return props.movies.filter((mov) => {
+            return Object.is(dateToStr(mov.release_date), dat);
+          }).length;
+        }),
+        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderWidth: 1,
+        stepped: false,
+        yAxisID: "y",
+      },
+      {
+        label: "revenue",
+        data: all_labels.map((dat) => {
+          var sum = 0;
+          props.movies.map((mov) => {
+            if (Object.is(dateToStr(mov.release_date), dat)) sum += mov.revenue;
+          });
+          return sum;
+        }),
+        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderWidth: 1,
+        stepped: false,
+        yAxisID: "y1",
+      },
+    ],
+  };
+  console.log(data);
+
+  return (
+    <div className="h-full w-full">
+      {/* <h1>{props.title}</h1> */}
+      <Line options={options} data={data} />
     </div>
   );
 };
@@ -248,6 +336,15 @@ const Home: NextPage = () => {
                     chosenKey="crew"
                     topN={topN}
                   />
+                </div>
+              </ZoomCard>
+
+              <ZoomCard
+                title="Movie Production Trends"
+                className="col-span-2 row-span-2"
+              >
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+                  <CountLinePlot movies={movies} />
                 </div>
               </ZoomCard>
             </div>
