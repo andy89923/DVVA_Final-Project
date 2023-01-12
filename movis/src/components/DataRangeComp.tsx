@@ -17,9 +17,13 @@ import { DateContext } from "../utils/DataContext";
 
 const DataRangeComp: React.FC = () => {
   const { dateRange, setDateRange } = useContext(DateContext);
+  const [tempRange, setTempRange] = useState<DateValueType>({
+    startDate: new Date("2021-01-01"),
+    endDate: new Date("2022-12-31"),
+  });
 
   const handleValueChange = (newValue: DateValueType) => {
-    // setTempRange(newValue as { startDate: Date; endDate: Date });
+    setTempRange(newValue as { startDate: Date; endDate: Date });
     if (newValue?.startDate != null && newValue?.endDate != null) {
       setDateRange({
         startDate: new Date(newValue.startDate),
@@ -34,8 +38,8 @@ const DataRangeComp: React.FC = () => {
   };
 
   const maxDate =
-    dateRange?.startDate != null
-      ? addYears(new Date(dateRange.startDate), 2)
+    tempRange?.startDate != null
+      ? addYears(new Date(tempRange.startDate), 2)
       : (new Date("2022-12-31") as Date);
 
   return (
