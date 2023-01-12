@@ -6,6 +6,31 @@ import Map from "./geo-map";
 import ZoomCard from "../../components/ZoomCard";
 import WordCloud from "./word-cloud";
 import { getCountDict } from "../../utils/relationUtils";
+import type { MovieData } from "../../utils/myClasses";
+
+// ChartJS stuff
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+import { Bar } from "react-chartjs-2";
+import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+  // autocolors
+);
 
 interface IProps {
   title?: string;
@@ -14,8 +39,6 @@ interface IProps {
 }
 
 const NumCard: React.FC<IProps> = (props) => {
-  const number = 123456;
-
   return (
     <>
       <div className="flex flex-col justify-center rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
@@ -29,9 +52,93 @@ const NumCard: React.FC<IProps> = (props) => {
   );
 };
 
+const GenreBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
+  // get genre counts
+  const TOP_COUNT = 20;
+  const countDict = getCountDict(
+    props.data,
+    ["genres"],
+    [],
+    "name",
+    0,
+    TOP_COUNT
+  );
+  const { labels, data: countArr } = convertDicttoChartData(countDict);
+
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        data: countArr,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    ...ChartOptions(null, false, false),
+    indexAxis: "y" as const,
+    scales: {},
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+
+  return (
+    <div className="h-full w-full">
+      <Bar data={data} options={chartOptions} />
+    </div>
+  );
+};
+
+const TopXHorizontalBarChart: React.FC<{
+  movies: MovieData[];
+  topN: number;
+  chosenKey: string;
+}> = (props) => {
+  const { movies, topN: TOP_COUNT, chosenKey: key } = props;
+
+  console.log("movies", movies);
+  const countDict = getCountDict(
+    movies,
+    [key], // ["genres"]
+    [],
+    "name",
+    0,
+    TOP_COUNT
+  );
+  const { labels, data: countArr } = convertDicttoChartData(countDict);
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        data: countArr,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    ...ChartOptions(null, false, false),
+    indexAxis: "y" as const,
+    scales: {},
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+
+  return (
+    <div className="h-full w-full">
+      <Bar data={data} options={chartOptions} />
+    </div>
+  );
+};
+
 const Home: NextPage = () => {
-  const minYear = 2018,
-    maxYear = 2020;
+  const minYear = 2010,
+    maxYear = 2011;
 
   const { data: movies } = api.movie.betweenYearRange.useQuery({
     minYear: minYear,
@@ -41,6 +148,8 @@ const Home: NextPage = () => {
   let movieCount = 0,
     totalRevenue = 0;
   let keywordsDict = {};
+  // Horizontal Bar Chart
+  const topN = 20;
 
   if (movies === undefined) {
     console.log("waiting for data");
@@ -53,7 +162,6 @@ const Home: NextPage = () => {
       (accumulator, currentMovie) => accumulator + currentMovie.revenue,
       0
     );
-
     // parse keywords
     keywordsDict = getCountDict(movies, ["keywords"], [], "name", 0, 100);
   }
@@ -114,6 +222,23 @@ const Home: NextPage = () => {
               >
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                   <WordCloud keywordsCountDict={keywordsDict} />
+                </div>
+              </ZoomCard>
+              <ZoomCard title="Genres Count" className="col-span-2 row-span-2">
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+                  <GenreBarPlot data={movies} />
+                </div>
+              </ZoomCard>
+              <ZoomCard
+                title="Top 10 Actors With the Most Movies"
+                className="col-span-2 row-span-2"
+              >
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+                  <TopXHorizontalBarChart
+                    movies={movies}
+                    chosenKey="crew"
+                    topN={topN}
+                  />
                 </div>
               </ZoomCard>
             </div>

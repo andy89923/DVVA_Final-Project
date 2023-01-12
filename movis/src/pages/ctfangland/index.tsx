@@ -25,18 +25,18 @@ import {
   Legend,
   PointElement,
   LineElement,
+  ArcElement,
 } from "chart.js";
 
-import { Bar, Line } from "react-chartjs-2";
+import { Bar, Line, Doughnut } from "react-chartjs-2";
 import {
   ChartOptions,
   convertDicttoChartData,
   getTopElementCount,
 } from "../../utils/chartUtils";
 
-import { Carousel } from "flowbite-react";
+import { Carousel, ListGroup } from "flowbite-react";
 import { getCountDict } from "../../utils/relationUtils";
-import MyListbox from "../../components/MyListbox";
 import { Company } from "@prisma/client";
 
 ChartJS.register(
@@ -47,7 +47,8 @@ ChartJS.register(
   Tooltip,
   Legend,
   PointElement,
-  LineElement
+  LineElement,
+  ArcElement
 );
 
 const CarouselElement: React.FC<{ url: string; title: string }> = (props) => {
@@ -60,12 +61,6 @@ const CarouselElement: React.FC<{ url: string; title: string }> = (props) => {
 
 // https://flowbite-react.com/carousel/
 const MyCarousel: React.FC<{ data: CompanyData[]; size: number }> = (props) => {
-  const test_poster_url = [
-    "https://m.media-amazon.com/images/I/71aBLaC4TzL._AC_SL1330_.jpg",
-    "https://m.media-amazon.com/images/I/61QPrqydVoL._AC_SY679_.jpg",
-    "https://m.media-amazon.com/images/I/714hR8KCqaL.jpg",
-  ];
-
   const movies: MovieData[] = props.data.reduce((a, b) => {
     return a.concat(b);
   });
@@ -168,14 +163,20 @@ const MyLinePlot: React.FC<{
 };
 
 const back_color_maps: string[] = [
-  "rgba(255, 99, 132, 0.5)",
-  "rgba(53, 162, 235, 0.5)",
-  "rgba(75, 192, 192, 0.5)",
+  "rgba(255, 99, 132, 0.2)",
+  "rgba(54, 162, 235, 0.2)",
+  "rgba(153, 102, 255, 0.2)",
+  "rgba(255, 159, 64, 0.2)",
+  "rgba(255, 206, 86, 0.2)",
+  "rgba(75, 192, 192, 0.2)",
 ];
 
 const brdr_color_maps: string[] = [
   "rgba(255, 99, 132, 1)",
-  "rgba(53, 162, 235, 1)",
+  "rgba(54, 162, 235, 1)",
+  "rgba(153, 102, 255, 1)",
+  "rgba(255, 159, 64, 1)",
+  "rgba(255, 206, 86, 1)",
   "rgba(75, 192, 192, 1)",
 ];
 
@@ -210,10 +211,90 @@ const MyBarPlot: React.FC<{ companies: Company[]; data: CompanyData[] }> = (
   );
 };
 
+const MyDoughnut: React.FC<{
+  companies: Company[];
+  data: CompanyData[];
+  title: string;
+  attr: string;
+}> = (props) => {
+  const labels: string[] = props.companies.map((data) => {
+    return data.name;
+  });
+
+  const count: number[] = props.data.map((data) => {
+    const tmp = data.filter((mov) => {
+      return mov["averageRating"] >= 7;
+    });
+    return tmp.length;
+  });
+
+  const config: any = {
+    rotation: true,
+    spacing: 0,
+    hoverOffset: 50,
+
+    plugins: {
+      legend: {
+        position: "right" as const,
+        labels: {
+          font: {
+            size: 12,
+          },
+        },
+      },
+      title: {
+        display: true,
+        text: "Count#",
+        font: {
+          size: 20,
+        },
+      },
+      layout: {
+        padding: 100,
+      },
+    },
+  };
+
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: "# of Movies",
+        data: count,
+        backgroundColor: back_color_maps,
+        borderColor: brdr_color_maps,
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <Doughnut options={config} data={data} />
+    </>
+  );
+};
+
+const MyListGroupElement: React.FC<{
+  selected: Company[];
+  setSelected: any;
+}> = (props) => {
+  return (
+    <>
+      <ListGroup>
+        {props.selected.map((data) => {
+          return <ListGroup.Item>{data.name}</ListGroup.Item>;
+        })}
+      </ListGroup>
+    </>
+  );
+};
+
 const CTFHome: NextPage = () => {
   const { data: companies } = api.getAll.company.useQuery();
   const [selected, setSelected] = useState<Company[]>([
     { id: 1, name: "Pixar" },
+    { id: 1947, name: "DreamWorks Animation" },
     { id: 2486, name: "Studio Ghibli" },
   ]);
 
@@ -231,10 +312,28 @@ const CTFHome: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         {companyData != null && companies != null ? (
           <>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
+            <div className="container flex flex-col py-6">
+              <div className="top-section flex w-full flex-row justify-between gap-3">
+                <div className="text-left font-extrabold text-white">
+                  <div className="text-3xl sm:text-5xl">
+                    Mo
+                    <span className="text-[hsl(280,100%,70%)]">Vis</span>
+                  </div>
+                  <div className="text-3xl text-[hsl(295,32%,69%)] sm:text-[2rem]">
+                    Company Visualization
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="ml-1 mr-1 grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
               <ZoomCard title="Fuzzy Search Company">
                 <ComCombobox
                   data={companies}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <MyListGroupElement
                   selected={selected}
                   setSelected={setSelected}
                 />
@@ -257,7 +356,7 @@ const CTFHome: NextPage = () => {
                 </div>
               </ZoomCard>
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col justify-start gap-4">
                 <ZoomCard title="Movie Budget">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                     <MyLinePlot
@@ -281,7 +380,7 @@ const CTFHome: NextPage = () => {
                 </ZoomCard>
               </div>
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col justify-start gap-4">
                 <ZoomCard title="Movie Popularity">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                     <MyLinePlot
@@ -293,14 +392,19 @@ const CTFHome: NextPage = () => {
                   </div>
                 </ZoomCard>
 
-                <ZoomCard title="Movie Budget">
-                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    {/* <MyLinePlot companies={selected} data={companyData} /> */}
+                <ZoomCard title="Rating 7+ Movies">
+                  <div className="flex flex-row justify-center gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                    <MyDoughnut
+                      companies={selected}
+                      data={companyData}
+                      title="Movie Popularity"
+                      attr="popularity"
+                    />
                   </div>
                 </ZoomCard>
               </div>
 
-              <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
+              <div className="max-w-s flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
                 <h3 className="text-2xl font-bold">Top Rating Movies</h3>
                 <MyCarousel data={companyData} size={10} />
               </div>
