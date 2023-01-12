@@ -377,6 +377,7 @@ const Compare: NextPage = () => {
               <ZoomCard
                 title="Top Rated Movies from Selected"
                 className="col-span-2 row-span-3"
+                manualZoomDim=" "
               >
                 <div>
                   <MyCarousel data={companyData} size={10} />
@@ -408,7 +409,11 @@ const Compare: NextPage = () => {
                 </div>
               </ZoomCard>
 
-              <ZoomCard title="Movies Genres" className="col-span-2 row-span-3">
+              <ZoomCard
+                title="Movies Genres"
+                className="col-span-2 row-span-3"
+                manualZoomDim="h-screen"
+              >
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyBarPlot companies={selected} data={companyData} />
                 </div>

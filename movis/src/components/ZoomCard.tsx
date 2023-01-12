@@ -6,10 +6,13 @@ interface IProps {
   title?: string;
   children?: React.ReactNode;
   className?: string;
+  manualZoomDim?: string;
 }
 
 const ZoomCard: React.FC<IProps> = (props) => {
   const [isZoom, setIsZoom] = useState(false);
+
+  const { manualZoomDim } = props;
 
   const Header = () => {
     return (
@@ -33,7 +36,11 @@ const ZoomCard: React.FC<IProps> = (props) => {
         {props.children}
       </div>
       <Modal isOpen={isZoom} setIsOpen={setIsZoom}>
-        <div className=" flex h-screen flex-col gap-4 rounded-xl bg-white/10 p-4 text-2xl">
+        <div
+          className={`flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-2xl ${
+            manualZoomDim ? manualZoomDim : "h-[70vh] w-[70vw]"
+          }`}
+        >
           <Header />
           {props.children}
         </div>
