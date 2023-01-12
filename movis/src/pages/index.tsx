@@ -3,12 +3,17 @@ import Head from "next/head";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import { api } from "../utils/api";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import DataRangeComp from "../components/DataRangeComp";
+import { DateContext } from "../utils/DataContext";
 
 const Home: NextPage = () => {
-  const [value, setValue] = useState([new Date(), new Date()]);
+  const { dateRange } = useContext(DateContext);
+  const { data: movies } = api.movie.dateRange.useQuery({
+    minDate: dateRange.startDate,
+    maxDate: dateRange.endDate,
+  });
 
   return (
     <>
@@ -20,7 +25,7 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <div className="text-center font-extrabold tracking-tight text-white">
@@ -36,6 +41,9 @@ const Home: NextPage = () => {
           </div>
 
           <div className="flex flex-col items-center justify-center gap-4">
+            <h3 className="text-2xl font-bold text-white">
+              Select a Date Range to View Movie Analytics:
+            </h3>
             <DataRangeComp />
           </div>
         </div>

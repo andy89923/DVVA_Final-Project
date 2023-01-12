@@ -48,6 +48,8 @@ const DataRangeComp: React.FC = () => {
       onChange={handleValueChange}
       showShortcuts={true}
       maxDate={maxDate}
+      inputClassName="text-center font-bold w-64"
+      containerClassName="w-fit"
     />
   );
 };
