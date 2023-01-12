@@ -2,7 +2,12 @@ import { type NextPage } from "next";
 import React, { useMemo } from "react";
 
 import Head from "next/head";
-import type { LinkObject, NodeObject } from "react-force-graph-3d";
+import type {
+  ForceGraphMethods,
+  ForceGraphProps,
+  LinkObject,
+  NodeObject,
+} from "react-force-graph-3d";
 import ForceGraph3D from "../../components/ForceGraph3DWrapper";
 import Navbar from "../../components/Navbar";
 import { useWindowSize } from "@react-hook/window-size";
@@ -14,7 +19,10 @@ import { getCountDictV2 } from "../../utils/relationUtils";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { BiHide, BiShow } from "react-icons/bi";
-import { GrStatusGood, GrStatusGoodSmall } from "react-icons/gr";
+import { RxText, RxTextNone } from "react-icons/rx";
+import { GrStatusGoodSmall } from "react-icons/gr";
+import { HiXCircle, HiOutlinePlusCircle } from "react-icons/hi";
+import SpriteText from "three-spritetext";
 
 const toCompareMap = {
   spoken_languages: "Language",
@@ -25,25 +33,44 @@ const toCompareMap = {
   companies: "Company",
 } as { [key: string]: string };
 const toCompareKeys = Object.keys(toCompareMap);
+const toCompareValues = Object.values(toCompareMap);
 
 const SelectionCard: React.FC<{
   title: string;
   max: number;
   value: number;
+  color: string;
   setValue: Dispatch<SetStateAction<number>>;
   hide: boolean;
   setHide: () => void;
   disable: boolean;
   setDisable: () => void;
+  text: boolean;
+  setText: () => void;
 }> = (props) => {
   return (
-    <div className="flex items-center space-x-5 rounded-2xl bg-white/50 px-5 py-3">
-      <h1>{props.title}</h1>
+    <div className="flex w-full items-center space-x-5 rounded-2xl bg-white/50 px-5 py-3">
+      <h1 className="flex items-center">
+        <span
+          style={{
+            color: props.color,
+          }}
+          className="mr-2 items-center rounded-md text-white"
+          onClick={() => props.setDisable()}
+        >
+          {props.disable ? (
+            <HiOutlinePlusCircle className="h-6 w-6" />
+          ) : (
+            <HiXCircle className="h-6 w-6" />
+          )}
+        </span>
+        {props.title}
+      </h1>
       <input
         type="range"
         min="0"
         step="1"
-        max={props.max.toString()}
+        max={Math.min(props.max, 500).toString()}
         defaultValue="0"
         list="tickmarks"
         value={props.value.toString()}
@@ -57,15 +84,21 @@ const SelectionCard: React.FC<{
         value={props.value.toString()}
         onChange={(e) => props.setValue(parseInt(e.target.value))}
       />
+      <button className="h-6 w-6 rounded-md" onClick={() => props.setText()}>
+        {props.text ? <RxText /> : <RxTextNone />}
+      </button>
       <button className="h-6 w-6 rounded-md " onClick={() => props.setHide()}>
         {props.hide ? <BiShow /> : <BiHide />}
       </button>
-      <button
+      {/* <button
         className="h-6 w-6 rounded-md "
+        style={{
+          color: props.color,
+        }}
         onClick={() => props.setDisable()}
       >
-        {props.disable ? <GrStatusGoodSmall /> : <GrStatusGood />}
-      </button>
+        {props.disable ? <HiOutlinePlusCircle /> : <HiXCircle />}
+      </button> */}
     </div>
   );
 };
@@ -76,14 +109,24 @@ const MyMovieGraph: React.FC<{
   val2: number;
 }> = (props) => {
   const [width, height] = useWindowSize();
-  const [vLang, setVLang] = useState<number>(0);
+  const [vLang, setVLang] = useState<number>(5);
   const [vWord, setVWord] = useState<number>(0);
-  const [vCrew, setVCrew] = useState<number>(0);
+  const [vCrew, setVCrew] = useState<number>(30);
   const [vGnre, setVGnre] = useState<number>(0);
   const [vCtry, setVCtry] = useState<number>(0);
   const [vComp, setVComp] = useState<number>(0);
   const [toHide, setToHide] = useState<boolean[]>(Array(7).fill(false));
   const [toDisable, setToDisable] = useState<boolean[]>(Array(7).fill(false));
+  const [toText, setToText] = useState<boolean[]>([
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+  ]);
 
   const { countDict: langDict, uniqueCount: langCnt } = useMemo(
     () => getCountDictV2(props.data, ["spoken_languages"], [], "id", 0, vLang),
@@ -116,7 +159,7 @@ const MyMovieGraph: React.FC<{
         return {
           id: `Language_${d.data.id}`,
           name: d.data.name,
-          val: 15,
+          val: 20,
         };
       }),
     [langDict]
@@ -127,7 +170,7 @@ const MyMovieGraph: React.FC<{
         return {
           id: `Keyword_${d.data.id}`,
           name: d.data.name,
-          val: 15,
+          val: 20,
         };
       }),
     [wordDict]
@@ -138,7 +181,7 @@ const MyMovieGraph: React.FC<{
         return {
           id: `Actor_${d.data.id}`,
           name: d.data.name,
-          val: 15,
+          val: 20,
         };
       }),
     [crewDict]
@@ -149,7 +192,7 @@ const MyMovieGraph: React.FC<{
         return {
           id: `Genre_${d.data.id}`,
           name: d.data.name,
-          val: 15,
+          val: 20,
         };
       }),
     [gnreDict]
@@ -160,7 +203,7 @@ const MyMovieGraph: React.FC<{
         return {
           id: `Country_${d.data.id}`,
           name: d.data.name,
-          val: 15,
+          val: 20,
         };
       }),
     [ctryDict]
@@ -171,7 +214,7 @@ const MyMovieGraph: React.FC<{
         return {
           id: `Company_${d.data.id}`,
           name: d.data.name,
-          val: 15,
+          val: 20,
         };
       }),
     [compDict]
@@ -275,15 +318,57 @@ const MyMovieGraph: React.FC<{
     links,
   };
 
-  const nodeComp = (node: NodeObject, comp: string) =>
-    node.id?.toString().split("_")[0] === comp;
-
-  const toggleIdx = (idx: number, setState: Dispatch<SetStateAction>) => {
+  const toggleIdx = (
+    idx: number,
+    setState: Dispatch<SetStateAction<boolean[]>>
+  ) => {
     setState((prev: boolean[]) => {
       const temp = Array.from(prev);
       temp[idx] = !temp[idx];
       return temp;
     });
+  };
+
+  const nameComp = (name: string | number | undefined, comp: string) =>
+    name?.toString().split("_")[0] === comp;
+
+  const assignColor = (name: string | number | undefined) => {
+    if (nameComp(name, "Movie")) {
+      return "#4caf50";
+    } else if (nameComp(name, "Language")) {
+      return "#f44336";
+    } else if (nameComp(name, "Keyword")) {
+      return "#2196f3";
+    } else if (nameComp(name, "Actor")) {
+      return "#ff9800";
+    } else if (nameComp(name, "Genre")) {
+      return "#9c27b0";
+    } else if (nameComp(name, "Country")) {
+      return "#795548";
+    } else if (nameComp(name, "Company")) {
+      return "#607d8b";
+    } else {
+      return "#ffffff";
+    }
+  };
+
+  const assignBoolean = (name: string | number | undefined, arr: boolean[]) => {
+    if (nameComp(name, "Movie")) {
+      return !arr[0];
+    } else if (nameComp(name, "Language")) {
+      return !arr[1];
+    } else if (nameComp(name, "Keyword")) {
+      return !arr[2];
+    } else if (nameComp(name, "Actor")) {
+      return !arr[3];
+    } else if (nameComp(name, "Genre")) {
+      return !arr[4];
+    } else if (nameComp(name, "Country")) {
+      return !arr[5];
+    } else if (nameComp(name, "Company")) {
+      return !arr[6];
+    }
+    return false;
   };
 
   return (
@@ -292,65 +377,33 @@ const MyMovieGraph: React.FC<{
         width={width}
         height={height}
         // backgroundColor={"rgba(0,0,0,0)"}
-        // enableNodeDrag={false}
+        enableNodeDrag={false}
         graphData={graph}
         nodeLabel="name"
-        nodeVisibility={(node: NodeObject) => {
-          if (nodeComp(node, "Movie")) {
-            return !toHide[0];
-          } else if (nodeComp(node, "Language")) {
-            return !toHide[1];
-          } else if (nodeComp(node, "Keyword")) {
-            return !toHide[2];
-          } else if (nodeComp(node, "Actor")) {
-            return !toHide[3];
-          } else if (nodeComp(node, "Genre")) {
-            return !toHide[4];
-          } else if (nodeComp(node, "Country")) {
-            return !toHide[5];
-          } else if (nodeComp(node, "Company")) {
-            return !toHide[6];
-          } else {
-            return true;
-          }
+        nodeVisibility={(node: NodeObject) => assignBoolean(node?.id, toHide)}
+        nodeColor={(node: NodeObject) => assignColor(node?.id)}
+        nodeCanvasObjectMode={() => "after"}
+        nodeThreeObjectExtend={true}
+        // linkColor={(link: LinkObject) => assignColor(link.source?.toString())}
+        linkColor="#FFFFFF"
+        linkWidth={2}
+        linkVisibility={(link: LinkObject) =>
+          assignBoolean(link?.source?.toString(), toHide) &&
+          assignBoolean(link?.target?.toString(), toHide)
+        }
+        nodeThreeObject={(node: ForceGraphProps["nodeThreeObject"]) => {
+          if (assignBoolean(node?.id, toText)) return false;
+          const sprite = new SpriteText(node.name) as any;
+          sprite.color = "#FFFFFF";
+          sprite.backgroundColor = false; //assignColor(node?.id);
+          sprite.textHeight = 16;
+          sprite.borderRadius = 0.9;
+          sprite.padding = [3, 1];
+          sprite.position.x = -2;
+          sprite.position.y = 30;
+          sprite.position.z = 10;
+          return sprite;
         }}
-        nodeColor={(node: NodeObject) => {
-          if (nodeComp(node, "Movie")) {
-            return "#4caf50";
-          } else if (nodeComp(node, "Language")) {
-            return "#f44336";
-          } else if (nodeComp(node, "Keyword")) {
-            return "#2196f3";
-          } else if (nodeComp(node, "Actor")) {
-            return "#ff9800";
-          } else if (nodeComp(node, "Genre")) {
-            return "#9c27b0";
-          } else if (nodeComp(node, "Country")) {
-            return "#795548";
-          } else if (nodeComp(node, "Company")) {
-            return "#607d8b";
-          }
-          return "#000";
-        }}
-        linkColor={(link: LinkObject) => {
-          if (link.source?.toString().split("_")[0] === "Movie") {
-            return "#4caf50";
-          } else if (link.source?.toString().split("_")[0] === "Language") {
-            return "#f44336";
-          } else if (link.source?.toString().split("_")[0] === "Keyword") {
-            return "#2196f3";
-          } else if (link.source?.toString().split("_")[0] === "Actor") {
-            return "#ff9800";
-          } else if (link.source?.toString().split("_")[0] === "Genre") {
-            return "#9c27b0";
-          } else if (link.source?.toString().split("_")[0] === "Country") {
-            return "#795548";
-          } else if (link.source?.toString().split("_")[0] === "Company") {
-            return "#607d8b";
-          }
-          return "#000";
-        }}
-        linkWidth={1}
       />
       {/* absolute side bar */}
       <div className="absolute top-0 right-0 h-screen w-1/4 bg-white/30">
@@ -359,63 +412,87 @@ const MyMovieGraph: React.FC<{
           <SelectionCard
             title="Language"
             max={langCnt}
+            color="#f44336"
             value={vLang}
             setValue={setVLang}
             hide={toHide[1] ?? false}
             setHide={() => toggleIdx(1, setToHide)}
             disable={toDisable[1] ?? false}
             setDisable={() => toggleIdx(1, setToDisable)}
+            text={toText[1] ?? false}
+            setText={() => toggleIdx(1, setToText)}
           />
           <SelectionCard
             title="Keyword"
             max={wordCnt}
+            color="#2196f3"
             value={vWord}
             setValue={setVWord}
             hide={toHide[2] ?? false}
             setHide={() => toggleIdx(2, setToHide)}
             disable={toDisable[2] ?? false}
             setDisable={() => toggleIdx(2, setToDisable)}
+            text={toText[2] ?? false}
+            setText={() => toggleIdx(2, setToText)}
           />
           <SelectionCard
             title="Actor"
             max={crewCnt}
+            color="#ff9800"
             value={vCrew}
             setValue={setVCrew}
             hide={toHide[3] ?? false}
             setHide={() => toggleIdx(3, setToHide)}
             disable={toDisable[3] ?? false}
             setDisable={() => toggleIdx(3, setToDisable)}
+            text={toText[3] ?? false}
+            setText={() => toggleIdx(3, setToText)}
           />
           <SelectionCard
             title="Genre"
             max={gnreCnt}
+            color="#9c27b0"
             value={vGnre}
             setValue={setVGnre}
             hide={toHide[4] ?? false}
             setHide={() => toggleIdx(4, setToHide)}
             disable={toDisable[4] ?? false}
             setDisable={() => toggleIdx(4, setToDisable)}
+            text={toText[4] ?? false}
+            setText={() => toggleIdx(4, setToText)}
           />
           <SelectionCard
             title="Country"
             max={ctryCnt}
+            color="#795548"
             value={vCtry}
             setValue={setVCtry}
             hide={toHide[5] ?? false}
             setHide={() => toggleIdx(5, setToHide)}
             disable={toDisable[5] ?? false}
             setDisable={() => toggleIdx(5, setToDisable)}
+            text={toText[5] ?? false}
+            setText={() => toggleIdx(5, setToText)}
           />
           <SelectionCard
             title="Company"
             max={compCnt}
+            color="#4caf50"
             value={vComp}
             setValue={setVComp}
             hide={toHide[6] ?? false}
             setHide={() => toggleIdx(6, setToHide)}
             disable={toDisable[6] ?? false}
             setDisable={() => toggleIdx(6, setToDisable)}
+            text={toText[6] ?? false}
+            setText={() => toggleIdx(6, setToText)}
           />
+          <button
+            className="flex w-full flex-col items-center space-x-5 rounded-2xl bg-white/30 px-5 py-3 text-center align-middle hover:bg-white/70"
+            onClick={() => toggleIdx(0, setToHide)}
+          >
+            <h1>{toHide[0] ? "Show Movie Nodes" : "Hide Movie Nodes"}</h1>
+          </button>
         </div>
       </div>
     </>
