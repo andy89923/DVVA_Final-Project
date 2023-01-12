@@ -228,7 +228,7 @@ const MyDoughnut: React.FC<{
     return tmp.length;
   });
 
-  const config = {
+  const config: any = {
     rotation: true,
     spacing: 0,
     hoverOffset: 50,
