@@ -105,22 +105,6 @@ const getGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: st
     return links;
   }, [] as LinkObject[]) satisfies LinkObject[];
 
-  // const links = dataArr.reduce((links, data) => {
-  //   const entry = toEntry.reduce((value, entry) => value[entry], data)
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   entry.forEach((d: any) => {
-  //     const value = toObject.reduce((obj, to) => obj[to], d); 
-  //     if (keyDict[value[key]] != null){
-  //       links.push({
-  //         source: `KEY_${value.id}`,
-  //         target: `DATA_${data.id}`,
-  //       })
-  //     }
-      
-  //   });
-  //   return links;
-  // }, [] as LinkObject[]) satisfies LinkObject[];
-
   const graph = {
     nodes: [...dataNodes, ...keyNodes],
     links: links,
@@ -129,4 +113,57 @@ const getGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: st
   return {graph, keyLength: uniqueCount}
 }
 
-export { getGraph, getCountDict, getCountDictV2 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getTTGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined, val1:number, val2:number) => {
+  const {countDict: keyDict, uniqueCount} = getCountDictV2(dataArr, toEntry, toObject, key, start, end) as {countDict:KeyMap<{data: Keyword, count: number}>, uniqueCount:number};
+  const keyNodes = Object.values(keyDict).map((d) => ({
+    id: `KEY_${d.data.id}`,
+    name: d.data.name,
+    val: val2,
+  }));
+  const dataNodes = dataArr.map((data) => ({
+      id: `DATA_${data.id}`,
+      name: data.title,
+      val: val1,
+  }));
+  const {countDict: companyDict, uniqueCount: _} = getCountDictV2(dataArr, ["crew"], toObject, key, 0, 100) as {countDict:KeyMap<{data: Keyword, count: number}>, uniqueCount:number};
+  const companyNodes = Object.values(companyDict).map((d) => ({
+    id: `COMP_${d.data.id}`,
+    name: d.data.name,
+    val: val2,
+  }));
+
+  const links = dataArr.reduce((links, data) => {
+    const entry1 = toEntry.reduce((value, entry) => value[entry], data)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    entry1.forEach((d: any) => {
+      if (keyDict[d[key]] != null){
+        links.push({
+          source: `KEY_${d.id}`,
+          target: `DATA_${data.id}`,
+        })
+      }
+    });
+    
+    const entry2 = ["crew"].reduce((value, entry) => value[entry], data)
+    entry2.forEach((d: any) => {
+      if (companyDict[d[key]] != null){
+        links.push({
+          source: `COMP_${d.id}`,
+          target: `DATA_${data.id}`,
+        })
+      }
+    });
+
+    return links;
+  }, [] as LinkObject[]) satisfies LinkObject[];
+
+  const graph = {
+    nodes: [...dataNodes, ...keyNodes, ...companyNodes],
+    links: links,
+  } satisfies GraphData;
+
+  return {graph, keyLength: uniqueCount}
+}
+
+export { getGraph, getCountDict, getCountDictV2, getTTGraph };
