@@ -115,9 +115,7 @@ const SelectionCard: React.FC<{
 };
 
 const MyMovieGraph: React.FC<{
-  data: MovieData[];
-  val1: number;
-  val2: number;
+  data: MovieData[] | undefined;
 }> = (props) => {
   const [width, height] = useWindowSize();
   const [vLang, setVLang] = useState<number>(5);
@@ -233,87 +231,88 @@ const MyMovieGraph: React.FC<{
 
   const movieNodes = useMemo(
     () =>
-      props.data.map((data) => {
+      props.data?.map((data) => {
         return {
           id: `Movie_${data.id}`,
           name: data.title,
           val: 0.01,
         };
-      }),
+      }) || [],
     [props.data]
   );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const links = props.data.reduce((links, movie) => {
-    const entry1 = movie.spoken_languages;
-    const entry2 = movie.keywords;
-    const entry3 = movie.crew;
-    const entry4 = movie.genres;
-    const entry5 = movie.countries;
-    const entry6 = movie.companies;
+  const links =
+    props.data?.reduce((links, movie) => {
+      const entry1 = movie.spoken_languages;
+      const entry2 = movie.keywords;
+      const entry3 = movie.crew;
+      const entry4 = movie.genres;
+      const entry5 = movie.countries;
+      const entry6 = movie.companies;
 
-    if (!toDisable[1]) {
-      entry1.forEach((d) => {
-        if (langDict[d.id] != null) {
-          links.push({
-            source: `Language_${d.id}`,
-            target: `Movie_${movie.id}`,
-          });
-        }
-      });
-    }
-    if (!toDisable[2]) {
-      entry2.forEach((d) => {
-        if (wordDict[d.id] != null) {
-          links.push({
-            source: `Keyword_${d.id}`,
-            target: `Movie_${movie.id}`,
-          });
-        }
-      });
-    }
-    if (!toDisable[3]) {
-      entry3.forEach((d) => {
-        if (crewDict[d.id] != null) {
-          links.push({
-            source: `Actor_${d.id}`,
-            target: `Movie_${movie.id}`,
-          });
-        }
-      });
-    }
-    if (!toDisable[4]) {
-      entry4.forEach((d) => {
-        if (gnreDict[d.id] != null) {
-          links.push({
-            source: `Genre_${d.id}`,
-            target: `Movie_${movie.id}`,
-          });
-        }
-      });
-    }
-    if (!toDisable[5]) {
-      entry5.forEach((d) => {
-        if (ctryDict[d.id] != null) {
-          links.push({
-            source: `Country_${d.id}`,
-            target: `Movie_${movie.id}`,
-          });
-        }
-      });
-    }
-    if (!toDisable[6]) {
-      entry6.forEach((d) => {
-        if (compDict[d.id] != null) {
-          links.push({
-            source: `Company_${d.id}`,
-            target: `Movie_${movie.id}`,
-          });
-        }
-      });
-    }
+      if (!toDisable[1]) {
+        entry1.forEach((d) => {
+          if (langDict[d.id] != null) {
+            links.push({
+              source: `Language_${d.id}`,
+              target: `Movie_${movie.id}`,
+            });
+          }
+        });
+      }
+      if (!toDisable[2]) {
+        entry2.forEach((d) => {
+          if (wordDict[d.id] != null) {
+            links.push({
+              source: `Keyword_${d.id}`,
+              target: `Movie_${movie.id}`,
+            });
+          }
+        });
+      }
+      if (!toDisable[3]) {
+        entry3.forEach((d) => {
+          if (crewDict[d.id] != null) {
+            links.push({
+              source: `Actor_${d.id}`,
+              target: `Movie_${movie.id}`,
+            });
+          }
+        });
+      }
+      if (!toDisable[4]) {
+        entry4.forEach((d) => {
+          if (gnreDict[d.id] != null) {
+            links.push({
+              source: `Genre_${d.id}`,
+              target: `Movie_${movie.id}`,
+            });
+          }
+        });
+      }
+      if (!toDisable[5]) {
+        entry5.forEach((d) => {
+          if (ctryDict[d.id] != null) {
+            links.push({
+              source: `Country_${d.id}`,
+              target: `Movie_${movie.id}`,
+            });
+          }
+        });
+      }
+      if (!toDisable[6]) {
+        entry6.forEach((d) => {
+          if (compDict[d.id] != null) {
+            links.push({
+              source: `Company_${d.id}`,
+              target: `Movie_${movie.id}`,
+            });
+          }
+        });
+      }
 
-    return links;
-  }, [] as { source: string; target: string }[]);
+      return links;
+    }, [] as { source: string; target: string }[]) || [];
 
   const nodes = [];
   !toDisable[0] && nodes.push(...movieNodes);
@@ -547,14 +546,7 @@ const Relation: NextPage = () => {
         </div>
       )}
       <main className="flex h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        {movies != null ? (
-          <MyMovieGraph data={movies} val1={10} val2={0.01} />
-        ) : (
-          // ""
-          <div className="flex h-96 flex-col items-center justify-center">
-            <h1 className="text-4xl text-white">Loading...</h1>
-          </div>
-        )}
+        <MyMovieGraph data={movies} />
       </main>
     </>
   );

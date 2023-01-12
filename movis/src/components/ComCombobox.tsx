@@ -7,8 +7,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import fuzzysort from "fuzzysort";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import type { KeyMap } from "../utils/myClasses";
-import MyListbox from "./MyListbox";
-import { Company } from "@prisma/client";
+import type { Company } from "@prisma/client";
 
 // Change string[] to data[]
 interface IProps {
@@ -18,28 +17,16 @@ interface IProps {
   setSelected: Dispatch<SetStateAction<Company[] | any[]>>;
 }
 
-const myKeyMap = {
-  name: "Name",
-} as KeyMap<string>;
-
 const ComCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   const [query, setQuery] = useState("");
-  const [filterkey, setFilterkey] = useState("name");
-
-  // merge genres into one string for fuzzy sort filtering
-  const moddedData = data.map((d) => {
-    return {
-      ...d,
-    };
-  });
 
   //Fuzzy sort filtering data with key selected by listbox
   const filteredData = fuzzysort
-    .go(query, moddedData, {
+    .go(query, data, {
       threshold: -50,
       // limit: 10,
       all: true,
-      key: filterkey,
+      key: "name",
     })
     .map((d) => d.obj);
 
@@ -54,7 +41,7 @@ const ComCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   });
 
   //Data information shown in combobox's list
-  const DataInfo: React.FC<{ data: typeof moddedData[number] }> = (props) => {
+  const DataInfo: React.FC<{ data: typeof data[number] }> = (props) => {
     return (
       <span
         className={`block truncate ${selected ? "font-bold" : "font-semibold"}`}
@@ -67,7 +54,7 @@ const ComCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
   return (
     <div className="flex w-full items-center justify-center align-middle">
       <Combobox value={selected} by="id" onChange={setSelected} multiple>
-        <div className="relative mt-1 w-full">
+        <div className="relative w-full">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
@@ -104,28 +91,15 @@ const ComCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
                 <div
                   className="relative h-16 cursor-default select-none bg-teal-700/30 py-2 pl-10 pr-4 text-teal-900 hover:bg-teal-700 hover:text-white"
                   onClick={() => {
-                    if (selected.length === filteredData.length) {
-                      setSelected([]);
-                    } else {
-                      setSelected(filteredData);
-                    }
+                    setSelected([]);
                   }}
                 >
-                  {selected.length === filteredData.length ? (
-                    <span className="block truncate text-base font-semibold hover:font-bold">
-                      Unselect All
-                      <p className="font-light">
-                        {`Unselect all ${filteredData.length} company`}
-                      </p>
-                    </span>
-                  ) : (
-                    <span className="block truncate text-base font-semibold hover:font-bold">
-                      Select All
-                      <p className="font-light">
-                        {`Select all ${filteredData.length} company`}
-                      </p>
-                    </span>
-                  )}
+                  <span className="block truncate text-base font-semibold hover:font-bold">
+                    Unselect All
+                    <p className="font-light">
+                      {`Curently selected ${selected.length} companies`}
+                    </p>
+                  </span>
                 </div>
 
                 {filteredData.length === 0 && query !== "" ? (
@@ -181,14 +155,6 @@ const ComCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
           </Transition>
         </div>
       </Combobox>
-      {/* <div className="flex items-center justify-center space-x-1 px-2 align-middle">
-        <p>By: </p>
-        <MyListbox
-          keyMap={myKeyMap}
-          selected={filterkey}
-          setSelected={setFilterkey}
-        />
-      </div> */}
     </div>
   );
 };

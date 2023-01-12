@@ -53,7 +53,9 @@ const getCountDict = (dataArr: any[], toEntry: string[], toObject: string[], key
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getCountDictV2 = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined)  => { 
+const getCountDictV2 = (dataArr: any[] | undefined, toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined)  => { 
+  if (dataArr == null) return {countDict: {}, uniqueCount: 0};
+  
   const countDict = dataArr.reduce((acc, data) => {
     const entry = toEntry.reduce((value, entry) => value[entry], data)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
