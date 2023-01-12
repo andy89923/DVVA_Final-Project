@@ -56,7 +56,7 @@ const SelectionCard: React.FC<{
     >
       <div className="flex w-full justify-between">
         <button
-          className={`flex h-8 w-1/2 items-center rounded bg-gray-200 p-1 hover:bg-white ${
+          className={`flex h-8 w-1/2 items-center rounded bg-gray-300 p-1 hover:bg-white ${
             props.disable ? "bg-gray-500 line-through" : ""
           }`}
           onClick={() => props.setDisable()}
@@ -69,7 +69,7 @@ const SelectionCard: React.FC<{
         </button>
         <div className="flex pb-2">
           <button
-            className={`mr-1 flex h-8 w-8 items-center justify-center rounded-md bg-gray-200 ${
+            className={`mr-1 flex h-8 w-8 items-center justify-center rounded-md bg-gray-300 ${
               props.disable ? "bg-gray-500 line-through" : "hover:bg-white"
             }`}
             onClick={() => props.setText()}
@@ -78,7 +78,7 @@ const SelectionCard: React.FC<{
             {props.text ? <RxText /> : <RxTextNone />}
           </button>
           <button
-            className={`flex h-8 w-8 items-center justify-center rounded-md bg-gray-200 ${
+            className={`flex h-8 w-8 items-center justify-center rounded-md bg-gray-300 ${
               props.disable ? "bg-gray-500 line-through" : "hover:bg-white"
             }`}
             onClick={() => props.setHide()}
@@ -527,6 +527,25 @@ const Relation: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
+      {movies != null && (
+        <div className="top-section flex-0 fixed top-20 left-10 z-10 flex w-full flex-row justify-between gap-3">
+          <div className="text-left text-white">
+            <div className="inline-block text-3xl font-extrabold sm:text-5xl">
+              Mo
+              <span className="font-extrabold text-[hsl(280,100%,70%)]">
+                Vis{" "}
+              </span>
+            </div>
+            <div className="ml-4 inline-block text-3xl text-[hsl(295,32%,69%)] sm:text-[2rem]">
+              Relation Analysis
+            </div>
+            <div className="my-1">
+              Here, you may choose to analyze attributes that you are
+              interested.
+            </div>
+          </div>
+        </div>
+      )}
       <main className="flex h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         {movies != null ? (
           <MyMovieGraph data={movies} val1={10} val2={0.01} />
