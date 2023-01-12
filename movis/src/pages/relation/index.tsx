@@ -261,16 +261,17 @@ const MyMovieGraph: React.FC<{
     return links;
   }, [] as { source: string; target: string }[]);
 
+  const nodes = [];
+  !toDisable[0] && nodes.push(...movieNodes);
+  !toDisable[1] && nodes.push(...langNodes);
+  !toDisable[2] && nodes.push(...wordNodes);
+  !toDisable[3] && nodes.push(...actrNodes);
+  !toDisable[4] && nodes.push(...gnreNodes);
+  !toDisable[5] && nodes.push(...ctryNodes);
+  !toDisable[6] && nodes.push(...compNodes);
+
   const graph = {
-    nodes: [
-      ...movieNodes,
-      ...langNodes,
-      ...wordNodes,
-      ...actrNodes,
-      ...gnreNodes,
-      ...ctryNodes,
-      ...compNodes,
-    ],
+    nodes,
     links,
   };
 
