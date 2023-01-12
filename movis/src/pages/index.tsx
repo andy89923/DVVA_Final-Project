@@ -2,12 +2,13 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
-import ZoomCard from "../components/ZoomCard";
-
 import { api } from "../utils/api";
+import { useState } from "react";
+
+import DataRangeComp from "../components/DataRangeComp";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const [value, setValue] = useState([new Date(), new Date()]);
 
   return (
     <>
@@ -34,54 +35,10 @@ const Home: NextPage = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <ZoomCard title="Link 1">
-              <Link
-                className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-                href="https://create.t3.gg/en/usage/first-steps"
-                target="_blank"
-              >
-                <h3 className="text-2xl font-bold">First Steps →</h3>
-                <div className="text-lg">
-                  Just the basics - Everything you need to know to set up your
-                  database and authentication.
-                </div>
-              </Link>
-            </ZoomCard>
-            <ZoomCard title="Link 2">
-              <Link
-                className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-                href="https://create.t3.gg/en/introduction"
-                target="_blank"
-              >
-                <h3 className="text-2xl font-bold">Documentation →</h3>
-                <div className="text-lg">
-                  Learn more about Create T3 App, the libraries it uses, and how
-                  to deploy it.
-                </div>
-              </Link>
-            </ZoomCard>
-          </div>
-          <p className="text-2xl text-white">
-            {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
-          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
-            <h3 className="text-2xl font-bold">Some</h3>
-          </div>
-          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
-            <h3 className="text-2xl font-bold">Arbitary</h3>
-          </div>
-          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
-            <h3 className="text-2xl font-bold">Blocks</h3>
+          <div className="flex flex-col items-center justify-center gap-4">
+            <DataRangeComp />
           </div>
         </div>
-        <ZoomCard title="Some Title">
-          <p className="text-2xl text-white">
-            {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-          </p>
-        </ZoomCard>
       </main>
     </>
   );

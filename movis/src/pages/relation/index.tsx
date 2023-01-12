@@ -375,7 +375,7 @@ const MyMovieGraph: React.FC<{
         nodeLabel="name"
         nodeVisibility={(node: NodeObject) => assignBoolean(node?.id, toHide)}
         nodeColor={(node: NodeObject) => assignColor(node?.id)}
-        nodeCanvasObjectMode={() => "after"}
+        // nodeCanvasObjectMode={() => "after"}
         nodeThreeObjectExtend={true}
         // linkColor={(link: LinkObject) => assignColor(link.source?.toString())}
         linkColor="#FFFFFF"

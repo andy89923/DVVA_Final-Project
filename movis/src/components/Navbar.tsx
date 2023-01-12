@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 
 import { api } from "../utils/api";
+import DataRangeComp from "./DataRangeComp";
 
 // Navigation Element
 const Navigation: React.FC<{ title: string; url: string }> = (props) => {
@@ -39,8 +40,7 @@ export default function Navbar() {
         <Navigation title="F315" url="/f315" />
       </div>
       <div className="user-settings flex flex-row gap-4">
-        <Navigation title="Login" url="/login" />
-        <Navigation title="Register" url="/register" />
+        <DataRangeComp />
       </div>
     </div>
   );
