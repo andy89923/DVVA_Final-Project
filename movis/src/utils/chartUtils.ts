@@ -1,7 +1,12 @@
+import { BoxPlotDataPoint } from "@sgratzl/chartjs-chart-boxplot";
 import type { KeyMap } from "./myClasses";
 import { getCountDict } from "./relationUtils";
 
-const ChartOptions = (title: string | null, showLegend: boolean) => {
+const ChartOptions = (
+  title: string | null,
+  showLegend: boolean,
+  stacked: boolean
+) => {
   return {
     // maintianAspectRatio: false,
     plugins: {
@@ -24,10 +29,10 @@ const ChartOptions = (title: string | null, showLegend: boolean) => {
         },
       },
     },
-  
+
     scales: {
       y: {
-        stacked: true,
+        stacked: stacked,
         ticks: {
           backdropColor: "transparent",
           font: {
@@ -36,7 +41,7 @@ const ChartOptions = (title: string | null, showLegend: boolean) => {
         },
       },
       x: {
-        stacked: true,
+        stacked: stacked,
         ticks: {
           backdropColor: "transparent",
           font: {
@@ -45,7 +50,7 @@ const ChartOptions = (title: string | null, showLegend: boolean) => {
         },
       },
     },
-  
+
     elements: {
       line: {
         borderWidth: 3,
@@ -53,26 +58,31 @@ const ChartOptions = (title: string | null, showLegend: boolean) => {
       },
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any
+  } as any;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getTopElementCount = (dataArr: any[], toEntry: string[], toObject: string[], key:string, top=10) => { 
-  const topCountDict = getCountDict(dataArr, toEntry, toObject, key, 0, top)
+const getTopElementCount = (
+  dataArr: any[],
+  toEntry: string[],
+  toObject: string[],
+  key: string,
+  top = 10
+) => {
+  const topCountDict = getCountDict(dataArr, toEntry, toObject, key, 0, top);
 
-  const entries = Object.entries(topCountDict)
+  const entries = Object.entries(topCountDict);
   const labels = entries.map((entry) => entry[0]);
   const data = entries.map((entry) => entry[1].count);
-  return ({labels, data});
-}
+  return { labels, data };
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const convertDicttoChartData = (dict: KeyMap<{data: any, count: number}>) => {
-  const entries = Object.entries(dict)
+const convertDicttoChartData = (dict: KeyMap<{ data: any; count: number }>) => {
+  const entries = Object.entries(dict);
   const labels = entries.map((entry) => entry[0]);
   const data = entries.map((entry) => entry[1].count);
-  return ({labels, data});
-}
+  return { labels, data };
+};
 
-
-export {ChartOptions, convertDicttoChartData, getTopElementCount};
+export { ChartOptions, convertDicttoChartData, getTopElementCount };

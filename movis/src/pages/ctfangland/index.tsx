@@ -70,8 +70,6 @@ const MyCarousel: React.FC<{ data: CompanyData[]; size: number }> = (props) => {
     return a.concat(b);
   });
 
-  console.log(movies);
-
   movies.sort((a, b) => {
     return b["popularity"] - a["popularity"];
   });
@@ -90,12 +88,17 @@ const MyCarousel: React.FC<{ data: CompanyData[]; size: number }> = (props) => {
 };
 
 // https://react-chartjs-2.js.org/examples/line-chart/
-const MyLinePlot: React.FC<{ data: MovieData[] }> = (props) => {
+const MyLinePlot: React.FC<{
+  companies: Company[];
+  data: CompanyData[];
+  title: string;
+}> = (props) => {
   const options = {
+    spanGaps: true,
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
+        position: "bottom" as const,
       },
       title: {
         display: false,
@@ -103,40 +106,62 @@ const MyLinePlot: React.FC<{ data: MovieData[] }> = (props) => {
       },
     },
   };
+
+  const dateToStr = (date: Date | undefined) => {
+    if (date == undefined) return "1900-0-0";
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+  };
+  const labels = props.data.reduce((a, b) => {
+    return a
+      .map((val) => {
+        return dateToStr(val.release_date);
+      })
+      .concat(
+        b.map((val) => {
+          return dateToStr(val.release_date);
+        })
+      );
+  });
+  labels.sort();
+
+  const data = {
+    labels: labels,
+    datasets: props.data.map((com, idx) => {
+      return {
+        label: props.companies[idx]?.name,
+        data: labels.map((date) => {
+          for (var i = 0; i < com.length; i++) {
+            if (Object.is(dateToStr(com[i]?.release_date), date))
+              return com[i]?.averageRating;
+          }
+          return NaN;
+        }),
+        borderColor: brdr_color_maps[idx],
+        backgroundColor: back_color_maps[idx],
+        borderWidth: 1,
+        stepped: false,
+      };
+    }),
+  };
+
   return (
     <div className="h-full w-full">
-      <Line
-        options={options}
-        data={{
-          labels: ["Jun", "Jul", "Aug"],
-          datasets: [
-            {
-              label: "a",
-              data: [5, 6, 7],
-              borderColor: "rgb(255, 99, 132)",
-              backgroundColor: "rgba(255, 99, 132, 0.5)",
-            },
-            {
-              label: "b",
-              data: [3, 2, 1],
-              borderColor: "rgb(53, 162, 235)",
-              backgroundColor: "rgba(53, 162, 235, 0.5)",
-            },
-          ],
-        }}
-      />
+      <h1>{props.title}</h1>
+      <Line options={options} data={data} />
     </div>
   );
 };
 
 const back_color_maps: string[] = [
-  "rgba(255, 99, 132, 0.2)",
+  "rgba(255, 99, 132, 0.5)",
   "rgba(53, 162, 235, 0.5)",
+  "rgba(75, 192, 192, 0.5)",
 ];
 
 const brdr_color_maps: string[] = [
   "rgba(255, 99, 132, 1)",
-  "rgb(53, 162, 235)",
+  "rgba(53, 162, 235, 1)",
+  "rgba(75, 192, 192, 1)",
 ];
 
 const MyBarPlot: React.FC<{ companies: Company[]; data: CompanyData[] }> = (
@@ -165,7 +190,7 @@ const MyBarPlot: React.FC<{ companies: Company[]; data: CompanyData[] }> = (
   return (
     <div className="h-full w-full">
       <h1>Movies Count</h1>
-      <Bar data={data} options={ChartOptions(null, true)} />
+      <Bar data={data} options={ChartOptions(null, true, false)} />
     </div>
   );
 };
@@ -208,20 +233,24 @@ const CTFHome: NextPage = () => {
 
               <ZoomCard title="Movie Ratings">
                 <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                  <MyLinePlot data={companyData} />
+                  <MyLinePlot
+                    companies={selected}
+                    data={companyData}
+                    title="Movie Ratings"
+                  />
                 </div>
               </ZoomCard>
 
               <div className="flex flex-col gap-4">
                 <ZoomCard title="Movie Budget">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyLinePlot data={companyData} />
+                    {/* <MyLinePlot companies={selected} data={companyData} /> */}
                   </div>
                 </ZoomCard>
 
                 <ZoomCard title="Movie Budget">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyLinePlot data={companyData} />
+                    {/* <MyLinePlot companies={selected} data={companyData} /> */}
                   </div>
                 </ZoomCard>
               </div>
@@ -229,13 +258,13 @@ const CTFHome: NextPage = () => {
               <div className="flex flex-col gap-4">
                 <ZoomCard title="Movie Budget">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyLinePlot data={companyData} />
+                    {/* <MyLinePlot companies={selected} data={companyData} /> */}
                   </div>
                 </ZoomCard>
 
                 <ZoomCard title="Movie Budget">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyLinePlot data={companyData} />
+                    {/* <MyLinePlot companies={selected} data={companyData} /> */}
                   </div>
                 </ZoomCard>
               </div>

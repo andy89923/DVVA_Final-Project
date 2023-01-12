@@ -85,7 +85,7 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
         selected={filterkey}
         setSelected={setFilterkey}
       />
-      <Bar data={data} options={ChartOptions(null, true)} />
+      <Bar data={data} options={ChartOptions(null, true, true)} />
     </div>
   );
 };
