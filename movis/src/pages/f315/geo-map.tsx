@@ -8,6 +8,8 @@ import {
   Title,
   Legend,
 } from "chart.js";
+import { getCountDict } from "../../utils/relationUtils";
+import { iso_3166_1_2_digit_to_number_map } from "../../utils/isoMapping";
 
 ChartJS.register(
   Title,
@@ -20,7 +22,7 @@ ChartJS.register(
   ChartGeo.GeoFeature
 );
 
-export default function Map() {
+export default function Map(data: any) {
   const chartRef = useRef();
   const [countries, setCountries] = useState<any>([]);
 
@@ -34,29 +36,49 @@ export default function Map() {
       });
   }, []);
 
+  const movieCountryCount = getCountDict(
+    data["data"],
+    ["countries"],
+    [],
+    "iso_3166_1",
+    0,
+    undefined
+  );
+
+  const geoMapCount = [];
+  for (const key of Object.keys(movieCountryCount)) {
+    const feat =
+      countries[
+        countries.findIndex(
+          (d: any) => d.id == iso_3166_1_2_digit_to_number_map[key]
+        )
+      ];
+    if (feat !== undefined)
+      geoMapCount.push({ feature: feat, value: movieCountryCount[key].count });
+  }
+
+  const labels = geoMapCount.map((d: any) => d.feature.properties.name);
+
   return (
     <Chart
       ref={chartRef}
       type="choropleth"
       data={{
-        labels: countries.map((d: any) => d.properties.name),
+        labels: labels,
         datasets: [
           {
             outline: countries,
             label: "Countries",
-            data: countries.map((d: any) => ({
-              feature: d,
-              value: Math.random() * 10,
-            })),
+            data: geoMapCount,
             // color from https://mdigi.tools/color-shades/#9417e2
-            backgroundColor: [
-              "#f5e8fd",
-              "#e0baf8",
-              "#cb8bf3",
-              "#b75def",
-              "#a22fea",
-              "#8815d0",
-            ],
+            // backgroundColor: [
+            //   // "#8815d0",
+            //   // "#a22fea",
+            //   // "#b75def",
+            //   // "#cb8bf3",
+            //   // "#e0baf8",
+            //   // "#f5e8fd",
+            // ],
           },
         ],
       }}

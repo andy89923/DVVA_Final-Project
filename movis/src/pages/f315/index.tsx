@@ -5,9 +5,15 @@ import { api } from "../../utils/api";
 import Map from "./geo-map";
 import ZoomCard from "../../components/ZoomCard";
 import WordCloud from "./word-cloud";
+import { getCountDict } from "../../utils/relationUtils";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+
+  const { data: movies } = api.movie.betweenYearRange.useQuery({
+    minYear: 2018,
+    maxYear: 2020,
+  });
 
   return (
     <>
@@ -21,29 +27,28 @@ const Home: NextPage = () => {
       </Head>
       <Navbar />
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <div className="text-center font-extrabold tracking-tight text-white">
-            <h1 className="text-5xl sm:text-[5rem]">
-              Mo
-              <span className="text-[hsl(280,100%,70%)]">Vis</span>
-            </h1>
-            <h2 className="text-3xl sm:text-[3rem]">
-              <span className="text-[hsl(295,32%,69%)]">
-                The Movies Dataset Visualization
-              </span>
-            </h2>
+        {movies != null ? (
+          <div className="grow-1 grid h-full w-full grid-cols-6 grid-rows-4 gap-4">
+            <ZoomCard
+              title="Production count by Country"
+              className="col-span-3 row-span-2"
+            >
+              <div className="flex h-full flex-col items-center justify-center gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+                <Map data={movies} />
+              </div>
+            </ZoomCard>
+            <ZoomCard
+              title="Most frequent keyword in movie"
+              className="col-span-3 row-span-2"
+            >
+              <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+                <WordCloud></WordCloud>
+              </div>
+            </ZoomCard>
           </div>
-        </div>
-        <ZoomCard title="Production count by Country">
-          <div className="flex flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
-            <Map />
-          </div>
-        </ZoomCard>
-        <ZoomCard title="Most frequent keyword in movie">
-          <div className="flex flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
-            <WordCloud></WordCloud>
-          </div>
-        </ZoomCard>
+        ) : (
+          <h1 className="text-2xl font-bold text-white">Querying Data...</h1>
+        )}
       </main>
     </>
   );
