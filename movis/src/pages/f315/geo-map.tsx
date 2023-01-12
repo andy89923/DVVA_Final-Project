@@ -54,7 +54,10 @@ export default function Map(data: any) {
         )
       ];
     if (feat !== undefined)
-      geoMapCount.push({ feature: feat, value: movieCountryCount[key].count });
+      geoMapCount.push({
+        feature: feat,
+        value: Math.log(movieCountryCount[key].count),
+      });
   }
 
   const labels = geoMapCount.map((d: any) => d.feature.properties.name);
