@@ -19,58 +19,29 @@ ChartJS.register(
   ChartWordCloud.WordElement
 );
 
-export default function WordCloud() {
+export default function WordCloud(props: { keywordsCountDict: any }) {
   const chartRef = useRef();
-  const words = [
-    { key: "word", value: 10 },
-    { key: "words", value: 8 },
-    { key: "sprite", value: 7 },
-    { key: "placed", value: 5 },
-    { key: "layout", value: 4 },
-    { key: "algorithm", value: 4 },
-    { key: "area", value: 4 },
-    { key: "layout", value: 4 },
-    { key: "algorithm", value: 4 },
-    { key: "area", value: 4 },
-    { key: "without", value: 3 },
-    { key: "step", value: 3 },
-    { key: "bounding", value: 3 },
-    { key: "retrieve", value: 3 },
-    { key: "operation", value: 3 },
-    { key: "collision", value: 3 },
-    { key: "candidate", value: 3 },
-    { key: "32", value: 2 },
-    { key: "placement", value: 2 },
-    { key: "time", value: 2 },
-    { key: "possible", value: 2 },
-    { key: "even", value: 2 },
-    { key: "simple", value: 2 },
-    { key: "starting", value: 2 },
-    { key: "previously", value: 2 },
-    { key: "move", value: 2 },
-    { key: "perform", value: 2 },
-    { key: "hierarchical", value: 2 },
-    { key: "draw", value: 2 },
-    { key: "pixel", value: 2 },
-    { key: "data", value: 2 },
-    { key: "separately", value: 2 },
-    { key: "expensive", value: 2 },
-    { key: "pixels", value: 2 },
-    { key: "masks", value: 2 },
-    { key: "implementation", value: 2 },
-    { key: "detection", value: 2 },
-  ];
+  // chart input format: label arr [] input arr[]
+  console.log("props:", props);
+  const { keywordsCountDict } = props;
+  const labels = [],
+    counts = [];
+  console.log(keywordsCountDict);
+  for (const keyword in keywordsCountDict) {
+    labels.push(keyword);
+    counts.push(keywordsCountDict[keyword].count);
+  }
 
   return (
     <Chart
       ref={chartRef}
       type="wordCloud"
       data={{
-        labels: words.map((d: any) => d.key),
+        labels: labels,
         datasets: [
           {
             label: "",
-            data: words.map((d) => 10 + d.value * 10),
+            data: counts,
           },
         ],
       }}
