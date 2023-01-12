@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import MyCombobox from "../../components/MyCombobox";
 import Navbar from "../../components/Navbar";
 import SubsetPicker from "../../components/SubsetPicker";
@@ -27,6 +27,7 @@ import {
 } from "../../utils/chartUtils";
 import MyListbox from "../../components/MyListbox";
 import { getCountDict } from "../../utils/relationUtils";
+import { DateContext } from "../../utils/DataContext";
 
 ChartJS.register(
   CategoryScale,
@@ -92,9 +93,10 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
 
 const Playground: NextPage = () => {
   // const { data: movies } = api.movie.getAll.useQuery();
-  const { data: movies } = api.movie.betweenYearRange.useQuery({
-    minYear: 2001,
-    maxYear: 2001,
+  const { dateRange } = useContext(DateContext);
+  const { data: movies } = api.movie.dateRange.useQuery({
+    minDate: dateRange.startDate,
+    maxDate: dateRange.endDate,
   });
 
   // const { data: genres } = api.getAll.genre.useQuery();

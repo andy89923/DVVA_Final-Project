@@ -240,12 +240,10 @@ const TopXHorizontalBarChart: React.FC<{
 };
 
 const Home: NextPage = () => {
-  const minYear = 2010,
-    maxYear = 2011;
-
-  const { data: movies } = api.movie.betweenYearRange.useQuery({
-    minYear: minYear,
-    maxYear: maxYear,
+  const { dateRange } = useContext(DateContext);
+  const { data: movies } = api.movie.dateRange.useQuery({
+    minDate: dateRange.startDate,
+    maxDate: dateRange.endDate,
   });
 
   let movieCount = 0,
