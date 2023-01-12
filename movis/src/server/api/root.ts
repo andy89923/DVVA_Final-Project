@@ -4,6 +4,7 @@ import { movieRouter } from "./routers/movie";
 import { getAllRouter } from "./routers/getAll";
 import { companyRouter } from "./routers/company";
 import { personRouter } from "./routers/person";
+import { relationRouter } from "./routers/relation";
 
 /**
  * This is the primary router for your server.
@@ -13,6 +14,7 @@ import { personRouter } from "./routers/person";
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
   getAll: getAllRouter,
+  relation: relationRouter,
   movie: movieRouter,
   company: companyRouter,
   person: personRouter,

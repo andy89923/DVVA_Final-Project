@@ -51,9 +51,33 @@ const getCountDict = (dataArr: any[], toEntry: string[], toObject: string[], key
   return Object.fromEntries(sortedEntries);
 }
 
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getCountDictV2 = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined)  => { 
+  const countDict = dataArr.reduce((acc, data) => {
+    const entry = toEntry.reduce((value, entry) => value[entry], data)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    entry.forEach((d: any) => {
+      const value = toObject.reduce((obj, to) => obj[to], d); 
+      if (acc[value[key]] == null) {
+        const cntMap = {data: value, count: 1};
+        acc[value[key]] = cntMap;
+      } else {
+        acc[value[key]] = {...acc[value[key]], count: acc[value[key]].count + 1};
+      }
+    });
+    return acc;
+  }, {})
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const entries = Object.entries(countDict) as [string, {data: any, count: number}] [];
+  const sortedEntries = entries.sort((a, b) => b[1].count - a[1].count).slice(start, end);
+  return {countDict: Object.fromEntries(sortedEntries), uniqueCount: entries.length};
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: string, start:number|undefined, end:number|undefined, val1:number, val2:number) => {
-  const keyDict = getCountDict(dataArr, toEntry, toObject, key, start, end) as KeyMap<{data: Keyword, count: number}>;
+  const {countDict: keyDict, uniqueCount} = getCountDictV2(dataArr, toEntry, toObject, key, start, end) as {countDict:KeyMap<{data: Keyword, count: number}>, uniqueCount:number};
   const keyNodes = Object.values(keyDict).map((d) => ({
     id: `KEY_${d.data.id}`,
     name: d.data.name,
@@ -81,12 +105,28 @@ const getGraph = (dataArr: any[], toEntry: string[], toObject: string[], key: st
     return links;
   }, [] as LinkObject[]) satisfies LinkObject[];
 
+  // const links = dataArr.reduce((links, data) => {
+  //   const entry = toEntry.reduce((value, entry) => value[entry], data)
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   entry.forEach((d: any) => {
+  //     const value = toObject.reduce((obj, to) => obj[to], d); 
+  //     if (keyDict[value[key]] != null){
+  //       links.push({
+  //         source: `KEY_${value.id}`,
+  //         target: `DATA_${data.id}`,
+  //       })
+  //     }
+      
+  //   });
+  //   return links;
+  // }, [] as LinkObject[]) satisfies LinkObject[];
+
   const graph = {
     nodes: [...dataNodes, ...keyNodes],
     links: links,
   } satisfies GraphData;
 
-  return graph
+  return {graph, keyLength: uniqueCount}
 }
 
-export { getGraph, getCountDict };
+export { getGraph, getCountDict, getCountDictV2 };
