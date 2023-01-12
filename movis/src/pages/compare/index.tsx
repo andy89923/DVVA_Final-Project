@@ -134,7 +134,7 @@ const MyLinePlot: React.FC<{
       return {
         label: props.companies[idx]?.name,
         data: labels.map((date) => {
-          for (var i = 0; i < com.length; i++) {
+          for (let i = 0; i < com.length; i++) {
             if (Object.is(dateToStr(com[i]?.release_date), date)) {
               if (props.attr === "averageRating") return com[i]?.averageRating;
               if (props.attr === "budget")
@@ -218,81 +218,81 @@ const MyBarPlot: React.FC<{ companies: Company[]; data: CompanyData[] }> = (
   );
 };
 
-const MyDoughnut: React.FC<{
-  companies: Company[];
-  data: CompanyData[];
-  title: string;
-  attr: string;
-}> = (props) => {
-  const labels: string[] = props.companies.map((data) => {
-    return data.name;
-  });
+// const MyDoughnut: React.FC<{
+//   companies: Company[];
+//   data: CompanyData[];
+//   title: string;
+//   attr: string;
+// }> = (props) => {
+//   const labels: string[] = props.companies.map((data) => {
+//     return data.name;
+//   });
 
-  const count: number[] = props.data.map((data) => {
-    const tmp = data.filter((mov) => {
-      return mov["averageRating"] >= 7;
-    });
-    return tmp.length;
-  });
+//   const count: number[] = props.data.map((data) => {
+//     const tmp = data.filter((mov) => {
+//       return mov["averageRating"] >= 7;
+//     });
+//     return tmp.length;
+//   });
 
-  const config: any = {
-    rotation: true,
-    spacing: 0,
-    hoverOffset: 30,
+//   const config: any = {
+//     rotation: true,
+//     spacing: 0,
+//     hoverOffset: 30,
 
-    plugins: {
-      legend: {
-        position: "right" as const,
-        labels: {
-          font: {
-            size: 12,
-          },
-          padding: 20,
-        },
-      },
-      title: {
-        display: false,
-        text: "Count#",
-        font: {
-          size: 20,
-        },
-      },
-      layout: {
-        padding: 100,
-      },
-    },
-  };
+//     plugins: {
+//       legend: {
+//         position: "right" as const,
+//         labels: {
+//           font: {
+//             size: 12,
+//           },
+//           padding: 20,
+//         },
+//       },
+//       title: {
+//         display: false,
+//         text: "Count#",
+//         font: {
+//           size: 20,
+//         },
+//       },
+//       layout: {
+//         padding: 100,
+//       },
+//     },
+//   };
 
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        label: "# of Movies",
-        data: count,
-        backgroundColor: back_color_maps,
-        borderColor: brdr_color_maps,
-        borderWidth: 1,
-      },
-    ],
-  };
+//   const data = {
+//     labels: labels,
+//     datasets: [
+//       {
+//         label: "# of Movies",
+//         data: count,
+//         backgroundColor: back_color_maps,
+//         borderColor: brdr_color_maps,
+//         borderWidth: 1,
+//       },
+//     ],
+//   };
 
-  return <Doughnut options={config} data={data} />;
-};
+//   return <Doughnut options={config} data={data} />;
+// };
 
-const MyListGroupElement: React.FC<{
-  selected: Company[];
-  setSelected: any;
-}> = (props) => {
-  return (
-    <>
-      <ListGroup>
-        {props.selected.map((data) => {
-          return <ListGroup.Item>{data.name}</ListGroup.Item>;
-        })}
-      </ListGroup>
-    </>
-  );
-};
+// const MyListGroupElement: React.FC<{
+//   selected: Company[];
+//   setSelected: any;
+// }> = (props) => {
+//   return (
+//     <>
+//       <ListGroup>
+//         {props.selected.map((data) => {
+//           return <ListGroup.Item>{data.name}</ListGroup.Item>;
+//         })}
+//       </ListGroup>
+//     </>
+//   );
+// };
 
 const Compare: NextPage = () => {
   const { data: companies } = api.getAll.company.useQuery();
@@ -301,19 +301,25 @@ const Compare: NextPage = () => {
     { id: 2486, name: "Studio Ghibli" },
     { id: 1947, name: "DreamWorks Animation" },
   ]);
+  const [toCompare, setToCompare] = useState<Company[]>([
+    { id: 1, name: "Pixar" },
+    { id: 2486, name: "Studio Ghibli" },
+    { id: 1947, name: "DreamWorks Animation" },
+  ]);
 
-  let sort_selected = selected;
-  sort_selected.sort((a, b) => {
-    return a.id - b.id;
-  });
+  const postQueries = api.useQueries((t) =>
+    toCompare.map((data) =>
+      t.company.dateRange({
+        companyId: data.id,
+        minDate: new Date(1900, 1, 1),
+        maxDate: new Date(2100, 12, 31),
+      })
+    )
+  );
 
-  const { data: companyData } = api.company.betweenYearRange.useQuery({
-    companyIds: selected.map((data) => {
-      return data.id;
-    }),
-    minYear: 1900,
-    maxYear: 2100,
-  });
+  const companyData = postQueries.map((q) => q.data);
+  console.log("aaa");
+  console.log(postQueries);
 
   return (
     <>
@@ -327,7 +333,7 @@ const Compare: NextPage = () => {
       </Head>
       <Navbar />
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        {companyData != null && companies != null ? (
+        {!companyData.includes(undefined) && companies != null ? (
           <>
             <div className="container flex flex-col py-6">
               <div className="top-section flex-0 flex w-full flex-row justify-between gap-3">
@@ -335,7 +341,7 @@ const Compare: NextPage = () => {
                   <div className="inline-block text-3xl font-extrabold sm:text-5xl">
                     Mo
                     <span className="font-extrabold text-[hsl(280,100%,70%)]">
-                      Vis{" "}
+                      Vis
                     </span>
                   </div>
                   <div className="ml-4 inline-block text-3xl text-[hsl(295,32%,69%)] sm:text-[2rem]">
@@ -346,13 +352,33 @@ const Compare: NextPage = () => {
                     production companies.
                   </div>
                 </div>
-                <div className="align-right flex h-full w-full flex-1 items-center justify-end">
-                  <div className="flex w-2/3 items-center justify-center">
-                    <ComCombobox
-                      data={companies}
-                      selected={selected}
-                      setSelected={setSelected}
-                    />
+                <div className="flex h-full w-full flex-1 flex-col items-end justify-end">
+                  <div className="flex w-2/3 flex-col">
+                    <div className="text-2xl font-semibold text-white">
+                      Search by comany names:
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <ComCombobox
+                        data={companies}
+                        selected={selected}
+                        setSelected={setSelected}
+                      />
+                      <button
+                        className="ml-3 w-32 rounded-xl bg-[#9f28e9] py-2 px-4 font-bold text-white hover:bg-[#bc6af0]"
+                        onClick={() =>
+                          setToCompare(
+                            selected.sort((a, b) => {
+                              return a.id - b.id;
+                            })
+                          )
+                        }
+                      >
+                        Compare
+                      </button>
+                    </div>
+                    <div className="text-white">
+                      {`selected "${selected.length}" companies.`}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -362,7 +388,7 @@ const Compare: NextPage = () => {
               <ZoomCard title="Movie Revenue" className="col-span-3 row-span-3">
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyLinePlot
-                    companies={selected}
+                    companies={toCompare}
                     data={companyData}
                     title="Movie Revenue"
                     attr="revenue"
@@ -373,7 +399,7 @@ const Compare: NextPage = () => {
               <ZoomCard title="Movie Budget" className="col-span-3 row-span-3">
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyLinePlot
-                    companies={selected}
+                    companies={toCompare}
                     data={companyData}
                     title="Movie Budget"
                     attr="budget"
@@ -394,7 +420,7 @@ const Compare: NextPage = () => {
               <ZoomCard title="Movie Ratings" className="col-span-3 row-span-3">
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyLinePlot
-                    companies={selected}
+                    companies={toCompare}
                     data={companyData}
                     title="Movie Ratings"
                     attr="averageRating"
@@ -408,7 +434,7 @@ const Compare: NextPage = () => {
               >
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyLinePlot
-                    companies={selected}
+                    companies={toCompare}
                     data={companyData}
                     title="Movie Popularity"
                     attr="popularity"
@@ -422,14 +448,14 @@ const Compare: NextPage = () => {
                 manualZoomDim="h-screen"
               >
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                  <MyBarPlot companies={selected} data={companyData} />
+                  <MyBarPlot companies={toCompare} data={companyData} />
                 </div>
               </ZoomCard>
 
               {/* <ZoomCard title="Movies with Rating 7+">
                 <div className="flex flex-row justify-center gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyDoughnut
-                    companies={selected}
+                    companies={toCompare}
                     data={companyData}
                     title="Movie Popularity"
                     attr="popularity"
