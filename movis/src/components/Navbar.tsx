@@ -31,8 +31,7 @@ export default function Navbar() {
           </Link>
         </div>
         <Navigation title="Overview" url="/overview" />
-        <Navigation title="Comparison" url="/compare" />
-        <Navigation title="Crew Analysis" url="/crew" />
+        <Navigation title="Company Comparison" url="/compare" />
         <Navigation title="Relation Analysis" url="/relation" />
         <Navigation title="Playground" url="/playground" />
         <Navigation title="CTFangLand" url="/ctfangland" />

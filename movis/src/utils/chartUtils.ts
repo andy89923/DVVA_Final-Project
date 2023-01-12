@@ -14,17 +14,17 @@ const ChartOptions = (
         display: title !== null,
         text: title,
         font: {
-          size: 20,
+          size: 12,
         },
       },
       legend: {
         display: showLegend,
-        position: "bottom",
+        position: "right",
         align: "start",
         labels: {
           boxWidth: 30,
           font: {
-            size: 16,
+            size: 12,
           },
         },
       },
@@ -50,13 +50,14 @@ const ChartOptions = (
         },
       },
     },
-
     elements: {
       line: {
         borderWidth: 3,
         tension: 0.2,
       },
     },
+    responsive: true,
+    maintainAspectRatio: false,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 };

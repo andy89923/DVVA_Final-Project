@@ -181,14 +181,14 @@ const ComCombobox: React.FC<IProps> = ({ data, selected, setSelected }) => {
           </Transition>
         </div>
       </Combobox>
-      <div className="flex items-center justify-center space-x-1 px-2 align-middle">
+      {/* <div className="flex items-center justify-center space-x-1 px-2 align-middle">
         <p>By: </p>
         <MyListbox
           keyMap={myKeyMap}
           selected={filterkey}
           setSelected={setFilterkey}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

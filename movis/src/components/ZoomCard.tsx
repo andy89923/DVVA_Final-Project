@@ -14,7 +14,7 @@ const ZoomCard: React.FC<IProps> = (props) => {
   const Header = () => {
     return (
       <div className="flex items-center justify-between text-white">
-        <h3 className="font-bold">{props.title}</h3>
+        <div className="text-base font-bold">{props.title}</div>
         <button onClick={() => setIsZoom((prev) => !prev)}>
           {isZoom ? <ImShrink /> : <ImEnlarge />}
         </button>
