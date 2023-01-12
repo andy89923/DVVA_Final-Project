@@ -92,6 +92,7 @@ const MyLinePlot: React.FC<{
   companies: Company[];
   data: CompanyData[];
   title: string;
+  attr: string;
 }> = (props) => {
   const options = {
     spanGaps: true,
@@ -108,20 +109,28 @@ const MyLinePlot: React.FC<{
   };
 
   const dateToStr = (date: Date | undefined) => {
-    if (date == undefined) return "1900-0-0";
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+    if (date == undefined) return "1900-00-00";
+    return `${date.getFullYear()}-${("0" + (1 + date.getMonth())).slice(-2)}-${(
+      "0" + date.getDay()
+    ).slice(-2)}`;
   };
-  const labels = props.data.reduce((a, b) => {
-    return a
-      .map((val) => {
-        return dateToStr(val.release_date);
-      })
-      .concat(
-        b.map((val) => {
-          return dateToStr(val.release_date);
-        })
-      );
+
+  function onlyUnique(value: any, index: any, self: any) {
+    return self.indexOf(value) === index;
+  }
+
+  const all_labels = props.data.map((val) => {
+    return val.map((movie) => {
+      return dateToStr(movie.release_date);
+    });
   });
+
+  const labels = all_labels
+    .reduce((a, b) => {
+      return a.concat(b);
+    })
+    .filter(onlyUnique);
+
   labels.sort();
 
   const data = {
@@ -131,8 +140,14 @@ const MyLinePlot: React.FC<{
         label: props.companies[idx]?.name,
         data: labels.map((date) => {
           for (var i = 0; i < com.length; i++) {
-            if (Object.is(dateToStr(com[i]?.release_date), date))
-              return com[i]?.averageRating;
+            if (Object.is(dateToStr(com[i]?.release_date), date)) {
+              if (props.attr === "averageRating") return com[i]?.averageRating;
+              if (props.attr === "budget")
+                return com[i]?.budget === 0 ? NaN : com[i]?.budget;
+              if (props.attr === "revenue")
+                return com[i]?.revenue === 0 ? NaN : com[i]?.revenue;
+              if (props.attr === "popularity") return com[i]?.popularity;
+            }
           }
           return NaN;
         }),
@@ -237,6 +252,7 @@ const CTFHome: NextPage = () => {
                     companies={selected}
                     data={companyData}
                     title="Movie Ratings"
+                    attr="averageRating"
                   />
                 </div>
               </ZoomCard>
@@ -244,21 +260,36 @@ const CTFHome: NextPage = () => {
               <div className="flex flex-col gap-4">
                 <ZoomCard title="Movie Budget">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    {/* <MyLinePlot companies={selected} data={companyData} /> */}
+                    <MyLinePlot
+                      companies={selected}
+                      data={companyData}
+                      title="Movie Budget"
+                      attr="budget"
+                    />
                   </div>
                 </ZoomCard>
 
-                <ZoomCard title="Movie Budget">
+                <ZoomCard title="Movie Revenue">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    {/* <MyLinePlot companies={selected} data={companyData} /> */}
+                    <MyLinePlot
+                      companies={selected}
+                      data={companyData}
+                      title="Movie Revenue"
+                      attr="revenue"
+                    />
                   </div>
                 </ZoomCard>
               </div>
 
               <div className="flex flex-col gap-4">
-                <ZoomCard title="Movie Budget">
+                <ZoomCard title="Movie Popularity">
                   <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    {/* <MyLinePlot companies={selected} data={companyData} /> */}
+                    <MyLinePlot
+                      companies={selected}
+                      data={companyData}
+                      title="Movie Popularity"
+                      attr="popularity"
+                    />
                   </div>
                 </ZoomCard>
 
