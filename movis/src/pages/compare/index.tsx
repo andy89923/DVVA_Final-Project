@@ -80,13 +80,12 @@ const MyLinePlot: React.FC<{
   attr: string;
 }> = (props) => {
   const options = {
-    ...ChartOptions(null, false, false),
+    ...ChartOptions(null, true, false),
 
     scales: {},
     responsive: true,
     maintainAspectRatio: false,
     spanGaps: true,
-
     // responsive: true,
     // maintainAspectRatio: false,
     // plugins: {
@@ -201,10 +200,18 @@ const MyBarPlot: React.FC<{ companies: Company[]; data: CompanyData[] }> = (
     }),
   };
 
+  const chartOptions = {
+    ...ChartOptions(null, false, false),
+    indexAxis: "y" as const,
+    scales: {},
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+
   return (
     <div className="h-full w-full">
       {/* <h1>Movies Count</h1> */}
-      <Bar data={data} options={ChartOptions(null, true, false)} />
+      <Bar data={data} options={chartOptions} />
     </div>
   );
 };
@@ -332,7 +339,7 @@ const Compare: NextPage = () => {
                     production companies.
                   </div>
                 </div>
-                <div className="align-right flex flex-1 items-center justify-end">
+                <div className="align-right flex h-full w-full flex-1 items-center justify-end">
                   <div className="flex w-2/3 items-center justify-center">
                     <ComCombobox
                       data={companies}
@@ -344,36 +351,8 @@ const Compare: NextPage = () => {
               </div>
             </div>
 
-            <div className="container ml-1 mr-1 grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-4">
-              <ZoomCard title="Movies Genres">
-                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                  <MyBarPlot companies={selected} data={companyData} />
-                </div>
-              </ZoomCard>
-
-              <ZoomCard title="Movie Ratings">
-                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                  <MyLinePlot
-                    companies={selected}
-                    data={companyData}
-                    title="Movie Ratings"
-                    attr="averageRating"
-                  />
-                </div>
-              </ZoomCard>
-
-              <ZoomCard title="Movie Budget">
-                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                  <MyLinePlot
-                    companies={selected}
-                    data={companyData}
-                    title="Movie Budget"
-                    attr="budget"
-                  />
-                </div>
-              </ZoomCard>
-
-              <ZoomCard title="Movie Revenue">
+            <div className="container grid h-full grid-cols-1 gap-4 sm:grid-cols-8 sm:grid-rows-6 md:gap-4">
+              <ZoomCard title="Movie Revenue" className="col-span-3 row-span-3">
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyLinePlot
                     companies={selected}
@@ -384,35 +363,67 @@ const Compare: NextPage = () => {
                 </div>
               </ZoomCard>
 
-              <div className="flex flex-col justify-start gap-4">
-                <ZoomCard title="Movie Popularity">
-                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyLinePlot
-                      companies={selected}
-                      data={companyData}
-                      title="Movie Popularity"
-                      attr="popularity"
-                    />
-                  </div>
-                </ZoomCard>
+              <ZoomCard title="Movie Budget" className="col-span-3 row-span-3">
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyLinePlot
+                    companies={selected}
+                    data={companyData}
+                    title="Movie Budget"
+                    attr="budget"
+                  />
+                </div>
+              </ZoomCard>
 
-                <ZoomCard title="Movies with Rating 7+">
-                  <div className="flex flex-row justify-center gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyDoughnut
-                      companies={selected}
-                      data={companyData}
-                      title="Movie Popularity"
-                      attr="popularity"
-                    />
-                  </div>
-                </ZoomCard>
-              </div>
-
-              <ZoomCard title="Top Rated Movies from Selected">
+              <ZoomCard
+                title="Top Rated Movies from Selected"
+                className="col-span-2 row-span-3"
+              >
                 <div>
                   <MyCarousel data={companyData} size={10} />
                 </div>
               </ZoomCard>
+
+              <ZoomCard title="Movie Ratings" className="col-span-3 row-span-3">
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyLinePlot
+                    companies={selected}
+                    data={companyData}
+                    title="Movie Ratings"
+                    attr="averageRating"
+                  />
+                </div>
+              </ZoomCard>
+
+              <ZoomCard
+                title="Movie Popularity"
+                className="col-span-3 row-span-3"
+              >
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyLinePlot
+                    companies={selected}
+                    data={companyData}
+                    title="Movie Popularity"
+                    attr="popularity"
+                  />
+                </div>
+              </ZoomCard>
+
+              <ZoomCard title="Movies Genres" className="col-span-2 row-span-3">
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyBarPlot companies={selected} data={companyData} />
+                </div>
+              </ZoomCard>
+
+              {/* <ZoomCard title="Movies with Rating 7+">
+                <div className="flex flex-row justify-center gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyDoughnut
+                    companies={selected}
+                    data={companyData}
+                    title="Movie Popularity"
+                    attr="popularity"
+                  />
+                </div>
+              </ZoomCard> */}
             </div>
           </>
         ) : (
