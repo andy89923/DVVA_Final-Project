@@ -149,7 +149,7 @@ const Home: NextPage = () => {
     totalRevenue = 0;
   let keywordsDict = {};
   // Horizontal Bar Chart
-  const topN = 20;
+  const topN = 10;
 
   if (movies === undefined) {
   } else {
