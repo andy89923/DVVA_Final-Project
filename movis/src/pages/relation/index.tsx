@@ -50,48 +50,66 @@ const SelectionCard: React.FC<{
 }> = (props) => {
   return (
     <div
-      className={`flex w-full items-center space-x-5 rounded-2xl px-5 py-3 ${
+      className={`flex-column flex-column w-full rounded-2xl px-5 py-3 ${
         props.disable ? "bg-white/20" : "bg-white/50"
       }`}
     >
-      <h1
-        className="flex items-center hover:cursor-pointer"
-        onClick={() => props.setDisable()}
-      >
-        <span
-          style={{
-            color: props.color,
-          }}
-          className="mr-2 items-center rounded-md text-white"
+      <div className="flex w-full justify-between">
+        <button
+          className={`flex h-8 w-1/2 items-center rounded bg-gray-200 p-1 hover:bg-white ${
+            props.disable ? "bg-gray-500 line-through" : ""
+          }`}
+          onClick={() => props.setDisable()}
         >
-          <GrStatusGoodSmall className="h-6 w-6" />
-        </span>
-        {props.title}
-      </h1>
-      <input
-        type="range"
-        min="0"
-        step="1"
-        max={Math.min(props.max, 500).toString()}
-        defaultValue="0"
-        list="tickmarks"
-        value={props.value.toString()}
-        className="h-2 w-full bg-blue-100"
-        onChange={(e) => props.setValue(parseInt(e.target.value))}
-      />
-      {/* <h1>{props.value}</h1> */}
-      <input
-        type="text"
-        className="h-6 w-16 rounded-md bg-blue-100"
-        value={props.value.toString()}
-        onChange={(e) => props.setValue(parseInt(e.target.value))}
-      />
-      <button className="h-6 w-6 rounded-md" onClick={() => props.setText()}>
-        {props.text ? <RxText /> : <RxTextNone />}
-      </button>
-      <button className="h-6 w-6 rounded-md " onClick={() => props.setHide()}>
-        {props.hide ? <BiHide /> : <BiShow />}
-      </button>
+          <GrStatusGoodSmall
+            className="mr-2 h-6 w-6"
+            style={{ color: props.color }}
+          />
+          {props.title}
+        </button>
+        <div className="flex pb-2">
+          <button
+            className={`mr-1 flex h-8 w-8 items-center justify-center rounded-md bg-gray-200 ${
+              props.disable ? "bg-gray-500 line-through" : "hover:bg-white"
+            }`}
+            onClick={() => props.setText()}
+            disabled={props.disable}
+          >
+            {props.text ? <RxText /> : <RxTextNone />}
+          </button>
+          <button
+            className={`flex h-8 w-8 items-center justify-center rounded-md bg-gray-200 ${
+              props.disable ? "bg-gray-500 line-through" : "hover:bg-white"
+            }`}
+            onClick={() => props.setHide()}
+            disabled={props.disable}
+          >
+            {props.hide ? <BiHide /> : <BiShow />}
+          </button>
+        </div>
+      </div>
+      <div className="flex items-center">
+        <input
+          type="range"
+          min="0"
+          step="1"
+          max={Math.min(props.max, 500).toString()}
+          defaultValue="0"
+          list="tickmarks"
+          value={props.value.toString()}
+          className="h-2 w-full bg-[#b75def]"
+          onChange={(e) => props.setValue(parseInt(e.target.value))}
+          disabled={props.disable}
+        />
+        <input
+          type="text"
+          className="h-6 w-16 rounded-md bg-gray-300"
+          readOnly
+          value={props.value.toString()}
+          onChange={(e) => props.setValue(parseInt(e.target.value))}
+          disabled={props.disable}
+        />
+      </div>
     </div>
   );
 };
@@ -399,9 +417,9 @@ const MyMovieGraph: React.FC<{
         }}
       />
       {/* absolute side bar */}
-      <div className="absolute top-0 right-0 h-screen w-1/4 bg-white/30">
-        <div className="flex flex-col items-center space-y-5">
-          <h1>Side Bar</h1>
+
+      <div className="fixed top-16 right-4 h-screen w-72 overflow-y-auto rounded px-3 py-4">
+        <div className="flex flex-col items-center gap-2">
           <SelectionCard
             title="Language"
             max={langCnt}
