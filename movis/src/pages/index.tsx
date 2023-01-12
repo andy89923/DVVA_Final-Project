@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import { api } from "../utils/api";
 import { useContext } from "react";
 import { IoAnalytics } from "react-icons/io5";
-import { HiUserGroup } from "react-icons/hi";
+import { HiUserGroup } from "react-icons/hi2";
 import { RiBubbleChartFill } from "react-icons/ri";
 
 import DataRangeComp from "../components/DataRangeComp";
@@ -72,7 +72,7 @@ const Home: NextPage = () => {
               </Link>
 
               <Link
-                href="/f315"
+                href="/compare"
                 type="button"
                 className="inline-flex flex-1 items-center space-x-5 border border-gray-200 bg-white/50 bg-white px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:text-blue-700 focus:ring-2 focus:ring-blue-700"
               >
