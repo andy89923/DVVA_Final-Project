@@ -1,19 +1,13 @@
 import { type NextPage } from "next";
-import Link from "next/link";
 import { useState } from "react";
 import ComCombobox from "../../components/ComCombobox";
 import Navbar from "../../components/Navbar";
-import SubsetPicker from "../../components/SubsetPicker";
 import ZoomCard from "../../components/ZoomCard";
 
 import { api } from "../../utils/api";
-import type {
-  CompanyData,
-  KeyMap,
-  MovieData,
-  Subset,
-} from "../../utils/myClasses";
+import type { CompanyData, MovieData } from "../../utils/myClasses";
 import { AllGenres } from "../../utils/myClasses";
+import Head from "next/head";
 
 import {
   Chart as ChartJS,
@@ -29,15 +23,13 @@ import {
 } from "chart.js";
 
 import { Bar, Line, Doughnut } from "react-chartjs-2";
-import {
-  ChartOptions,
-  convertDicttoChartData,
-  getTopElementCount,
-} from "../../utils/chartUtils";
+import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
 
 import { Carousel, ListGroup } from "flowbite-react";
 import { getCountDict } from "../../utils/relationUtils";
-import { Company } from "@prisma/client";
+import type { Company } from "@prisma/client";
+import { proseWrap } from "../../../prettier.config.cjs";
+import { procedureTypes } from "@trpc/server";
 
 ChartJS.register(
   CategoryScale,
@@ -90,13 +82,12 @@ const MyLinePlot: React.FC<{
   attr: string;
 }> = (props) => {
   const options = {
-    ...ChartOptions(null, false, false),
+    ...ChartOptions(null, true, false),
 
     scales: {},
     responsive: true,
     maintainAspectRatio: false,
     spanGaps: true,
-
     // responsive: true,
     // maintainAspectRatio: false,
     // plugins: {
@@ -135,8 +126,10 @@ const MyLinePlot: React.FC<{
 
   labels.sort();
 
+  const formatLabels = labels.map((d) => d.slice(0, -3));
+
   const data = {
-    labels: labels,
+    labels: formatLabels,
     datasets: props.data.map((com, idx) => {
       return {
         label: props.companies[idx]?.name,
@@ -163,7 +156,6 @@ const MyLinePlot: React.FC<{
 
   return (
     <div className="h-full w-full">
-      {/* <h1>{props.title}</h1> */}
       <Line options={options} data={data} />
     </div>
   );
@@ -210,10 +202,18 @@ const MyBarPlot: React.FC<{ companies: Company[]; data: CompanyData[] }> = (
     }),
   };
 
+  const chartOptions = {
+    ...ChartOptions(null, false, false),
+    indexAxis: "y" as const,
+    scales: {},
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+
   return (
     <div className="h-full w-full">
       {/* <h1>Movies Count</h1> */}
-      <Bar data={data} options={ChartOptions(null, true, false)} />
+      <Bar data={data} options={chartOptions} />
     </div>
   );
 };
@@ -294,13 +294,26 @@ const MyListGroupElement: React.FC<{
   );
 };
 
-const CTFHome: NextPage = () => {
+const Compare: NextPage = () => {
+  // Error occurred during query execution:
+  // ConnectorError(ConnectorError {
+  //   user_facing_error: None,
+  //   kind: QueryError(Server(ServerError {
+  //     code: 1105, message: "target: movis-app.-.primary: vttablet: rpc error: code = Aborted desc = Row count exceeded 100000 (CallerID: planetscale-admin)", state: "HY000"
+  //   })) })
+  // const { data: persons } = api.getAll.person.useQuery();
+
   const { data: companies } = api.getAll.company.useQuery();
   const [selected, setSelected] = useState<Company[]>([
     { id: 1, name: "Pixar" },
-    { id: 1947, name: "DreamWorks Animation" },
     { id: 2486, name: "Studio Ghibli" },
+    { id: 1947, name: "DreamWorks Animation" },
   ]);
+
+  let sort_selected = selected;
+  sort_selected.sort((a, b) => {
+    return a.id - b.id;
+  });
 
   const { data: companyData } = api.company.betweenYearRange.useQuery({
     companyIds: selected.map((data) => {
@@ -312,45 +325,81 @@ const CTFHome: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>MoVis: Comparison</title>
+        <meta
+          name="description"
+          content="A Comprehensive Visualization System for The Movies Dataset"
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Navbar />
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         {companyData != null && companies != null ? (
           <>
             <div className="container flex flex-col py-6">
-              <div className="top-section flex w-full flex-row justify-between gap-3">
-                <div className="text-left font-extrabold text-white">
-                  <div className="text-3xl sm:text-5xl">
+              <div className="top-section flex-0 flex w-full flex-row justify-between gap-3">
+                <div className="text-left text-white">
+                  <div className="inline-block text-3xl font-extrabold sm:text-5xl">
                     Mo
-                    <span className="text-[hsl(280,100%,70%)]">Vis</span>
+                    <span className="font-extrabold text-[hsl(280,100%,70%)]">
+                      Vis{" "}
+                    </span>
                   </div>
-                  <div className="text-3xl text-[hsl(295,32%,69%)] sm:text-[2rem]">
-                    Company Visualization
+                  <div className="ml-4 inline-block text-3xl text-[hsl(295,32%,69%)] sm:text-[2rem]">
+                    Cast Comparison
+                  </div>
+                  <div className="my-1">
+                    Compare the production and statistics of different crew.
+                  </div>
+                </div>
+                <div className="align-right flex h-full w-full flex-1 items-center justify-end">
+                  <div className="flex w-2/3 items-center justify-center">
+                    <ComCombobox
+                      data={companies}
+                      selected={selected}
+                      setSelected={setSelected}
+                    />
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="ml-1 mr-1 grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
-              <ZoomCard title="Fuzzy Search Company">
-                <ComCombobox
-                  data={companies}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <MyListGroupElement
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </ZoomCard>
-
-              <ZoomCard title="Movies Genres">
-                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                  <MyBarPlot companies={selected} data={companyData} />
+            <div className="container grid h-full grid-cols-1 gap-4 sm:grid-cols-8 sm:grid-rows-6 md:gap-4">
+              <ZoomCard title="Movie Revenue" className="col-span-3 row-span-3">
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyLinePlot
+                    companies={selected}
+                    data={companyData}
+                    title="Movie Revenue"
+                    attr="revenue"
+                  />
                 </div>
               </ZoomCard>
 
-              <ZoomCard title="Movie Ratings">
-                <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+              <ZoomCard title="Movie Budget" className="col-span-3 row-span-3">
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyLinePlot
+                    companies={selected}
+                    data={companyData}
+                    title="Movie Budget"
+                    attr="budget"
+                  />
+                </div>
+              </ZoomCard>
+
+              <ZoomCard
+                title="Top Rated Movies from Selected"
+                className="col-span-2 row-span-3"
+                manualZoomDim=" "
+              >
+                <div>
+                  <MyCarousel data={companyData} size={10} />
+                </div>
+              </ZoomCard>
+
+              <ZoomCard title="Movie Ratings" className="col-span-3 row-span-3">
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
                   <MyLinePlot
                     companies={selected}
                     data={companyData}
@@ -360,58 +409,29 @@ const CTFHome: NextPage = () => {
                 </div>
               </ZoomCard>
 
-              <div className="flex flex-col justify-start gap-4">
-                <ZoomCard title="Movie Budget">
-                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyLinePlot
-                      companies={selected}
-                      data={companyData}
-                      title="Movie Budget"
-                      attr="budget"
-                    />
-                  </div>
-                </ZoomCard>
+              <ZoomCard
+                title="Movie Popularity"
+                className="col-span-3 row-span-3"
+              >
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyLinePlot
+                    companies={selected}
+                    data={companyData}
+                    title="Movie Popularity"
+                    attr="popularity"
+                  />
+                </div>
+              </ZoomCard>
 
-                <ZoomCard title="Movie Revenue">
-                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyLinePlot
-                      companies={selected}
-                      data={companyData}
-                      title="Movie Revenue"
-                      attr="revenue"
-                    />
-                  </div>
-                </ZoomCard>
-              </div>
-
-              <div className="flex flex-col justify-start gap-4">
-                <ZoomCard title="Movie Popularity">
-                  <div className="flex flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyLinePlot
-                      companies={selected}
-                      data={companyData}
-                      title="Movie Popularity"
-                      attr="popularity"
-                    />
-                  </div>
-                </ZoomCard>
-
-                <ZoomCard title="Movies with Rating 7+">
-                  <div className="flex flex-row justify-center gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
-                    <MyDoughnut
-                      companies={selected}
-                      data={companyData}
-                      title="Movie Popularity"
-                      attr="popularity"
-                    />
-                  </div>
-                </ZoomCard>
-              </div>
-
-              <div className="max-w-s flex flex-col gap-4 rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
-                <h3 className="text-2xl font-bold">Top Rating Movies</h3>
-                <MyCarousel data={companyData} size={10} />
-              </div>
+              <ZoomCard
+                title="Movies Genres"
+                className="col-span-2 row-span-3"
+                manualZoomDim="h-screen"
+              >
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/95 p-4 text-lg text-black hover:bg-white/100">
+                  <MyBarPlot companies={selected} data={companyData} />
+                </div>
+              </ZoomCard>
             </div>
           </>
         ) : (
@@ -422,4 +442,4 @@ const CTFHome: NextPage = () => {
   );
 };
 
-export default CTFHome;
+export default Compare;
