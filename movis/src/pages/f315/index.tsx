@@ -4,9 +4,10 @@ import Navbar from "../../components/Navbar";
 import { api } from "../../utils/api";
 import Map from "./geo-map";
 import ZoomCard from "../../components/ZoomCard";
-import WordCloud from "./word-cloud";
+// import WordCloud from "./word-cloud";
 import { getCountDict } from "../../utils/relationUtils";
 import type { MovieData } from "../../utils/myClasses";
+import WordCloudNew from "./word-cloud-better";
 
 // ChartJS stuff
 import {
@@ -99,7 +100,6 @@ const TopXHorizontalBarChart: React.FC<{
 }> = (props) => {
   const { movies, topN: TOP_COUNT, chosenKey: key } = props;
 
-  console.log("movies", movies);
   const countDict = getCountDict(
     movies,
     [key], // ["genres"]
@@ -152,7 +152,6 @@ const Home: NextPage = () => {
   const topN = 20;
 
   if (movies === undefined) {
-    console.log("waiting for data");
   } else {
     // compute movie count
     movieCount = movies.length;
@@ -216,14 +215,24 @@ const Home: NextPage = () => {
                   <Map data={movies} />
                 </div>
               </ZoomCard>
-              <ZoomCard
+              {/* <ZoomCard
                 title="Most frequent keyword in movie"
                 className="col-span-3 row-span-2"
               >
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                   <WordCloud keywordsCountDict={keywordsDict} />
                 </div>
+              </ZoomCard> */}
+
+              <ZoomCard
+                title="Most frequent keyword in movie"
+                className="col-span-3 row-span-2"
+              >
+                <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
+                  <WordCloudNew keywordsCountDict={keywordsDict} />
+                </div>
               </ZoomCard>
+
               <ZoomCard title="Genres Count" className="col-span-2 row-span-2">
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                   <GenreBarPlot data={movies} />
