@@ -1,3 +1,5 @@
+import { KeyMap } from "./myClasses";
+
 const iso_3166_1_2_digit_to_number_map = {
   AF: 4,
   AL: 8,
@@ -244,7 +246,7 @@ const iso_3166_1_2_digit_to_number_map = {
   YE: 887,
   ZM: 894,
   ZW: 716,
-};
+} as KeyMap<number>;
 
 export { iso_3166_1_2_digit_to_number_map };
 

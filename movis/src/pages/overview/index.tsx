@@ -265,10 +265,10 @@ const TopXHorizontalBarChart: React.FC<{
 };
 
 const Home: NextPage = () => {
-  const { dateRange } = useContext(DateContext);
+  const appContext = useContext(DateContext);
   const { data: movies } = api.movie.dateRange.useQuery({
-    minDate: dateRange.startDate,
-    maxDate: dateRange.endDate,
+    minDate: appContext?.dateRange.startDate ?? new Date("2015-01-01"),
+    maxDate: appContext?.dateRange.endDate ?? new Date("2016-12-31"),
   });
 
   let movieCount = 0,
@@ -322,9 +322,9 @@ const Home: NextPage = () => {
                   </div>
                   <div>
                     Movies in between{" "}
-                    {dateToStr(dateRange.startDate, true) +
+                    {dateToStr(appContext?.dateRange.startDate, true) +
                       " ~ " +
-                      dateToStr(dateRange.endDate, true)}
+                      dateToStr(appContext?.dateRange.endDate, true)}
                   </div>
                 </div>
                 <div className="flex gap-6 ">

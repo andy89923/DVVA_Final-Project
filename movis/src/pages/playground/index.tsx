@@ -93,10 +93,10 @@ const MyBarPlot: React.FC<{ data: MovieData[] }> = (props) => {
 
 const Playground: NextPage = () => {
   // const { data: movies } = api.movie.getAll.useQuery();
-  const { dateRange } = useContext(DateContext);
+  const appContext = useContext(DateContext);
   const { data: movies } = api.movie.dateRange.useQuery({
-    minDate: dateRange.startDate,
-    maxDate: dateRange.endDate,
+    minDate: appContext?.dateRange.startDate ?? new Date("2015-01-01"),
+    maxDate: appContext?.dateRange.endDate ?? new Date("2016-12-31"),
   });
 
   // const { data: genres } = api.getAll.genre.useQuery();

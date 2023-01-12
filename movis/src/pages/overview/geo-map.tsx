@@ -10,7 +10,6 @@ import {
 } from "chart.js";
 import { getCountDict } from "../../utils/relationUtils";
 import { iso_3166_1_2_digit_to_number_map } from "../../utils/isoMapping";
-import { start } from "repl";
 
 ChartJS.register(
   Title,
@@ -32,7 +31,8 @@ export default function Map(data: any) {
       .then((response) => response.json())
       .then((data) => {
         setCountries(
-          ChartGeo.topojson.feature(data, data.objects.countries).features
+          (ChartGeo.topojson.feature(data, data.objects.countries) as any)
+            .features
         );
       });
   }, []);
@@ -51,13 +51,13 @@ export default function Map(data: any) {
     const feat =
       countries[
         countries.findIndex(
-          (d: any) => d.id == iso_3166_1_2_digit_to_number_map[key]
+          (d: any) => d.id === iso_3166_1_2_digit_to_number_map[key]
         )
       ];
     if (feat !== undefined)
       geoMapCount.push({
         feature: feat,
-        value: Math.log(movieCountryCount[key].count) + 1,
+        value: Math.log(movieCountryCount[key]?.count ?? 0) + 1,
       });
   }
 

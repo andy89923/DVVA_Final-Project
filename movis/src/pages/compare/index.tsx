@@ -22,14 +22,12 @@ import {
   ArcElement,
 } from "chart.js";
 
-import { Bar, Line, Doughnut } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
 
-import { Carousel, ListGroup } from "flowbite-react";
+import { Carousel } from "flowbite-react";
 import { getCountDict } from "../../utils/relationUtils";
 import type { Company } from "@prisma/client";
-import { proseWrap } from "../../../prettier.config.cjs";
-import { procedureTypes } from "@trpc/server";
 
 ChartJS.register(
   CategoryScale,
@@ -182,16 +180,14 @@ const brdr_color_maps: string[] = [
 const MyBarPlot: React.FC<{ companies: Company[]; data: CompanyData[] }> = (
   props
 ) => {
-  const [filterkey, setFilterkey] = useState("genres");
-
   const countDicts = props.data.map((comp) => {
-    return getCountDict(comp, [filterkey], [], "name", 0, undefined);
+    return getCountDict(comp, ["genres"], [], "name", 0, undefined);
   });
 
   const data = {
     labels: AllGenres,
     datasets: countDicts.map((countDict, idx) => {
-      const { labels, data: countArr } = convertDicttoChartData(countDict);
+      const { data: countArr } = convertDicttoChartData(countDict);
       return {
         label: props.companies[idx]?.name,
         data: countArr,
@@ -317,7 +313,7 @@ const Compare: NextPage = () => {
     )
   );
 
-  const companyData = postQueries.map((q) => q.data);
+  const companyData = postQueries.map((q) => q.data) as any[];
   console.log("aaa");
   console.log(postQueries);
 

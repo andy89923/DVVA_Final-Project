@@ -134,7 +134,7 @@ const MyLinePlot: React.FC<{
       return {
         label: props.companies[idx]?.name,
         data: labels.map((date) => {
-          for (var i = 0; i < com.length; i++) {
+          for (let i = 0; i < com.length; i++) {
             if (Object.is(dateToStr(com[i]?.release_date), date)) {
               if (props.attr === "averageRating") return com[i]?.averageRating;
               if (props.attr === "budget")
@@ -279,20 +279,20 @@ const MyDoughnut: React.FC<{
   return <Doughnut options={config} data={data} />;
 };
 
-const MyListGroupElement: React.FC<{
-  selected: Company[];
-  setSelected: any;
-}> = (props) => {
-  return (
-    <>
-      <ListGroup>
-        {props.selected.map((data) => {
-          return <ListGroup.Item>{data.name}</ListGroup.Item>;
-        })}
-      </ListGroup>
-    </>
-  );
-};
+// const MyListGroupElement: React.FC<{
+//   selected: Company[];
+//   setSelected: any;
+// }> = (props) => {
+//   return (
+//     <>
+//       <ListGroup>
+//         {props.selected.map((data) => {
+//           return <ListGroup.Item>{data.name}</ListGroup.Item>;
+//         })}
+//       </ListGroup>
+//     </>
+//   );
+// };
 
 const Compare: NextPage = () => {
   // Error occurred during query execution:
@@ -310,7 +310,7 @@ const Compare: NextPage = () => {
     { id: 1947, name: "DreamWorks Animation" },
   ]);
 
-  let sort_selected = selected;
+  const sort_selected = selected;
   sort_selected.sort((a, b) => {
     return a.id - b.id;
   });

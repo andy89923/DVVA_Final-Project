@@ -25,7 +25,7 @@ export default function WordCloud(props: { keywordsCountDict: any }) {
     scale: "sqrt",
     spiral: "archimedean",
     transitionDuration: 1000,
-  };
+  } as any;
 
   return (
     <>

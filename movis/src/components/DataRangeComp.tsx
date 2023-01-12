@@ -16,13 +16,14 @@ import { DateContext } from "../utils/DataContext";
 // }
 
 const DataRangeComp: React.FC = () => {
-  const { dateRange, setDateRange } = useContext(DateContext);
+  // const { dateRange, setDateRange } = useContext(DateContext);
+  const appContext = useContext(DateContext);
 
   const handleValueChange = (newValue: DateValueType) => {
     if (newValue?.startDate != null && newValue?.endDate != null) {
       const d1 = new Date(newValue.endDate);
       const d2 = addYears(new Date(newValue.startDate), 2);
-      setDateRange({
+      appContext?.setDateRange({
         startDate: new Date(newValue.startDate),
         endDate: d1 > d2 ? d2 : d1,
       });
@@ -35,13 +36,15 @@ const DataRangeComp: React.FC = () => {
   };
 
   const maxDate =
-    dateRange?.startDate != null
-      ? addYears(new Date(dateRange.startDate), 2)
+    appContext?.dateRange.startDate != null
+      ? addYears(new Date(appContext?.dateRange.startDate), 2)
       : (new Date("2022-12-31") as Date);
 
   return (
     <Datepicker
-      value={dateRange}
+      value={
+        appContext?.dateRange ?? { startDate: new Date(), endDate: new Date() }
+      }
       onChange={handleValueChange}
       showShortcuts={true}
       maxDate={maxDate}

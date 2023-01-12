@@ -12,10 +12,10 @@ import DataRangeComp from "../components/DataRangeComp";
 import { DateContext } from "../utils/DataContext";
 
 const Home: NextPage = () => {
-  const { dateRange } = useContext(DateContext);
+  const appContext = useContext(DateContext);
   const { data: movies } = api.movie.dateRange.useQuery({
-    minDate: dateRange.startDate,
-    maxDate: dateRange.endDate,
+    minDate: appContext?.dateRange.startDate ?? new Date("2015-01-01"),
+    maxDate: appContext?.dateRange.endDate ?? new Date("2016-12-31"),
   });
 
   return (

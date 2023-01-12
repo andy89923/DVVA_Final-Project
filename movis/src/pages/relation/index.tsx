@@ -3,7 +3,6 @@ import React, { useContext, useMemo } from "react";
 
 import Head from "next/head";
 import type {
-  ForceGraphMethods,
   ForceGraphProps,
   LinkObject,
   NodeObject,
@@ -21,7 +20,6 @@ import { useState } from "react";
 import { BiHide, BiShow } from "react-icons/bi";
 import { RxText, RxTextNone } from "react-icons/rx";
 import { GrStatusGoodSmall } from "react-icons/gr";
-import { HiXCircle, HiOutlinePlusCircle } from "react-icons/hi";
 import SpriteText from "three-spritetext";
 import { DateContext } from "../../utils/DataContext";
 
@@ -533,10 +531,10 @@ const getRandomSubarray = (arr: any[] | undefined, size: number) => {
 };
 
 const Relation: NextPage = () => {
-  const { dateRange } = useContext(DateContext);
+  const appContext = useContext(DateContext);
   const { data: movies } = api.movie.dateRange.useQuery({
-    minDate: dateRange.startDate,
-    maxDate: dateRange.endDate,
+    minDate: appContext?.dateRange.startDate ?? new Date("2015-01-01"),
+    maxDate: appContext?.dateRange.endDate ?? new Date("2016-12-31"),
   });
 
   const [value, setValue] = useState(0);
@@ -558,7 +556,7 @@ const Relation: NextPage = () => {
       <Navbar />
       {movies != null && (
         <div className="top-section flex-0 fixed top-20 left-10 z-10 float-left flex flex-row justify-between gap-3">
-          <div className="text-left text-white">
+          <div className="flex flex-col text-left text-white">
             <div className="inline-block text-3xl font-extrabold sm:text-5xl">
               Mo
               <span className="font-extrabold text-[hsl(280,100%,70%)]">
@@ -572,18 +570,18 @@ const Relation: NextPage = () => {
               Here, you may choose to analyze attributes that you are
               interested.
             </div>
+            <input
+              type="range"
+              min="0"
+              step={Math.round(movies.length / 20).toString()}
+              max={movies.length.toString()}
+              defaultValue={movies.length.toString()}
+              list="tickmarks"
+              value={value.toString()}
+              className="h-2 w-full bg-[#b75def]"
+              onChange={(e) => setValue(parseInt(e.target.value))}
+            />
           </div>
-          <input
-            type="range"
-            min="0"
-            step={Math.round(movies.length / 20).toString()}
-            max={movies.length.toString()}
-            defaultValue={movies.length.toString()}
-            list="tickmarks"
-            value={value.toString()}
-            className="h-2 w-full bg-[#b75def]"
-            onChange={(e) => setValue(parseInt(e.target.value))}
-          />
         </div>
       )}
       <main className="flex h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
