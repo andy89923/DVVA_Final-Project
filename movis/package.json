@@ -37,6 +37,7 @@
     "react-force-graph-3d": "^1.21.17",
     "react-icons": "^4.7.1",
     "react-range": "^1.8.14",
+    "react-wordcloud": "^1.2.7",
     "superjson": "1.9.1",
     "three": "^0.148.0",
     "three-spritetext": "^1.6.5",
