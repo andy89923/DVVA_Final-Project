@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 
 import Head from "next/head";
 import type {
@@ -23,6 +23,7 @@ import { RxText, RxTextNone } from "react-icons/rx";
 import { GrStatusGoodSmall } from "react-icons/gr";
 import { HiXCircle, HiOutlinePlusCircle } from "react-icons/hi";
 import SpriteText from "three-spritetext";
+import { DateContext } from "../../utils/DataContext";
 
 const toCompareMap = {
   spoken_languages: "Language",
@@ -509,11 +510,40 @@ const MyMovieGraph: React.FC<{
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getRandomSubarray = (arr: any[] | undefined, size: number) => {
+  if (arr == null) {
+    return [];
+  }
+  if (size > arr.length) {
+    return arr;
+  }
+
+  const shuffled = arr.slice(0);
+  let i = arr.length;
+  const min = i - size;
+  let temp, index;
+  while (i-- > min) {
+    index = Math.floor((i + 1) * Math.random());
+    temp = shuffled[index];
+    shuffled[index] = shuffled[i];
+    shuffled[i] = temp;
+  }
+  return shuffled.slice(min);
+};
+
 const Relation: NextPage = () => {
-  const { data: movies } = api.movie.betweenYearRange.useQuery({
-    minYear: 2018,
-    maxYear: 2022,
+  const { dateRange } = useContext(DateContext);
+  const { data: movies } = api.movie.dateRange.useQuery({
+    minDate: dateRange.startDate,
+    maxDate: dateRange.endDate,
   });
+
+  const [value, setValue] = useState(0);
+  const subArray = useMemo(
+    () => getRandomSubarray(movies, value),
+    [movies, value]
+  );
 
   return (
     <>
@@ -527,7 +557,7 @@ const Relation: NextPage = () => {
       </Head>
       <Navbar />
       {movies != null && (
-        <div className="top-section flex-0 fixed top-20 left-10 z-10 flex w-full flex-row justify-between gap-3">
+        <div className="top-section flex-0 fixed top-20 left-10 z-10 float-left flex flex-row justify-between gap-3">
           <div className="text-left text-white">
             <div className="inline-block text-3xl font-extrabold sm:text-5xl">
               Mo
@@ -543,10 +573,21 @@ const Relation: NextPage = () => {
               interested.
             </div>
           </div>
+          <input
+            type="range"
+            min="0"
+            step={Math.round(movies.length / 20).toString()}
+            max={movies.length.toString()}
+            defaultValue={movies.length.toString()}
+            list="tickmarks"
+            value={value.toString()}
+            className="h-2 w-full bg-[#b75def]"
+            onChange={(e) => setValue(parseInt(e.target.value))}
+          />
         </div>
       )}
       <main className="flex h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <MyMovieGraph data={movies} />
+        <MyMovieGraph data={subArray} />
       </main>
     </>
   );
