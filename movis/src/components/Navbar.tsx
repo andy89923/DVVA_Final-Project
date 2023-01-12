@@ -20,7 +20,7 @@ const Navigation: React.FC<{ title: string; url: string }> = (props) => {
 
 export default function Navbar() {
   return (
-    <div className="sticky top-0 flex h-20 flex-row items-center justify-between bg-black px-20 text-white">
+    <div className="sticky top-0 z-10 flex h-20 flex-row items-center justify-between bg-black px-20 text-white">
       <div className="page-nav flex flex-row items-center gap-6">
         <div className="brand mr-4">
           <Link href="/" className="text-2xl font-bold">
