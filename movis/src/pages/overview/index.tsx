@@ -57,7 +57,7 @@ const dateToStr = (date: Date | undefined, day = false) => {
 const NumCard: React.FC<IProps> = (props) => {
   return (
     <>
-      <div className="flex flex-col justify-center rounded-xl bg-white/10 p-4 text-lg text-white hover:bg-white/20">
+      <div className="flex flex-col justify-center rounded-xl bg-white/20 p-4 text-lg text-white hover:bg-white/30">
         <div>{props.title}</div>
         <div className="text-4xl font-bold">
           {props.prefix}
@@ -272,7 +272,8 @@ const Home: NextPage = () => {
   });
 
   let movieCount = 0,
-    totalRevenue = 0;
+    totalRevenue = 0,
+    averageRevenue = 0;
   let keywordsDict = {};
   // Horizontal Bar Chart
   const topN = 10;
@@ -287,6 +288,10 @@ const Home: NextPage = () => {
       (accumulator, currentMovie) => accumulator + currentMovie.revenue,
       0
     );
+
+    // compute average revenue
+    averageRevenue = Math.round(totalRevenue / movieCount);
+
     // parse keywords
     keywordsDict = getCountDict(movies, ["keywords"], [], "name", 0, 100);
   }
@@ -322,15 +327,20 @@ const Home: NextPage = () => {
                       dateToStr(dateRange.endDate, true)}
                   </div>
                 </div>
-                <div className="flex gap-6">
+                <div className="flex gap-6 ">
+                  <NumCard
+                    title="Total Revenue:"
+                    prefix="US$"
+                    number={totalRevenue}
+                  />
                   <NumCard
                     title="Total Number of Movies:"
                     number={movieCount}
                   />
                   <NumCard
-                    title="Total Revenue:"
+                    title="Average Revenue Per Movie:"
                     prefix="US$"
-                    number={totalRevenue}
+                    number={averageRevenue}
                   />
                 </div>
               </div>
