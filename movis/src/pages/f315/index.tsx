@@ -108,6 +108,9 @@ const CountLinePlot: React.FC<{
         type: "linear" as const,
         display: true,
         position: "left" as const,
+        ticks: {
+          color: "rgba(255, 110, 140, 1)",
+        },
       },
       y1: {
         type: "linear" as const,
@@ -115,6 +118,22 @@ const CountLinePlot: React.FC<{
         position: "right" as const,
         grid: {
           drawOnChartArea: false,
+        },
+      },
+    },
+    plugins: {
+      title: {
+        display: false,
+      },
+      legend: {
+        display: true,
+        position: "bottom",
+        align: "center",
+        labels: {
+          boxWidth: 30,
+          font: {
+            size: 16,
+          },
         },
       },
     },
@@ -142,7 +161,7 @@ const CountLinePlot: React.FC<{
     labels: all_labels,
     datasets: [
       {
-        label: "count",
+        label: "# of Movies",
         data: all_labels.map((dat) => {
           return props.movies.filter((mov) => {
             return Object.is(dateToStr(mov.release_date), dat);
@@ -157,7 +176,7 @@ const CountLinePlot: React.FC<{
       {
         label: "revenue",
         data: all_labels.map((dat) => {
-          var sum = 0;
+          let sum = 0;
           props.movies.map((mov) => {
             if (Object.is(dateToStr(mov.release_date), dat)) sum += mov.revenue;
           });
@@ -172,7 +191,7 @@ const CountLinePlot: React.FC<{
       {
         label: "budget",
         data: all_labels.map((dat) => {
-          var sum = 0;
+          let sum = 0;
           props.movies.map((mov) => {
             if (Object.is(dateToStr(mov.release_date), dat)) sum += mov.budget;
           });
@@ -324,10 +343,16 @@ const Home: NextPage = () => {
               >
                 <div className="flex h-full flex-col items-center justify-center gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                   <Map data={movies} />
+                  <div className="text-[0.5rem] text-gray-500">
+                    Number are normalized by Log scale
+                  </div>
                 </div>
               </ZoomCard>
 
-              <ZoomCard title="Genres Count" className="col-span-2 row-span-2">
+              <ZoomCard
+                title="Genres Distribution"
+                className="col-span-2 row-span-2"
+              >
                 <div className="flex h-full flex-col gap-4 rounded-xl bg-white/90 p-4 text-lg text-black hover:bg-white/100">
                   <GenreBarPlot data={movies} />
                 </div>

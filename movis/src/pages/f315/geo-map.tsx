@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import { getCountDict } from "../../utils/relationUtils";
 import { iso_3166_1_2_digit_to_number_map } from "../../utils/isoMapping";
+import { start } from "repl";
 
 ChartJS.register(
   Title,
@@ -91,6 +92,14 @@ export default function Map(data: any) {
         plugins: {
           legend: {
             display: false,
+          },
+          title: {
+            text: "Number are normalized by Log scale",
+            align: "start",
+            display: false,
+            font: {
+              size: 14,
+            },
           },
         },
         scales: {
