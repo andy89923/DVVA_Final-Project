@@ -40,6 +40,7 @@
     "react-wordcloud": "^1.2.7",
     "superjson": "1.9.1",
     "three": "^0.148.0",
+    "three-spritetext": "^1.6.5",
     "zod": "^3.20.2"
   },
   "devDependencies": {
