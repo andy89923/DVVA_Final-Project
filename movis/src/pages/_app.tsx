@@ -4,13 +4,15 @@ import { api } from "../utils/api";
 
 import "../styles/globals.css";
 import { createContext, useState } from "react";
-import { DateValueType } from "react-tailwindcss-datepicker/dist/types";
 import { DateContext } from "../utils/DataContext";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const [dateRange, setDateRange] = useState<DateValueType>({
-    startDate: new Date("2021-01-01"),
-    endDate: new Date("2022-12-31"),
+  const [dateRange, setDateRange] = useState<{
+    startDate: Date;
+    endDate: Date;
+  }>({
+    startDate: new Date("2015-01-01"),
+    endDate: new Date("2016-12-31"),
   });
 
   return (
