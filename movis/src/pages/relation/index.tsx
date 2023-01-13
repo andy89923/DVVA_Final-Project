@@ -395,7 +395,9 @@ const MyMovieGraph: React.FC<{
         enableNodeDrag={false}
         graphData={graph}
         nodeLabel="name"
-        nodeVisibility={(node: NodeObject) => assignBoolean(node?.id, toHide)}
+        nodeVisibility={(node: NodeObject) =>
+          assignBoolean(node?.id, toHide) || nameComp(node?.id, "Movie")
+        }
         nodeColor={(node: NodeObject) => assignColor(node?.id)}
         // nodeCanvasObjectMode={() => "after"}
         nodeThreeObjectExtend={true}
@@ -506,7 +508,7 @@ const MyMovieGraph: React.FC<{
             className="flex w-full flex-col items-center space-x-5 rounded-2xl bg-white/30 px-5 py-3 text-center align-middle hover:bg-white/70"
             onClick={() => toggleIdx(0, setToHide)}
           >
-            <h1>{toHide[0] ? "Show Movie Nodes" : "Hide Movie Nodes"}</h1>
+            <h1>{toHide[0] ? "Show Movie Links" : "Hide Movie Links"}</h1>
           </button>
         </div>
       </div>
