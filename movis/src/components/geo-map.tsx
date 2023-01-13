@@ -8,8 +8,8 @@ import {
   Title,
   Legend,
 } from "chart.js";
-import { getCountDict } from "../../utils/relationUtils";
-import { iso_3166_1_2_digit_to_number_map } from "../../utils/isoMapping";
+import { getCountDictV2 } from "../utils/relationUtils";
+import { iso_3166_1_2_digit_to_number_map } from "../utils/isoMapping";
 
 ChartJS.register(
   Title,
@@ -37,7 +37,7 @@ export default function Map(data: any) {
       });
   }, []);
 
-  const movieCountryCount = getCountDict(
+  const { countDict: movieCountryCount } = getCountDictV2(
     data["data"],
     ["countries"],
     [],
