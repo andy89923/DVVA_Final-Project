@@ -51,13 +51,13 @@ export default function Map(data: any) {
     const feat =
       countries[
         countries.findIndex(
-          (d: any) => d.id === iso_3166_1_2_digit_to_number_map[key]
+          (d: any) => d.id == iso_3166_1_2_digit_to_number_map[key]
         )
       ];
     if (feat !== undefined)
       geoMapCount.push({
         feature: feat,
-        value: Math.log(movieCountryCount[key]?.count ?? 0) + 1,
+        value: Math.log(movieCountryCount[key]?.count ?? 1),
       });
   }
 
