@@ -2,12 +2,12 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Navbar from "../../components/Navbar";
 import { api } from "../../utils/api";
-import Map from "./geo-map";
+import Map from "../../components/geo-map";
 import ZoomCard from "../../components/ZoomCard";
 // import WordCloud from "./word-cloud";
 import { getCountDict } from "../../utils/relationUtils";
 import type { MovieData } from "../../utils/myClasses";
-import WordCloudNew from "./word-cloud-better";
+import WordCloudNew from "../../components/word-cloud-better";
 
 // ChartJS stuff
 import {

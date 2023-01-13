@@ -93,7 +93,6 @@ const SelectionCard: React.FC<{
           min="0"
           step="1"
           max={Math.min(props.max, 500).toString()}
-          defaultValue="0"
           list="tickmarks"
           value={props.value.toString()}
           className="h-2 w-full bg-[#b75def]"
@@ -117,24 +116,23 @@ const MyMovieGraph: React.FC<{
   data: MovieData[] | undefined;
 }> = (props) => {
   const [width, height] = useWindowSize();
-  const [vLang, setVLang] = useState<number>(5);
-  const [vWord, setVWord] = useState<number>(0);
-  const [vCrew, setVCrew] = useState<number>(30);
-  const [vGnre, setVGnre] = useState<number>(0);
-  const [vCtry, setVCtry] = useState<number>(0);
-  const [vComp, setVComp] = useState<number>(0);
+  const [vLang, setVLang] = useState<number>(10);
+  const [vWord, setVWord] = useState<number>(10);
+  const [vCrew, setVCrew] = useState<number>(10);
+  const [vGnre, setVGnre] = useState<number>(15);
+  const [vCtry, setVCtry] = useState<number>(10);
+  const [vComp, setVComp] = useState<number>(10);
   const [toHide, setToHide] = useState<boolean[]>(Array(7).fill(false));
-  const [toDisable, setToDisable] = useState<boolean[]>(Array(7).fill(false));
-  const [toText, setToText] = useState<boolean[]>([
+  const [toDisable, setToDisable] = useState<boolean[]>([
+    false,
     false,
     true,
     true,
+    false,
     true,
-    true,
-    true,
-    true,
-    true,
+    false,
   ]);
+  const [toText, setToText] = useState<boolean[]>(Array(7).fill(false));
 
   const { countDict: langDict, uniqueCount: langCnt } = useMemo(
     () => getCountDictV2(props.data, ["spoken_languages"], [], "id", 0, vLang),
@@ -537,9 +535,9 @@ const Relation: NextPage = () => {
     maxDate: appContext?.dateRange.endDate ?? new Date("2016-12-31"),
   });
 
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(50);
   const subArray = useMemo(
-    () => getRandomSubarray(movies, value),
+    () => getRandomSubarray(movies, ((movies?.length ?? 0) * value) / 100),
     [movies, value]
   );
 
@@ -573,9 +571,8 @@ const Relation: NextPage = () => {
             <input
               type="range"
               min="0"
-              step={Math.round(movies.length / 20).toString()}
-              max={movies.length.toString()}
-              defaultValue={movies.length.toString()}
+              step="5"
+              max="100"
               list="tickmarks"
               value={value.toString()}
               className="h-2 w-full bg-[#b75def]"
