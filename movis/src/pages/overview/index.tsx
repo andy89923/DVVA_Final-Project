@@ -26,6 +26,7 @@ import { Bar, Line } from "react-chartjs-2";
 import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
 import { useContext } from "react";
 import { DateContext } from "../../utils/DataContext";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 ChartJS.register(
   CategoryScale,
@@ -398,7 +399,12 @@ const Home: NextPage = () => {
             </div>
           </>
         ) : (
-          <h1 className="text-2xl font-bold text-white">Querying Data...</h1>
+          <>
+            <h1 className="mb-3 text-2xl font-bold text-white">
+              Querying Data...
+            </h1>
+            <LoadingSpinner />
+          </>
         )}
       </main>
     </>
