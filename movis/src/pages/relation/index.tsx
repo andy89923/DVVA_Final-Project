@@ -132,7 +132,7 @@ const MyMovieGraph: React.FC<{
     true,
     false,
   ]);
-  const [toText, setToText] = useState<boolean[]>(Array(7).fill(false));
+  const [toText, setToText] = useState<boolean[]>(Array(7).fill(true));
 
   const { countDict: langDict, uniqueCount: langCnt } = useMemo(
     () => getCountDictV2(props.data, ["spoken_languages"], [], "id", 0, vLang),
