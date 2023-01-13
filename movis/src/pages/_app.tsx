@@ -12,7 +12,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     endDate: Date;
   }>({
     startDate: new Date("2015-01-01"),
-    endDate: new Date("2016-12-31"),
+    endDate: new Date("2015-12-31"),
   });
 
   return (

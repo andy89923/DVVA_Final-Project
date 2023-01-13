@@ -22,7 +22,7 @@ const DataRangeComp: React.FC = () => {
   const handleValueChange = (newValue: DateValueType) => {
     if (newValue?.startDate != null && newValue?.endDate != null) {
       const d1 = new Date(newValue.endDate);
-      const d2 = addYears(new Date(newValue.startDate), 2);
+      const d2 = addYears(new Date(newValue.startDate), 1);
       appContext?.setDateRange({
         startDate: new Date(newValue.startDate),
         endDate: d1 > d2 ? d2 : d1,
@@ -37,7 +37,7 @@ const DataRangeComp: React.FC = () => {
 
   const maxDate =
     appContext?.dateRange.startDate != null
-      ? addYears(new Date(appContext?.dateRange.startDate), 2)
+      ? addYears(new Date(appContext?.dateRange.startDate), 1)
       : (new Date("2022-12-31") as Date);
 
   return (
