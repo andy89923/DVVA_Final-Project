@@ -28,6 +28,7 @@ import { ChartOptions, convertDicttoChartData } from "../../utils/chartUtils";
 import { Carousel } from "flowbite-react";
 import { getCountDict } from "../../utils/relationUtils";
 import type { Company } from "@prisma/client";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 ChartJS.register(
   CategoryScale,
@@ -461,7 +462,12 @@ const Compare: NextPage = () => {
             </div>
           </>
         ) : (
-          <h1 className="text-2xl font-bold text-white">Querying Data...</h1>
+          <>
+            <h1 className="mb-3 text-2xl font-bold text-white">
+              Querying Data...
+            </h1>
+            <LoadingSpinner />
+          </>
         )}
       </main>
     </>

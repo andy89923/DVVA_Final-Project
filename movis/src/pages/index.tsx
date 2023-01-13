@@ -11,6 +11,8 @@ import { RiBubbleChartFill } from "react-icons/ri";
 import DataRangeComp from "../components/DataRangeComp";
 import { DateContext } from "../utils/DataContext";
 
+import LoadingSpinner from "../components/LoadingSpinner";
+
 const Home: NextPage = () => {
   const appContext = useContext(DateContext);
   const { data: movies } = api.movie.dateRange.useQuery({
@@ -93,9 +95,14 @@ const Home: NextPage = () => {
               </Link>
             </div>
             <h3 className="w-full text-center text-lg font-bold text-white">
-              {movies == null
-                ? "Preloading data..."
-                : `Data loaded complete. A total of ${movies.length} movies found. `}
+              {movies == null ? (
+                <>
+                  <div className="mb-1">Preloading data...</div>
+                  <LoadingSpinner />
+                </>
+              ) : (
+                `Data loaded complete. A total of ${movies.length} movies found. `
+              )}
             </h3>
           </div>
         </div>
