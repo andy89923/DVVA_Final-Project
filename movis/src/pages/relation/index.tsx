@@ -571,13 +571,20 @@ const Relation: NextPage = () => {
                 Vis{" "}
               </span>
             </div>
-            <div className="ml-4 inline-block text-3xl text-[hsl(295,32%,69%)] sm:text-[2rem]">
+            <div className="inline-block text-3xl text-[hsl(295,32%,69%)] sm:text-[2rem]">
               Relation Analysis
             </div>
             <div className="my-1">
               Here, you may choose to analyze attributes that you are
               interested.
             </div>
+            <div>
+              Each slidebar filters the top N entities with the most movie
+              counts.
+            </div>
+          </div>
+          <div className="fixed bottom-1 w-1/5 text-gray-400">
+            <small>If you notice a lag of your browser, slide this bar:</small>
             <input
               type="range"
               min="0"
@@ -585,7 +592,7 @@ const Relation: NextPage = () => {
               max="100"
               list="tickmarks"
               value={value.toString()}
-              className="h-2 w-full bg-[#b75def]"
+              className="h-1 w-full bg-[gray]"
               onChange={(e) => setValue(parseInt(e.target.value))}
             />
           </div>
